@@ -27,6 +27,25 @@ const FirmForm = () => {
     state: "",
   });
 
+  const [social, setSocial] = useState([
+    {
+      facebook: "",
+      instagram: "",
+      twitter: "",
+      linkedin: "",
+    },
+  ]);
+
+  const onChangeSocial = (i, e) => {
+    const { value, name } = e.currentTarget;
+    const newResults = [...social];
+    newResults[i] = {
+      ...newResults[i],
+      [name]: value,
+    };
+    setSocial(newResults);
+  };
+
   const [stats, setStates] = useState([]);
   const [pro, setPros] = useState([]);
   const [con, setCons] = useState([]);
@@ -152,6 +171,7 @@ const FirmForm = () => {
       setCons(current.cons);
       setServices(current.services);
       setReviews(current.reviews);
+      setSocial(current.social);
     } else {
       setFirm({
         name: "",
@@ -178,6 +198,7 @@ const FirmForm = () => {
       setStates([]);
       setPros([]);
       setCons([]);
+      setSocial([{ facebook: "", instagram: "", twitter: "", linkedin: "" }]);
       setServices([{ ...serviceItem }]);
       setReviews([{ ...review }]);
     }
@@ -310,6 +331,7 @@ const FirmForm = () => {
     formData.append("phone", firm.phone);
     formData.append("stars", firm.stars);
     formData.append("cpa", firm.cpa);
+    formData.append("socialLinks", social);
     formData.append("cpabio", firm.cpabio);
     formData.append("fees", firm.fees);
     formData.append("avgsavings", firm.avgsavings);
@@ -508,6 +530,27 @@ const FirmForm = () => {
             </ul>
           </div>
         </div>
+        <div className='all-center bg-light'>
+          {social.map((row, i) => (
+            <div key={i} className='row'>
+              {Object.keys(row).map((key) => (
+                <div>
+                  <label key={key}>
+                    {key.slice(0, 1).toUpperCase() + key.slice(1, key.length)}{" "}
+                  </label>
+                  <br />
+                  <input
+                    type='text'
+                    value={row[key]}
+                    name={key}
+                    onChange={(e) => onChangeSocial(i, e)}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
         <div className='bg-light card'>
           <div className='grid-2'>
             <div className='card'>
@@ -519,6 +562,7 @@ const FirmForm = () => {
               </button>
             </div>
           </div>
+
           <div className='grid-3'>
             {reviews.map((result, i) => (
               <div key={i}>

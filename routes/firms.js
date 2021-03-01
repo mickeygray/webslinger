@@ -72,6 +72,7 @@ router.post(
       cpapic,
       cpabio,
       stars,
+      socialLinks,
       states,
       phone,
       fees,
@@ -100,6 +101,7 @@ router.post(
         cpa,
         cpapic,
         cpabio,
+        socialLinks,
         stars,
         states,
         fees,
@@ -143,6 +145,7 @@ router.put("/:id", auth, upload.any(), async (req, res) => {
     cpabio,
     phone,
     stars,
+    socialLinks,
     states,
     fees,
     avgsavings,
@@ -167,6 +170,7 @@ router.put("/:id", auth, upload.any(), async (req, res) => {
   if (email) firmFields.email = email;
   if (cpa) firmFields.cpa = cpa;
   if (cpabio) firmFields.cpabio = cpabio;
+  if (socialLinks) firmFields.socialLinks = socialLinks;
   if (cpapic) firmFields.cpapic = cpapic;
   if (stars) firmFields.stars = stars;
   if (states) firmFields.states = states;

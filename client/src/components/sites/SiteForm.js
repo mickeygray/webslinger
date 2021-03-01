@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from "react";
+import { SketchPicker } from "react-color";
 import SiteContext from "../../context/site/siteContext";
 const SiteForm = ({ site }) => {
   const siteContext = useContext(SiteContext);
@@ -53,6 +54,7 @@ const SiteForm = ({ site }) => {
     title: "",
     firm: "",
     verticals: [],
+    pages: [{ ...page }],
   });
 
   const [siteType, setSiteType] = useState({
@@ -63,12 +65,13 @@ const SiteForm = ({ site }) => {
   });
 
   const [colors, setColors] = useState({
-    primary: "",
-    secondary: "",
-    light: "",
-    dark: "",
-    danger: "",
-    success: "",
+    primary: `--primary-color: #30526a`,
+    secondary: "--secondary-color: #7aa4c3",
+    light: "--dark-color: #0c151c",
+    dark: "--light-color: #c3d6e4",
+    danger: "--danger-color: #ff0000",
+    success: "--success-color: #00ff00",
+    background: "--background-color: #f8f8ff",
   });
 
   const siteTypes = [
@@ -84,8 +87,20 @@ const SiteForm = ({ site }) => {
     "companyFirmMarketing",
   ];
 
+  const pageTypes = [
+    "homePage",
+    "aboutPage",
+    "blogPage",
+    "articlePage",
+    "quizPage",
+    "reviewPage",
+    "firmPage",
+    "gallaryPage",
+    "verticalPage",
+  ];
+
   const [nav, setNavbar] = useState({
-    component: "",
+    components: [],
     sections: [{ ...section }],
     style: {},
     navigationTypeFull: "",
@@ -94,7 +109,7 @@ const SiteForm = ({ site }) => {
   });
 
   const [footer, setFooter] = useState({
-    component: "",
+    components: [],
     sections: [{ ...section }],
     style: {},
     logo: "",
@@ -120,20 +135,27 @@ const SiteForm = ({ site }) => {
     enforcePageStyle: "true",
     newCSS: {},
     pageTypes: [""],
-    pageBody: [],
+    pageBody: {
+      heading: {},
+      hero: {},
+      body: {},
+      form: {},
+      footer: {},
+    },
     title: "",
   });
 
   const metaTag = { tag: "", content: "" };
 
   const [about, setAbout] = useState({
+    aboutHeading: { components: [], sections: [{ ...section }], style: {} },
     aboutHero: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       style: {},
     },
     aboutForm: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       emailAddress: "",
       style: {},
@@ -142,19 +164,19 @@ const SiteForm = ({ site }) => {
       asSeenOn: {
         networks: [{ name: "", logo: "" }],
         sections: [{ ...section }],
-        component: "",
+        components: [],
         style: {},
       },
       aboutReviews: {
         firm: "",
-        component: "",
+        components: [],
         sections: [{ ...section }],
         style: {},
       },
       awards: {
         images: [{ name: "", logo: "" }],
         sections: [{ ...section }],
-        component: "",
+        components: [],
         style: {},
       },
       experiences: {
@@ -166,7 +188,7 @@ const SiteForm = ({ site }) => {
           },
         ],
         sections: [{ ...section }],
-        component: "",
+        components: [],
         style: {},
       },
       faq: {
@@ -176,7 +198,7 @@ const SiteForm = ({ site }) => {
             ...answer,
           },
         ],
-        component: "",
+        components: [],
         sections: [{ ...section }],
       },
       contact: {
@@ -188,7 +210,7 @@ const SiteForm = ({ site }) => {
         phoneNumber: "",
         hasGoogleMap: "false",
         sections: [{ ...section }],
-        component: "",
+        components: [],
         style: {},
       },
     },
@@ -198,33 +220,34 @@ const SiteForm = ({ site }) => {
   });
 
   const [home, setHome] = useState({
+    homeHeading: { components: [], sections: [{ ...section }], style: {} },
     homeHero: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       style: {},
     },
     homeBody: {
       latest: {
         blog: {
-          component: "",
+          components: [],
           sections: [{ ...section }],
           style: {},
           blogs: [],
         },
         quiz: {
-          component: "",
+          components: [],
           sections: [{ ...section }],
           style: {},
           quizs: [],
         },
         article: {
-          component: "",
+          components: [],
           sections: [{ ...section }],
           style: {},
           articles: [],
         },
         review: {
-          component: "",
+          components: [],
           sections: [{ ...section }],
           style: {},
           reviews: [],
@@ -232,32 +255,32 @@ const SiteForm = ({ site }) => {
       },
       greatest: {
         blog: {
-          component: "",
+          components: [],
           sections: [{ ...section }],
           style: {},
           blogs: [],
         },
         quiz: {
-          component: "",
+          components: [],
           sections: [{ ...section }],
           style: {},
           quizs: [],
         },
         article: {
-          component: "",
+          components: [],
           sections: [{ ...section }],
           style: {},
           articles: [],
         },
         review: {
-          component: "",
+          components: [],
           sections: [{ ...section }],
           style: {},
           reviews: [],
         },
       },
       siteSummary: {
-        component: "",
+        components: [],
         sections: [{ ...section }],
         style: {},
         points: [
@@ -269,7 +292,7 @@ const SiteForm = ({ site }) => {
         ],
       },
       siteLinks: {
-        component: "",
+        components: [],
         sections: [{ ...section }],
         style: {},
         links: [
@@ -282,14 +305,14 @@ const SiteForm = ({ site }) => {
         ],
       },
       socialProof: {
-        component: "",
+        components: [],
         sections: [{ ...section }],
         style: {},
         accounts: [{ social: "", login: "", password: "", sharedLink: "" }],
       },
     },
     homeForm: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       emailAddress: "",
       style: {},
@@ -301,47 +324,48 @@ const SiteForm = ({ site }) => {
 
   const [splashes, setSplashes] = useState([
     {
+      splashHeading: { components: [], sections: [{ ...section }], style: {} },
       splashHero: {
-        component: "",
+        components: [],
         sections: [{ ...section }],
         style: {},
       },
       splashBody: {
         featured: {
           blog: {
-            component: "",
+            components: [],
             sections: [{ ...section }],
             style: {},
             blogs: [],
           },
           quiz: {
-            component: "",
+            components: [],
             sections: [{ ...section }],
             style: {},
             quizs: [],
           },
           article: {
-            component: "",
+            components: [],
             sections: [{ ...section }],
             style: {},
             articles: [],
           },
           review: {
-            component: "",
+            components: [],
             sections: [{ ...section }],
             style: {},
             reviews: [],
           },
         },
         downloader: {
-          component: "",
+          components: [],
           sections: [{ ...section }],
           style: {},
           content: {},
         },
       },
       splashForm: {
-        component: "",
+        components: [],
         sections: [{ ...section }],
         emailAddress: "",
         style: {},
@@ -353,15 +377,15 @@ const SiteForm = ({ site }) => {
   ]);
 
   const [blogPage, setBlogPage] = useState({
-    blogPageHero: { component: "", sections: [{ ...section }], style: {} },
+    blogPageHero: { components: [], sections: [{ ...section }], style: {} },
     blogPageBody: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       style: {},
       blogs: [],
     },
     blogPageForm: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       emailAddress: "",
       style: {},
@@ -370,16 +394,16 @@ const SiteForm = ({ site }) => {
     firm: "",
   });
 
-  const [vlogPage, setVlogPage] = useState({
-    vlogPageHero: { component: "", sections: [{ ...section }], style: {} },
-    vlogPageBody: {
-      component: "",
+  const [gallaryPage, setGallaryPage] = useState({
+    gallaryPageHero: { components: [], sections: [{ ...section }], style: {} },
+    gallaryPageBody: {
+      components: [],
       sections: [{ ...section }],
       style: {},
       videos: [],
     },
-    vlogPageForm: {
-      component: "",
+    gallaryPageForm: {
+      components: [],
       sections: [{ ...section }],
       emailAddress: "",
       style: {},
@@ -389,15 +413,15 @@ const SiteForm = ({ site }) => {
   });
 
   const [articlePage, setArticlePage] = useState({
-    articlePageHero: { component: "", sections: [{ ...section }], style: {} },
+    articlePageHero: { components: [], sections: [{ ...section }], style: {} },
     articlePageBody: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       style: {},
       articles: [],
     },
     articlePageForm: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       emailAddress: "",
       style: {},
@@ -406,15 +430,15 @@ const SiteForm = ({ site }) => {
     firm: "",
   });
   const [quizPage, setQuizPage] = useState({
-    quizPageHero: { component: "", sections: [{ ...section }], style: {} },
+    quizPageHero: { components: [], sections: [{ ...section }], style: {} },
     quizPageBody: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       style: {},
       quizs: [],
     },
     quizPageForm: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       emailAddress: "",
       style: {},
@@ -423,15 +447,15 @@ const SiteForm = ({ site }) => {
     firm: "",
   });
   const [reviewPage, setReviewPage] = useState({
-    reviewPageHero: { component: "", sections: [{ ...section }], style: {} },
+    reviewPageHero: { components: [], sections: [{ ...section }], style: {} },
     reviewPageBody: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       style: {},
       reviews: [],
     },
     reviewPageForm: {
-      component: "",
+      components: [],
       sections: [{ ...section }],
       emailAddress: "",
       style: {},
@@ -443,19 +467,27 @@ const SiteForm = ({ site }) => {
   const [section, setSection] = useState({
     img: "",
     heading: "",
+    style: {},
+    component: { ...sectionComponent },
     copy: [{ ...sectionCopy }],
     video: [{ ...sectionVideo }],
     img: [{ ...sectionImg }],
     position: "",
+    sectionOrientation: "",
   });
 
+  const sectionComponent = { component: "", sectionArea: "" };
   const question = { copy: "", faLogoQ: "" };
   const answer = { copy: "", faLogoA: "" };
   const sectionCopy = { text: "", sectionArea: "" };
   const sectionVideo = { url: "", sectionArea: "" };
   const sectionImg = { name: "", sectionArea: "" };
 
-  return <div></div>;
+  return (
+    <div>
+      <SketchPicker />
+    </div>
+  );
 };
 
 export default SiteForm;

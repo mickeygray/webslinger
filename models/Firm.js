@@ -19,6 +19,14 @@ const FirmSchema = mongoose.Schema({
   cpa: {
     type: String,
   },
+  socialLinks: [
+    {
+      facebook: "",
+      twitter: "",
+      instagram: "",
+      linkedin: "",
+    },
+  ],
   cpapic: {
     type: String,
   },
