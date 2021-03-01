@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://mickeygray:chYONRzFgTYQ6XXb@walletwarriors.xmo5h.mongodb.net/test",
+  "jwtSecret": "idfiuewryrf98wu"
+}
