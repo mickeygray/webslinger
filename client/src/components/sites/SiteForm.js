@@ -6,7 +6,9 @@ import React, {
   useRef,
 } from "react";
 import { SketchPicker } from "react-color";
+import Site from "../component/site/Site";
 import SiteContext from "../../context/site/siteContext";
+import { useAppContext } from "../component/state/appState";
 const SiteForm = ({ site }) => {
   const siteContext = useContext(SiteContext);
   const {
@@ -48,8 +50,144 @@ const SiteForm = ({ site }) => {
     getRangeReviews,
   } = siteContext;
 
+  const sectionH1 = { text: "", sectionArea: "" };
+  const sectionH2 = { text: "", sectionArea: "" };
+  const sectionH3 = { text: "", sectionArea: "" };
+  const sectionH4 = { text: "", sectionArea: "" };
+  const sectionH5 = { text: "", sectionArea: "" };
+  const sectionP = { text: "", sectionArea: "" };
+  const sectionA = { text: "", url: "", sectionArea: "" };
+  const sectionLi = { text: "", sectionArea: "" };
+  const sectionVid = { url: "", sectionArea: "" };
+  const sectionImg = { name: "", sectionArea: "" };
+  const sectionButton = { text: "", action: "", sectionArea: "" };
+
+  const [section, setSection] = useState({
+    img: [{ ...sectionImg }],
+    vid: [{ ...sectionVid }],
+    h1: [{ ...sectionH1 }],
+    h2: [{ ...sectionH2 }],
+    h3: [{ ...sectionH3 }],
+    h4: [{ ...sectionH4 }],
+    h5: [{ ...sectionH5 }],
+    p: [{ ...sectionP }],
+    li: [{ ...sectionLi }],
+    a: [{ ...sectionA }],
+    faLogo: "",
+    faPosition: "",
+    componentStyle: "",
+    button: [{ ...sectionButton }],
+  });
+
+  const [metaTag, setMetaTag] = useState({ tag: "", content: "" });
+
+  const [header, setHeader] = useState({
+    components: [],
+    sections: [{ ...section }],
+    style: {},
+    logo: "",
+    navigationTypeFull: "",
+    naviationTypeMobile: "",
+    links: [
+      {
+        linkText: "",
+        url: "",
+        linkType: "",
+      },
+    ],
+    siteRouting: [
+      {
+        linkText: "",
+        url: "",
+        linkType: "",
+      },
+    ],
+  });
+
+  const [hero, setHero] = useState({
+    components: [],
+    sections: [{ ...section }],
+    style: {},
+    logo: "",
+    navigationTypeFull: "",
+    naviationTypeMobile: "",
+    links: [
+      {
+        linkText: "",
+        url: "",
+        linkType: "",
+      },
+    ],
+    siteRouting: [
+      {
+        linkText: "",
+        url: "",
+        linkType: "",
+      },
+    ],
+  });
+
+  const [footer, setFooter] = useState({
+    components: [],
+    sections: [{ ...section }],
+    style: {},
+    content: [],
+    logo: "",
+    links: [
+      {
+        linkText: "",
+        url: "",
+        linkType: "",
+      },
+    ],
+    siteRouting: [
+      {
+        linkText: "",
+        url: "",
+        linkType: "",
+      },
+    ],
+  });
+
+  const [body, setBody] = useState({
+    components: [],
+    sections: [{ ...section }],
+    content: [],
+    style: {},
+    links: [
+      {
+        linkText: "",
+        url: "",
+        linkType: "",
+      },
+    ],
+    siteRouting: [
+      {
+        linkText: "",
+        url: "",
+        linkType: "",
+      },
+    ],
+  });
+  const [layout, setLayout] = useState({
+    header: { ...header },
+    hero: { ...hero },
+    body: { ...body },
+    footer: { ...footer },
+    pageType: "",
+  });
+
+  const [page, setPage] = useState({
+    route: "",
+    pageStyle: "",
+    enforcePageStyle: "true",
+    newCSS: {},
+    metaTags: [{ ...metaTag }],
+    pageBody: { ...layout },
+    title: "",
+  });
+
   const [website, setSite] = useState({
-    globalCSS: { ...colors, ...siteType.style },
     url: "",
     title: "",
     firm: "",
@@ -87,6 +225,44 @@ const SiteForm = ({ site }) => {
     "companyFirmMarketing",
   ];
 
+  const componentStyles = [
+    "dropdowncontact",
+    "simplelayover",
+    "layovercollapse",
+    "imageopen",
+    "logostack",
+    "horizontalimg",
+    "expandingcircle",
+    "imagesselector",
+    "imageexpander",
+    "reflexive",
+    "bouncysitelinks",
+    "gradientpillsitelinks",
+    "layoverboxsitelinks",
+    "slidingsitelinks",
+    "bigsociallinks",
+    "smallsociallinks",
+    "curlreveal",
+    "navbutton1",
+    "navbutton2",
+    "dropdown",
+    "burgermenu",
+    "imageset",
+    "halfhalf",
+    "vertical",
+    "halfhalf-animated",
+    "dimension",
+    "textinacircle",
+    "deconstructed",
+    "threeD",
+    "verticalnavlinks",
+    "dualImage",
+    "layoverfade",
+    "focusedlayover",
+    "shortbounce",
+    "textreveal",
+  ];
+
   const pageTypes = [
     "homePage",
     "aboutPage",
@@ -99,393 +275,10 @@ const SiteForm = ({ site }) => {
     "verticalPage",
   ];
 
-  const [nav, setNavbar] = useState({
-    components: [],
-    sections: [{ ...section }],
-    style: {},
-    navigationTypeFull: "",
-    navigationTypeMobile: "",
-    logo: "",
-  });
-
-  const [footer, setFooter] = useState({
-    components: [],
-    sections: [{ ...section }],
-    style: {},
-    logo: "",
-    links: [
-      {
-        linkText: "",
-        url: "",
-        linkType: "",
-      },
-    ],
-    siteRouting: [
-      {
-        linkText: "",
-        url: "",
-        linkType: "",
-      },
-    ],
-  });
-
-  const [page, setPage] = useState({
-    route: "",
-    pageStyle: "",
-    enforcePageStyle: "true",
-    newCSS: {},
-    pageTypes: [""],
-    pageBody: {
-      heading: {},
-      hero: {},
-      body: {},
-      form: {},
-      footer: {},
-    },
-    title: "",
-  });
-
-  const metaTag = { tag: "", content: "" };
-
-  const [about, setAbout] = useState({
-    aboutHeading: { components: [], sections: [{ ...section }], style: {} },
-    aboutHero: {
-      components: [],
-      sections: [{ ...section }],
-      style: {},
-    },
-    aboutForm: {
-      components: [],
-      sections: [{ ...section }],
-      emailAddress: "",
-      style: {},
-    },
-    aboutBody: {
-      asSeenOn: {
-        networks: [{ name: "", logo: "" }],
-        sections: [{ ...section }],
-        components: [],
-        style: {},
-      },
-      aboutReviews: {
-        firm: "",
-        components: [],
-        sections: [{ ...section }],
-        style: {},
-      },
-      awards: {
-        images: [{ name: "", logo: "" }],
-        sections: [{ ...section }],
-        components: [],
-        style: {},
-      },
-      experiences: {
-        credits: [
-          {
-            name: "",
-            descrip: "",
-            years: "",
-          },
-        ],
-        sections: [{ ...section }],
-        components: [],
-        style: {},
-      },
-      faq: {
-        qna: [
-          {
-            ...question,
-            ...answer,
-          },
-        ],
-        components: [],
-        sections: [{ ...section }],
-      },
-      contact: {
-        name: "",
-        address: "",
-        city: "",
-        state: "",
-        zip: "",
-        phoneNumber: "",
-        hasGoogleMap: "false",
-        sections: [{ ...section }],
-        components: [],
-        style: {},
-      },
-    },
-    metaTags: [{ ...metaTag }],
-    firm: "",
-    vertical: "",
-  });
-
-  const [home, setHome] = useState({
-    homeHeading: { components: [], sections: [{ ...section }], style: {} },
-    homeHero: {
-      components: [],
-      sections: [{ ...section }],
-      style: {},
-    },
-    homeBody: {
-      latest: {
-        blog: {
-          components: [],
-          sections: [{ ...section }],
-          style: {},
-          blogs: [],
-        },
-        quiz: {
-          components: [],
-          sections: [{ ...section }],
-          style: {},
-          quizs: [],
-        },
-        article: {
-          components: [],
-          sections: [{ ...section }],
-          style: {},
-          articles: [],
-        },
-        review: {
-          components: [],
-          sections: [{ ...section }],
-          style: {},
-          reviews: [],
-        },
-      },
-      greatest: {
-        blog: {
-          components: [],
-          sections: [{ ...section }],
-          style: {},
-          blogs: [],
-        },
-        quiz: {
-          components: [],
-          sections: [{ ...section }],
-          style: {},
-          quizs: [],
-        },
-        article: {
-          components: [],
-          sections: [{ ...section }],
-          style: {},
-          articles: [],
-        },
-        review: {
-          components: [],
-          sections: [{ ...section }],
-          style: {},
-          reviews: [],
-        },
-      },
-      siteSummary: {
-        components: [],
-        sections: [{ ...section }],
-        style: {},
-        points: [
-          {
-            pointHeader: "",
-            pointCopy: "",
-            faLogoP: "",
-          },
-        ],
-      },
-      siteLinks: {
-        components: [],
-        sections: [{ ...section }],
-        style: {},
-        links: [
-          {
-            route: "",
-            img: "",
-            faLogoL: "",
-            copy: "",
-          },
-        ],
-      },
-      socialProof: {
-        components: [],
-        sections: [{ ...section }],
-        style: {},
-        accounts: [{ social: "", login: "", password: "", sharedLink: "" }],
-      },
-    },
-    homeForm: {
-      components: [],
-      sections: [{ ...section }],
-      emailAddress: "",
-      style: {},
-    },
-    metaTags: [{ ...metaTag }],
-    firm: "",
-    verticals: [],
-  });
-
-  const [splashes, setSplashes] = useState([
-    {
-      splashHeading: { components: [], sections: [{ ...section }], style: {} },
-      splashHero: {
-        components: [],
-        sections: [{ ...section }],
-        style: {},
-      },
-      splashBody: {
-        featured: {
-          blog: {
-            components: [],
-            sections: [{ ...section }],
-            style: {},
-            blogs: [],
-          },
-          quiz: {
-            components: [],
-            sections: [{ ...section }],
-            style: {},
-            quizs: [],
-          },
-          article: {
-            components: [],
-            sections: [{ ...section }],
-            style: {},
-            articles: [],
-          },
-          review: {
-            components: [],
-            sections: [{ ...section }],
-            style: {},
-            reviews: [],
-          },
-        },
-        downloader: {
-          components: [],
-          sections: [{ ...section }],
-          style: {},
-          content: {},
-        },
-      },
-      splashForm: {
-        components: [],
-        sections: [{ ...section }],
-        emailAddress: "",
-        style: {},
-      },
-      metaTags: [{ ...metaTag }],
-      vertical: "",
-      firm: "",
-    },
-  ]);
-
-  const [blogPage, setBlogPage] = useState({
-    blogPageHero: { components: [], sections: [{ ...section }], style: {} },
-    blogPageBody: {
-      components: [],
-      sections: [{ ...section }],
-      style: {},
-      blogs: [],
-    },
-    blogPageForm: {
-      components: [],
-      sections: [{ ...section }],
-      emailAddress: "",
-      style: {},
-    },
-    vertical: "",
-    firm: "",
-  });
-
-  const [gallaryPage, setGallaryPage] = useState({
-    gallaryPageHero: { components: [], sections: [{ ...section }], style: {} },
-    gallaryPageBody: {
-      components: [],
-      sections: [{ ...section }],
-      style: {},
-      videos: [],
-    },
-    gallaryPageForm: {
-      components: [],
-      sections: [{ ...section }],
-      emailAddress: "",
-      style: {},
-    },
-    vertical: "",
-    firm: "",
-  });
-
-  const [articlePage, setArticlePage] = useState({
-    articlePageHero: { components: [], sections: [{ ...section }], style: {} },
-    articlePageBody: {
-      components: [],
-      sections: [{ ...section }],
-      style: {},
-      articles: [],
-    },
-    articlePageForm: {
-      components: [],
-      sections: [{ ...section }],
-      emailAddress: "",
-      style: {},
-    },
-    vertical: "",
-    firm: "",
-  });
-  const [quizPage, setQuizPage] = useState({
-    quizPageHero: { components: [], sections: [{ ...section }], style: {} },
-    quizPageBody: {
-      components: [],
-      sections: [{ ...section }],
-      style: {},
-      quizs: [],
-    },
-    quizPageForm: {
-      components: [],
-      sections: [{ ...section }],
-      emailAddress: "",
-      style: {},
-    },
-    vertical: "",
-    firm: "",
-  });
-  const [reviewPage, setReviewPage] = useState({
-    reviewPageHero: { components: [], sections: [{ ...section }], style: {} },
-    reviewPageBody: {
-      components: [],
-      sections: [{ ...section }],
-      style: {},
-      reviews: [],
-    },
-    reviewPageForm: {
-      components: [],
-      sections: [{ ...section }],
-      emailAddress: "",
-      style: {},
-    },
-    vertical: "",
-    firm: "",
-  });
-
-  const [section, setSection] = useState({
-    img: "",
-    heading: "",
-    style: {},
-    component: { ...sectionComponent },
-    copy: [{ ...sectionCopy }],
-    video: [{ ...sectionVideo }],
-    img: [{ ...sectionImg }],
-    position: "",
-    sectionOrientation: "",
-  });
-
-  const sectionComponent = { component: "", sectionArea: "" };
-  const question = { copy: "", faLogoQ: "" };
-  const answer = { copy: "", faLogoA: "" };
-  const sectionCopy = { text: "", sectionArea: "" };
-  const sectionVideo = { url: "", sectionArea: "" };
-  const sectionImg = { name: "", sectionArea: "" };
-
   return (
     <div>
       <SketchPicker />
+      <Site />
     </div>
   );
 };

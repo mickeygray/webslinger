@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { StyledVerticalNavlink } from "./VerticalNavlink.styled";
+import { StyledVerticalNavlink } from "./VerticalNavlinks.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../state/globals";
 import { theme } from "../../state/theme";

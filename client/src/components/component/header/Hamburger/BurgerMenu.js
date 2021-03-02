@@ -3,7 +3,7 @@ import { ThemeProvider } from "styled-components";
 import { useOnClickOutside } from "../../state/useOnClickOutside";
 import { GlobalStyles } from "../../state/globals";
 import { theme } from "../../state/theme";
-import Burger from "./Burger";
+import Hamburger from "./Hamburger";
 import Menu from "./Menu";
 const BurgerMenu = () => {
   const [open, setOpen] = useState(false);
@@ -14,7 +14,7 @@ const BurgerMenu = () => {
       <>
         <GlobalStyles />
         <div ref={node}>
-          <Burger open={open} setOpen={setOpen} />
+          <Hamburger open={open} setOpen={setOpen} />
           <Menu open={open} setOpen={setOpen} />
         </div>
       </>

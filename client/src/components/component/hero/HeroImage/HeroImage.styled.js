@@ -1,10 +1,7 @@
-import { useContext } from "react";
 import styled from "styled-components";
-import SiteContext from "../../../../context/site/siteContext";
 
-const siteContext = useContext(SiteContext);
-
-const { current } = siteContext;
+let img;
+let img2;
 
 export const StyledHeroImage = styled.div`
   body {
@@ -36,7 +33,7 @@ export const StyledHeroImage = styled.div`
     right: 0;
     bottom: 0;
     overflow: hidden;
-    background: rgba(#424242, 0.5) url(${current.img}) repeat fixed;
+    background: rgba(#424242, 0.5) url(${img}) repeat fixed;
     background-position: 50% 100%;
     background-size: cover;
     position: relative;
@@ -51,7 +48,7 @@ export const StyledHeroImage = styled.div`
     z-index: 4;
     padding: 2px;
     transition: all 1.3s ease-in-out;
-    background: rgba(#424242, 0.5) url(${current.img2}) repeat fixed;
+    background: rgba(#424242, 0.5) url(${img2}) repeat fixed;
     background-size: cover;
     background-position: 50% 100%;
     border-radius: 0%;
@@ -141,6 +138,152 @@ export const StyledHeroImage = styled.div`
   }
   .box-text:hover {
     opacity: 0;
+  }
+
+  @import url(https://fonts.googleapis.com/css?family=Raleway:400,800);
+  @import url(https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css);
+  .focused-layover {
+    font-family: "Raleway", Arial, sans-serif;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+    min-width: 220px;
+    max-width: 310px;
+    max-height: 220px;
+    width: 100%;
+    background: #000000;
+    text-align: center;
+  }
+  .focused-layover * {
+    -webkit-box-sizing: padding-box;
+    box-sizing: padding-box;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+  }
+  .focused-layover img {
+    opacity: 0.8;
+    width: 100%;
+  }
+  .focused-layover .figcaption {
+    bottom: 0;
+    display: block;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .focused-layover h2 {
+    font-weight: 400;
+    left: 0;
+    right: 0;
+    letter-spacing: -1px;
+    margin: 0 auto;
+    position: absolute;
+    text-transform: uppercase;
+    bottom: 50%;
+    -webkit-transform: translateY(50%);
+    transform: translateY(50%);
+  }
+  .focused-layover h2 span {
+    font-weight: 800;
+  }
+  .focused-layover p {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: 50%;
+    opacity: 0;
+    font-size: 14px;
+    -webkit-transform: translateY(-20%) scale(0.7);
+    transform: translateY(-20%) scale(0.7);
+  }
+  .focused-layover .square {
+    height: 78px;
+    width: 78px;
+    overflow: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    content: "";
+    -webkit-transform: rotate(45deg) translate(-50%, -50%);
+    transform: rotate(45deg) translate(-50%, -50%);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+  }
+  .focused-layover .square:before,
+  .focused-layover .square:after,
+  .focused-layover .square div:before,
+  .focused-layover .square div:after {
+    background-color: #ffffff;
+    position: absolute;
+    content: "";
+    display: block;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+  }
+  .focused-layover .square:before,
+  .focused-layover .square:after {
+    width: 65%;
+    height: 2px;
+  }
+  .focused-layover .square div:before,
+  .focused-layover .square div:after {
+    width: 2px;
+    height: 65%;
+  }
+  .focused-layover .square:before,
+  .focused-layover .square div:before {
+    left: 0;
+    top: 0;
+  }
+  .focused-layover .square:after,
+  .focused-layover .square div:after {
+    bottom: 0;
+    right: 0;
+  }
+  .focused-layover a {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+  }
+  .focused-layover:hover img,
+  .focused-layover.hover img {
+    opacity: 0.25;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+  .focused-layover:hover h2,
+  .focused-layover.hover h2 {
+    opacity: 1;
+    -webkit-transform: translateY(0px);
+    transform: translateY(0px);
+  }
+  .focused-layover:hover p,
+  .focused-layover.hover p {
+    opacity: 1;
+    -webkit-transform: translateY(0px) scale(1);
+    transform: translateY(0px) scale(1);
+  }
+  .focused-layover:hover .square:before,
+  .focused-layover.hover .square:before {
+    width: 38%;
+  }
+  .focused-layover:hover .square div:before,
+  .focused-layover.hover .square div:before {
+    height: 38%;
+  }
+  .focused-layover:hover .square:after,
+  .focused-layover.hover .square:after {
+    width: 55%;
+  }
+  .focused-layover:hover .square div:after,
+  .focused-layover.hover .square div:after {
+    height: 55%;
   }
 
   @media (max-width: ${({ theme }) => theme.mobile}) {

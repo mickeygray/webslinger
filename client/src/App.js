@@ -27,7 +27,9 @@ import Home from "./components/pages/Home";
 import Navbar from "./components/layout/Navbar";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import Images from "./components/pages/Images";
-
+import { ComponentWrapper } from "./components/component/state/componentState";
+import { AppWrapper } from "./components/component/state/appState";
+import { ContentWrapper } from "./components/component/state/contentState";
 const App = () => {
   return (
     <AuthState>
@@ -42,71 +44,77 @@ const App = () => {
                       <FirmState>
                         <ReviewState>
                           <AlertState>
-                            <Router>
-                              <Fragment>
-                                <Navbar />
-                                <div className='container'>
-                                  <Alerts />
-                                  <Switch>
-                                    <PrivateRoute
-                                      exact
-                                      path='/'
-                                      component={Home}
-                                    />
-                                    <PrivateRoute
-                                      exact
-                                      path='/verticals'
-                                      component={Verticals}
-                                    />
-                                    <PrivateRoute
-                                      exact
-                                      path='/reviews'
-                                      component={Reviews}
-                                    />
-                                    <PrivateRoute
-                                      exact
-                                      path='/quizzes'
-                                      component={Quizzes}
-                                    />
-                                    <PrivateRoute
-                                      exact
-                                      path='/articles'
-                                      component={Articles}
-                                    />
-                                    <PrivateRoute
-                                      exact
-                                      path='/blogs'
-                                      component={Blogs}
-                                    />
-                                    <PrivateRoute
-                                      exact
-                                      path='/emails'
-                                      component={Emails}
-                                    />
-                                    <PrivateRoute
-                                      exact
-                                      path='/images'
-                                      component={Images}
-                                    />
-                                    <PrivateRoute
-                                      exact
-                                      path='/firms'
-                                      component={Firms}
-                                    />
-                                    <Route
-                                      exact
-                                      path='/login'
-                                      component={Login}
-                                    />
-                                    <Route
-                                      exact
-                                      path='/register'
-                                      component={Register}
-                                    />
-                                  </Switch>
-                                </div>
-                              </Fragment>
-                            </Router>
+                            <AppWrapper>
+                              <ComponentWrapper>
+                                <ContentWrapper>
+                                  <Router>
+                                    <Fragment>
+                                      <Navbar />
+                                      <div className='container'>
+                                        <Alerts />
+                                        <Switch>
+                                          <PrivateRoute
+                                            exact
+                                            path='/'
+                                            component={Home}
+                                          />
+                                          <PrivateRoute
+                                            exact
+                                            path='/verticals'
+                                            component={Verticals}
+                                          />
+                                          <PrivateRoute
+                                            exact
+                                            path='/reviews'
+                                            component={Reviews}
+                                          />
+                                          <PrivateRoute
+                                            exact
+                                            path='/quizzes'
+                                            component={Quizzes}
+                                          />
+                                          <PrivateRoute
+                                            exact
+                                            path='/articles'
+                                            component={Articles}
+                                          />
+                                          <PrivateRoute
+                                            exact
+                                            path='/blogs'
+                                            component={Blogs}
+                                          />
+                                          <PrivateRoute
+                                            exact
+                                            path='/emails'
+                                            component={Emails}
+                                          />
+                                          <PrivateRoute
+                                            exact
+                                            path='/images'
+                                            component={Images}
+                                          />
+                                          <PrivateRoute
+                                            exact
+                                            path='/firms'
+                                            component={Firms}
+                                          />
+                                          <Route
+                                            exact
+                                            path='/login'
+                                            component={Login}
+                                          />
+                                          <Route
+                                            exact
+                                            path='/register'
+                                            component={Register}
+                                          />
+                                        </Switch>
+                                      </div>
+                                    </Fragment>
+                                  </Router>
+                                </ContentWrapper>
+                              </ComponentWrapper>
+                            </AppWrapper>
                           </AlertState>
                         </ReviewState>
                       </FirmState>

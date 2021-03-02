@@ -1,5 +1,5 @@
 import React from "react";
-import { StyledSiteName } from "./HeroText.styled";
+import { StyledHeroText } from "./HeroText.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../state/globals";
 import { theme } from "../../state/theme";

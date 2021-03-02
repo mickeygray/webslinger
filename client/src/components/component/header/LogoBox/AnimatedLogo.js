@@ -1,10 +1,10 @@
 import React from "react";
-import { StyledAnimatedLogo } from "./AnimatedLogo.styled.styled";
+import { StyledAnimatedLogo } from "./AnimatedLogo.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../state/globals";
 import { theme } from "../../state/theme";
 
-const AnimatedLogoBox = ({ logo, logoStyle }) => {
+const AnimatedLogo = ({ logo, logoStyle }) => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
@@ -39,4 +39,4 @@ const AnimatedLogoBox = ({ logo, logoStyle }) => {
   );
 };
 
-export default AnimatedLogoBox;
+export default AnimatedLogo;

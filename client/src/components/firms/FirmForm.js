@@ -33,6 +33,10 @@ const FirmForm = () => {
       instagram: "",
       twitter: "",
       linkedin: "",
+      article1: "",
+      article2: "",
+      article3: "",
+      article4: "",
     },
   ]);
 
@@ -198,7 +202,18 @@ const FirmForm = () => {
       setStates([]);
       setPros([]);
       setCons([]);
-      setSocial([{ facebook: "", instagram: "", twitter: "", linkedin: "" }]);
+      setSocial([
+        {
+          facebook: "",
+          instagram: "",
+          twitter: "",
+          linkedin: "",
+          article1: "",
+          article2: "",
+          article3: "",
+          article4: "",
+        },
+      ]);
       setServices([{ ...serviceItem }]);
       setReviews([{ ...review }]);
     }
@@ -290,10 +305,10 @@ const FirmForm = () => {
     serv,
   };
 
-  console.log(firmObj);
-
-  console.log(reviews);
-  console.log(serv);
+  console.log(
+    Object.keys(social[0]).map((k) => k),
+    "test"
+  );
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -530,28 +545,60 @@ const FirmForm = () => {
             </ul>
           </div>
         </div>
-        <div className='all-center bg-light'>
-          {social.map((row, i) => (
-            <div key={i} className='row'>
-              {Object.keys(row).map((key) => (
-                <div>
-                  <label key={key}>
-                    {key.slice(0, 1).toUpperCase() + key.slice(1, key.length)}{" "}
-                  </label>
-                  <br />
-                  <input
-                    type='text'
-                    value={row[key]}
-                    name={key}
-                    onChange={(e) => onChangeSocial(i, e)}
-                  />
+        <div className='bg-light'>
+          <h5 className='text-center'>Social Media</h5>
+          <div className='grid-2'>
+            <div className='bg-light'>
+              {social.map((row, i) => (
+                <div key={i} className='row'>
+                  {Object.keys(row)
+                    .filter((k) => !k.includes("article"))
+                    .map((key) => (
+                      <div>
+                        <label key={key}>
+                          {key.slice(0, 1).toUpperCase() +
+                            key.slice(1, key.length)}{" "}
+                        </label>
+                        <br />
+                        <input
+                          type='text'
+                          value={row[key]}
+                          name={key}
+                          onChange={(e) => onChangeSocial(i, e)}
+                        />
+                      </div>
+                    ))}
                 </div>
               ))}
             </div>
-          ))}
+            <div className='bg-light'>
+              {social.map((row, i) => (
+                <div key={i} className='row'>
+                  {Object.keys(row)
+                    .filter((k) => k.includes("article"))
+                    .map((key) => (
+                      <div>
+                        <label key={key}>
+                          {key.slice(0, 1).toUpperCase() +
+                            key.slice(1, key.length)}{" "}
+                        </label>
+                        <br />
+                        <input
+                          type='text'
+                          value={row[key]}
+                          name={key}
+                          onChange={(e) => onChangeSocial(i, e)}
+                        />
+                      </div>
+                    ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className='bg-light card'>
+          <h5 className='text-center'>Customer Reviews</h5>
           <div className='grid-2'>
             <div className='card'>
               <button
@@ -622,105 +669,111 @@ const FirmForm = () => {
             ))}
           </div>
         </div>
-        <div className='grid-2 bg-light'>
-          <div className='card'>
-            {" "}
-            {serv.map((serv, i) => (
-              <div key={i}>
-                <div style={serv.serviceType === "" ? { display: "none" } : {}}>
-                  <label>
-                    {serv.serviceType ? serv.serviceType : serviceType} Service
-                  </label>
-                  <br />
-                  <input
-                    type='text'
-                    value={serv.service}
-                    name='service'
-                    onChange={(e) => onChangeService(i, e)}
-                  />
-                  <br />
-                  <label>
-                    {serv.serviceType ? serv.serviceType : serviceType} Summary
-                  </label>
-                  <input
-                    type='text'
-                    value={serv.summary}
-                    name='summary'
-                    onChange={(e) => onChangeService(i, e)}
-                  />
-                  <br />
-                  <label>
-                    {serv.serviceType ? serv.serviceType : serviceType} Cost
-                  </label>
-                  <input
-                    type='text'
-                    value={serv.cost}
-                    name='cost'
-                    onChange={(e) => onChangeService(i, e)}
-                  />
+        <div className='bg-light'>
+          <h5 className='text-center'>Add Services And Sale Items</h5>
+          <div className='grid-2'>
+            <div className='card'>
+              {" "}
+              {serv.map((serv, i) => (
+                <div key={i}>
+                  <div
+                    style={serv.serviceType === "" ? { display: "none" } : {}}>
+                    <label>
+                      {serv.serviceType ? serv.serviceType : serviceType}{" "}
+                      Service
+                    </label>
+                    <br />
+                    <input
+                      type='text'
+                      value={serv.service}
+                      name='service'
+                      onChange={(e) => onChangeService(i, e)}
+                    />
+                    <br />
+                    <label>
+                      {serv.serviceType ? serv.serviceType : serviceType}{" "}
+                      Summary
+                    </label>
+                    <input
+                      type='text'
+                      value={serv.summary}
+                      name='summary'
+                      onChange={(e) => onChangeService(i, e)}
+                    />
+                    <br />
+                    <label>
+                      {serv.serviceType ? serv.serviceType : serviceType} Cost
+                    </label>
+                    <input
+                      type='text'
+                      value={serv.cost}
+                      name='cost'
+                      onChange={(e) => onChangeService(i, e)}
+                    />
 
-                  <label htmlFor='images'>Service Image</label>
-                  <input
-                    type='text'
-                    name='img'
-                    value={serv.img}
-                    onChange={(e) => onChangeService(i, e)}
-                    disabled
-                  />
-                  <label htmlFor='images'>Upload Service Image Here</label>
-                  <input
-                    type='file'
-                    name='img'
-                    onChange={(e) => {
-                      onChangeServiceFile(i, e);
-                      setFile([...file, e.target.files[0]]);
-                    }}
-                    style={{ width: "200px" }}
-                  />
+                    <label htmlFor='images'>Service Image</label>
+                    <input
+                      type='text'
+                      name='img'
+                      value={serv.img}
+                      onChange={(e) => onChangeService(i, e)}
+                      disabled
+                    />
+                    <label htmlFor='images'>Upload Service Image Here</label>
+                    <input
+                      type='file'
+                      name='img'
+                      onChange={(e) => {
+                        onChangeServiceFile(i, e);
+                        setFile([...file, e.target.files[0]]);
+                      }}
+                      style={{ width: "200px" }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className='card py-1'>
-            <select
-              name='serviceType'
-              onChange={(e) => setServiceType(e.target.value)}>
-              <option value=''></option>
-              <option value='taxrelief'>Tax Relief</option>
-              <option value='accounting'>Accounting</option>
-              <option value='investment'>Investment</option>
-              <option value='consulting'>Consulting</option>
-              <option value='loan/credit'>Loan or Credit</option>
-              <option value='crm'>CRM or ERP</option>
-              <option value='other'>Other</option>
-            </select>
-            <div>
-              {serviceType != "federal" ||
-              serviceType != "state" ||
-              serviceType != "accounting" ||
-              serviceType != "investment" ||
-              serviceType != "consulting" ||
-              serviceType != "loan/credit" ||
-              serviceType != "crm" ? (
-                <div>
-                  <label htmlFor='images'>Service Type</label>
-                  <input
-                    type='text'
-                    name='serviceType'
-                    value={serviceType}
-                    onChange={(e) => setServiceType(e.target.value)}
-                  />
-                </div>
-              ) : (
-                ""
-              )}
+              ))}
             </div>
-            <button
-              type='button'
-              className='my btn btn-primary btn-block'
-              onClick={() => addService(serviceType)}>
-              Add Service
-            </button>
+            <div className='card py-1'>
+              <select
+                name='serviceType'
+                onChange={(e) => setServiceType(e.target.value)}>
+                <option value=''></option>
+                <option value='taxrelief'>Tax Relief</option>
+                <option value='accounting'>Accounting</option>
+                <option value='investment'>Investment</option>
+                <option value='consulting'>Consulting</option>
+                <option value='loan/credit'>Loan or Credit</option>
+                <option value='crm'>CRM or ERP</option>
+                <option value='other'>Other</option>
+              </select>
+              <div>
+                {serviceType != "federal" ||
+                serviceType != "state" ||
+                serviceType != "accounting" ||
+                serviceType != "investment" ||
+                serviceType != "consulting" ||
+                serviceType != "loan/credit" ||
+                serviceType != "crm" ? (
+                  <div>
+                    <label htmlFor='images'>Service Type</label>
+                    <input
+                      type='text'
+                      name='serviceType'
+                      value={serviceType}
+                      onChange={(e) => setServiceType(e.target.value)}
+                    />
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+              <button
+                type='button'
+                className='my btn btn-primary btn-block'
+                onClick={() => addService(serviceType)}>
+                Add Service
+              </button>
+            </div>
           </div>
         </div>
         <div className='card bg-light'>

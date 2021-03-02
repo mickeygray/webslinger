@@ -64,11 +64,11 @@ const SubA = styled.a`
   }
 `;
 
-const Dropdown = () => {
+const StyledDropdown = () => {
   const handleClick = (action) => {
     if (!action) return;
 
-    if (onClick) onClick(action);
+    if (action) handleClick(action);
   };
 
   return (
@@ -95,4 +95,4 @@ const Dropdown = () => {
   );
 };
 
-export default Menu;
+export default StyledDropdown;

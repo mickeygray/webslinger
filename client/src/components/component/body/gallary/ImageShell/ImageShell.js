@@ -1,8 +1,8 @@
 import React from "react";
-import { StyledImageShell } from "./ImageShell.styled.styled.styled";
+
 import { ThemeProvider } from "styled-components";
-import { GlobalStyles } from "../../state/globals";
-import { theme } from "../../state/theme";
+import { GlobalStyles } from "../../../state/globals";
+import { theme } from "../../../state/theme";
 import { StyledImageShell } from "./ImageShell.styled";
 
 const ImageShell = ({ img, imgStyle }) => {

@@ -1,13 +1,9 @@
 import { useContext } from "react";
 import styled from "styled-components";
-import SiteContext from "../../../../context/site/siteContext";
 
-const siteContext = useContext(SiteContext);
-
-const { current } = siteContext;
-
+let name = "sadsadsa";
 const textinacircleArray = [];
-for (var i = 0; i < current.name.length; i++) {
+for (var i = 0; i < name.length; i++) {
   const spanItem = `.textinacircle span:nth-child(${i}) {
     --units: ${i};
     --rotationUnit: calc((1turn / var(--noOfItems)) * var(--units, 1));

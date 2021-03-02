@@ -1,0 +1,13 @@
+export const GET_PAGES = "GET_PAGES";
+export const RENDER_PAGE = "RENDER_PAGE";
+export const SET_FOLDERS = "SET_FOLDERS";
+export const ADD_LEAD = "ADD_LEAD";
+export const ADD_IP = "ADD_IP";
+export const ADD_CLICK = "ADD_CLICK";
+export const SET_SECTION = "SET_SECTION";
+export const GET_MYARTICLES = "GET_MYARTICLES";
+export const GET_MYBLOGS = "GET_MYBLOGS";
+export const GET_MYREVIEWS = "GET_MYQUIZS";
+export const GET_MYVERTICALS = "GET_MYVERTICALS";
+export const GET_MYFIRMS = "GET_MYFIRMS";
+export const GET_MYQUIZS = "GET_MYQUIZS";

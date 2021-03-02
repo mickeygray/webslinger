@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import { ThemeProvider } from "styled-components";
-import { StyledSocialLinks } from "./SmallSocialLinks.styled.styled";
-import { GlobalStyles } from "../../state/globals";
-import { theme } from "../../state/theme";
+import { StyledSocialLinks } from "./SmallSocialLinks.styled";
+import { GlobalStyles } from "../../../state/globals";
+import { theme } from "../../../state/theme";
 
 const SocialLinks = () => {
   return (

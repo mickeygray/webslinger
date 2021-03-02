@@ -1,9 +1,7 @@
 import styled from "styled-components";
-import SiteContext from "../../../../context/site/siteContext";
 import { useContext } from "react";
-const siteContext = useContext(SiteContext);
 
-const { current } = siteContext;
+let img;
 export const StyledImageShell = styled.div`
   * {
     margin: 0;
@@ -92,7 +90,7 @@ export const StyledImageShell = styled.div`
     .reflection-content {
       height: 80vh;
       width: 80vh;
-      background: #000 url(${current.img});
+      background: #000 url(${img});
       background-size: cover;
       background-position: center;
       transform: rotateX(0) rotateY(0);
@@ -152,7 +150,7 @@ export const StyledImageShell = styled.div`
     width: 250px;
     height: 250px;
     border-radius: 50%;
-    background-image: url(${current.img});
+    background-image: url(${img});
     background-size: cover;
     transition: ease-in-out 0.3s;
     z-index: 2;

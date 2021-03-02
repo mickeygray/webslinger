@@ -1,10 +1,10 @@
 import React, { useState, useRef } from "react";
 import { ThemeProvider } from "styled-components";
 import { StyledSocialLinks } from "./BigSocialLinks.styled";
-import { GlobalStyles } from "../../state/globals";
-import { theme } from "../../state/theme";
+import { GlobalStyles } from "../../../state/globals";
+import { theme } from "../../../state/theme";
 
-const SocialLinks = () => {
+const BigSocialLinks = () => {
   return (
     <ThemeProvider theme={theme}>
       <>
@@ -55,4 +55,4 @@ const SocialLinks = () => {
     </ThemeProvider>
   );
 };
-export default SocialLinks;
+export default BigSocialLinks;

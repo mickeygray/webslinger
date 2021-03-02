@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const StyledMenu = styled.ul`
+export const StyledVerticalNavlink = styled.ul`
   padding: 0;
   list-style-type: none;
 

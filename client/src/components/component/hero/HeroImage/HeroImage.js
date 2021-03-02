@@ -4,9 +4,9 @@ import { GlobalStyles } from "../../state/globals";
 import { theme } from "../../state/theme";
 import { StyledHeroImage } from "./HeroImage.styled";
 
-const HeroImage = ({ img, img2, heroText, heroStyle }) => {
+const HeroImage = ({ section, heroStyle }) => {
   const dualImage = [];
-  for (i = 0; i < 50; i++) {
+  for (let i = 0; i < 50; i++) {
     dualImage.push(<div className='i'></div>);
   }
   return (
@@ -17,21 +17,40 @@ const HeroImage = ({ img, img2, heroText, heroStyle }) => {
           <div className='w'>
             {dualImage.map((dual) => dual)}
             <div className='h'>
-              <h1>{heroText}</h1>
+              <h1>{section.heading}</h1>
             </div>
           </div>
         ) : (
           ""
         )}
-        {heroStyle === "dualImage" ? (
+        {heroStyle === "layoverfade" ? (
           <div className='layover-fade'>
             <a href='#' target='_blank'>
-              <img src={img} alt='hero' />{" "}
+              <img src={section.img} alt='hero' />{" "}
             </a>
             <div class='box-text'>
-              <h1>{heroHeading}</h1>
-              <p>{heroSubHeading} </p>
+              <h1>{section.heading}</h1>
+              <p>{section.copy} </p>
             </div>
+          </div>
+        ) : (
+          ""
+        )}
+
+        {heroStyle === "focusedlayover" ? (
+          <div className='focused-layover'>
+            <img src={section.img} alt='' />
+            <div className='figcaption'>
+              <div className='square'>
+                <div></div>
+              </div>
+              <h2>
+                {section.h2}
+                <span> {section.focused}</span>
+              </h2>
+              <p>{section.p}</p>
+            </div>
+            <a href='#'></a>
           </div>
         ) : (
           ""

@@ -1,10 +1,10 @@
 import React from "react";
 import { StyledButton } from "./ThemeButton.styled";
 import { ThemeProvider } from "styled-components";
-import { GlobalStyles } from "../../state/globals";
-import { theme } from "../../state/theme";
+import { GlobalStyles } from "../../../state/globals";
+import { theme } from "../../../state/theme";
 
-const FaThemeButton = ({ themeColor, faIcon, faIconPosition }) => {
+const ThemeButton = ({ themeColor, faIcon, faIconPosition }) => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
@@ -34,4 +34,4 @@ const FaThemeButton = ({ themeColor, faIcon, faIconPosition }) => {
   );
 };
 
-export default Button1;
+export default ThemeButton;

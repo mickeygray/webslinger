@@ -25,6 +25,10 @@ const FirmSchema = mongoose.Schema({
       twitter: "",
       instagram: "",
       linkedin: "",
+      article1: "",
+      article2: "",
+      article3: "",
+      article4: "",
     },
   ],
   cpapic: {

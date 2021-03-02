@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
-export const SiteStyles = createGlobalStyle`
+export const GlobalStyles = createGlobalStyle`
 background: ${({ theme }) => theme.background};
 light: ${({ theme }) => theme.light};
 background: ${({ theme }) => theme.background};

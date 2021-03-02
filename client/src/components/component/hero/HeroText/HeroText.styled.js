@@ -1,13 +1,8 @@
-import { useContext } from "react";
 import styled from "styled-components";
-import SiteContext from "../../../../context/site/siteContext";
 
-const siteContext = useContext(SiteContext);
-
-const { current } = siteContext;
-
+let name = "sdasdsadsa";
 const textinacircleArray = [];
-for (var i = 0; i < current.name.length; i++) {
+for (var i = 0; i < name.length; i++) {
   const spanItem = `.textinacircle span:nth-child(${i}) {
     --units: ${i};
     --rotationUnit: calc((1turn / var(--noOfItems)) * var(--units, 1));
@@ -23,7 +18,7 @@ for (var i = 0; i < current.name.length; i++) {
   textinacircleArray.push(spanItem);
 }
 
-export const StyledSiteName = styled.div`
+export const StyledHeroText = styled.div`
   @import url("https://fonts.googleapis.com/css?family=Montserrat:900i&display=swap");
   :root {
     --light: 80;
