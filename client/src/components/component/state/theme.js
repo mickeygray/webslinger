@@ -10,4 +10,5 @@ export const theme = {
   hover: "#343078",
   primaryFont: "",
   secondaryFont: "",
+  name: "",
 };
