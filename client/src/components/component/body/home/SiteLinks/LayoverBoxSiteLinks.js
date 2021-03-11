@@ -2,9 +2,10 @@ import React from "react";
 import { StyledSiteLinks } from "./LayoverBoxSiteLinks.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../../state/globals";
-import { theme } from "../../../state/theme";
+import { useTheme } from "../../../state/useTheme";
 
 const LayoverBoxSiteLinks = ({ linkText, section }) => {
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
@@ -17,7 +18,6 @@ const LayoverBoxSiteLinks = ({ linkText, section }) => {
           <a href='#'></a>
           <img src={section.img} alt='' />
         </div>
-        ;
       </StyledSiteLinks>
     </ThemeProvider>
   );

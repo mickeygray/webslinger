@@ -2,9 +2,10 @@ import React from "react";
 import { StyledAnimatedLogo } from "./AnimatedLogo.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../state/globals";
-import { theme } from "../../state/theme";
+import { useTheme } from "../../state/useTheme";
 
 const AnimatedLogo = ({ logo, logoStyle }) => {
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />

@@ -103,6 +103,28 @@ router.get("/", auth, async (req, res) => {
   });
 });
 
+router.get("/content", auth, async (req, res) => {
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+
+  gfs.files.find({ filename: req.query.q }).toArray(function (err, files) {
+    if (err) {
+      res.json(err);
+    }
+
+    if (files.length > 0) {
+      var mime = files[0].contentType;
+      var filename = files[0].filename;
+      res.set("Content-Type", mime);
+      res.set("Content-Disposition", "inline; filename=" + filename);
+      var read_stream = gfs.createReadStream({ filename: filename });
+      read_stream.pipe(res);
+    } else {
+      res.json("File Not Found");
+    }
+  });
+});
+
 router.get("/:id", auth, async (req, res) => {
   const conn = mongoose.connection;
   const gfs = Grid(conn.db, mongoose.mongo);
@@ -126,4 +148,5 @@ router.get("/:id", auth, async (req, res) => {
     }
   });
 });
+
 module.exports = router;

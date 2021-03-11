@@ -4,6 +4,7 @@ import {
   IMAGE_ERROR,
   GET_IMAGE,
   PUT_IMAGE,
+  GET_CONTENTIMAGE,
   SET_CURRENTIMAGE,
   CLEAR_CURRENTIMAGE,
 } from "../types";
@@ -27,6 +28,12 @@ export default (state, action) => {
         current: null,
       };
     case GET_IMAGE:
+      return {
+        ...state,
+        image: action.payload,
+        loading: false,
+      };
+    case GET_CONTENTIMAGE:
       return {
         ...state,
         image: action.payload,

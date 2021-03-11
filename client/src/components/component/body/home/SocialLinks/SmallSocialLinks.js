@@ -2,9 +2,10 @@ import React, { useState, useRef } from "react";
 import { ThemeProvider } from "styled-components";
 import { StyledSocialLinks } from "./SmallSocialLinks.styled";
 import { GlobalStyles } from "../../../state/globals";
-import { theme } from "../../../state/theme";
+import { useTheme } from "../../../state/useTheme";
 
 const SocialLinks = () => {
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <>

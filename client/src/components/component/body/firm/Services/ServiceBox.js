@@ -2,14 +2,15 @@ import React from "react";
 import { StyledServiceBox } from "./ServiceBox.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../../state/globals";
-import { theme } from "../../../state/theme";
+import { useTheme } from "../../../state/useTheme";
 
-const ServiceBox = ({ section, serviceStyle }) => {
+const ServiceBox = ({ section, compStyle }) => {
+  const { theme } = useTheme;
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <StyledServiceBox>
-        {serviceStyle === "simplelayover" ? (
+        {compStyle === "simplelayover" ? (
           <div className='simple-layover'>
             <div className='figcaption'>
               <h3>{section.h3}</h3>
@@ -21,7 +22,7 @@ const ServiceBox = ({ section, serviceStyle }) => {
         ) : (
           " "
         )}
-        {serviceStyle === "layovercollapse" ? (
+        {compStyle === "layovercollapse" ? (
           <div className='layover-collapse'>
             <img src={section.img} alt='' />
             <div className='figcaption'>
@@ -35,7 +36,7 @@ const ServiceBox = ({ section, serviceStyle }) => {
         ) : (
           " "
         )}
-        {serviceStyle === "imageopen" ? (
+        {compStyle === "imageopen" ? (
           <div className='image-open'>
             <img src={section.img} alt='' />
             <div className='figcaption'>

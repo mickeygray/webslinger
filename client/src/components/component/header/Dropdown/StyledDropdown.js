@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../state/globals";
-import { theme } from "../../state/theme";
+import { useTheme } from "../../state/useTheme";
 const StyledUl = styled.ul`
   list-style-type: none;
   margin: 0;
@@ -65,6 +65,7 @@ const SubA = styled.a`
 `;
 
 const StyledDropdown = () => {
+  const { theme } = useTheme();
   const handleClick = (action) => {
     if (!action) return;
 
@@ -72,26 +73,35 @@ const StyledDropdown = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyles />
-      <StyledUl>
-        <StyledLi>
-          <StyledA onClick={() => handleClick("Home")}>Home</StyledA>
-        </StyledLi>
-        <StyledLi>
-          <StyledA onClick={() => handleClick("News")}>Home</StyledA>
-        </StyledLi>
-        <DropDownLi>
-          <Dropbtn onClick={() => handleClick("DropDown")}>DropDown</Dropbtn>
-          <DropDownContent>
-            {" "}
-            <SubA onClick={() => handleClick("Link1")}>Link 1</SubA>
-            <SubA onClick={() => handleClick("Link2")}>Link 2</SubA>
-            <SubA onClick={() => handleClick("Link3")}>Link 3</SubA>
-          </DropDownContent>
-        </DropDownLi>
-      </StyledUl>
-    </ThemeProvider>
+    <StyledUl>
+      <StyledLi>
+        <StyledA onClick={() => handleClick("Home")}>
+          <a></a>
+        </StyledA>
+      </StyledLi>
+      <StyledLi>
+        <StyledA onClick={() => handleClick("News")}>
+          <a></a>
+        </StyledA>
+      </StyledLi>
+      <DropDownLi>
+        <Dropbtn onClick={() => handleClick("DropDown")}>
+          <a></a>
+        </Dropbtn>
+        <DropDownContent>
+          {" "}
+          <SubA onClick={() => handleClick("Link1")}>
+            <a></a>
+          </SubA>
+          <SubA onClick={() => handleClick("Link2")}>
+            <a></a>
+          </SubA>
+          <SubA onClick={() => handleClick("Link3")}>
+            <a></a>
+          </SubA>
+        </DropDownContent>
+      </DropDownLi>
+    </StyledUl>
   );
 };
 

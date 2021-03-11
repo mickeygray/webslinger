@@ -1,10 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import QuizContext from "../../context/quiz/quizContext";
+import AuthContext from "../../context/auth/authContext";
 import Pagination from "../layout/Pagination";
 import { withRouter } from "react-router";
 
 const QuizForm = ({ setForm }) => {
+  const authContext = useContext(AuthContext);
+  const { user } = authContext;
+  const { _id } = user;
+
   const quizContext = useContext(QuizContext);
   const { current, putQuiz, postQuiz, clearCurrentQuiz } = quizContext;
   const [quiz, setQuiz] = useState({
@@ -53,8 +58,6 @@ const QuizForm = ({ setForm }) => {
   const [body, setBody] = useState([{ ...empty }]);
 
   const [showState, setShowState] = useState(false);
-
-  useEffect(() => {}, []);
 
   const addQuizBody = () => {
     const newResults = [...body, { ...empty }];
@@ -211,6 +214,7 @@ const QuizForm = ({ setForm }) => {
     formData.append("firm", firm);
     formData.append("title", title);
     formData.append("date", date);
+    formData.append("user", _id);
     formData.append("adPreference", adPreference);
     formData.append("author", author);
     formData.append("type", type);

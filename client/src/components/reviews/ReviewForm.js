@@ -1,9 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import ReviewContext from "../../context/review/reviewContext";
-
+import AuthContext from "../../context/auth/authContext";
 const ReviewForm = ({ setForm }) => {
   const reviewContext = useContext(ReviewContext);
+  const authContext = useContext(AuthContext);
+  const { user } = authContext;
+  const { _id } = user;
+
   const { current, putReview, postReview, clearCurrentReview } = reviewContext;
   const [rev, setRev] = useState({
     verticalName: "",
@@ -144,7 +148,7 @@ const ReviewForm = ({ setForm }) => {
     createFormData(formData, "firms", firms);
     formData.append("verticalName", verticalName);
     formData.append("title", title);
-
+    formData.append("user", _id);
     formData.append("summary", summary);
     formData.append("vertical", vertical);
     formData.append(
@@ -155,8 +159,14 @@ const ReviewForm = ({ setForm }) => {
       filebody[1] ? `${filebody[1].name}` : "",
       filebody[1] ? filebody[1] : ""
     );
-    formData.append("img1", filebody[0] ? `${filebody[0].name}` : current.img1);
-    formData.append("img2", filebody[1] ? `${filebody[1].name}` : current.img2);
+    formData.append(
+      "img1",
+      filebody[0] ? `${filebody[0].name}` : current && current.img1
+    );
+    formData.append(
+      "img2",
+      filebody[1] ? `${filebody[1].name}` : current && current.img2
+    );
 
     if (current !== null) {
       putReview(formData, current._id);

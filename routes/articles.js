@@ -37,7 +37,7 @@ const upload = multer({ storage });
 
 router.get("/", auth, async (req, res) => {
   try {
-    const articles = await Article.find();
+    const articles = await Article.find({ "user": req.query.q });
     res.json(articles);
   } catch (err) {
     console.error(err.message);
@@ -72,8 +72,11 @@ router.post(
       title,
       date,
       author,
+      user,
       body,
       vertical,
+      verticalName,
+      img1,
       firm,
       adPreference,
     } = req.body;
@@ -82,7 +85,10 @@ router.post(
       const newArticle = new Article({
         title,
         date,
+        user,
         author,
+        verticalName,
+        img1,
         firm,
         adPreference,
         body,
@@ -100,12 +106,24 @@ router.post(
 );
 
 router.put("/:id", upload.any(), auth, async (req, res) => {
-  const { title, date, author, body, firm, adPreference, vertical } = req.body;
+  const {
+    title,
+    date,
+    author,
+    body,
+    firm,
+    adPreference,
+    vertical,
+    verticalName,
+    img1,
+  } = req.body;
 
   // Build article object
   const articleFields = {};
   if (title) articleFields.title = title;
   if (date) articleFields.date = date;
+  if (img1) articleFields.img1 = img1;
+  if (verticalName) articleFields.verticalName = verticalName;
   if (author) articleFields.author = author;
   if (firm) articleFields.firm = firm;
   if (adPreference) articleFields.adPreference = adPreference;

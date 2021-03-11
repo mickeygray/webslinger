@@ -36,7 +36,7 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 router.get("/", auth, async (req, res) => {
   try {
-    const reviews = await Review.find();
+    const reviews = await Review.find({ "user": req.query.q });
     res.json(reviews);
   } catch (err) {
     console.error(err.message);
@@ -70,6 +70,7 @@ router.post(
       body,
       title,
       categories,
+      user,
       firms,
       firm,
       vertical,
@@ -84,6 +85,7 @@ router.post(
         summary,
         title,
         vertical,
+        user,
         date,
         adPreference,
         body,

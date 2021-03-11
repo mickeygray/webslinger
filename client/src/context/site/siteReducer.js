@@ -3,10 +3,18 @@ import {
   GET_SITE,
   SET_CURRENTSITE,
   CLEAR_CURRENTSITE,
+  SET_CURRENTSECTION,
+  CLEAR_CURRENTSECTION,
   SITE_ERROR,
   DELETE_SITE,
+  SET_CURRENTCONTENT,
+  CLEAR_CURRENTCONTENT,
   PUT_SITE,
   POST_SITE,
+  SET_CURRENTFONT,
+  CLEAR_CONTENT,
+  SET_CURRENTPALLET,
+  SET_CONTENT,
 } from "../types";
 
 export default (state, action) => {
@@ -47,6 +55,50 @@ export default (state, action) => {
       return {
         ...state,
         current: action.payload,
+      };
+
+    case SET_CURRENTSECTION:
+      return {
+        ...state,
+        currentSection: action.payload,
+      };
+
+    case CLEAR_CURRENTSECTION:
+      return {
+        ...state,
+        currentSection: null,
+      };
+    case CLEAR_CURRENTCONTENT:
+      return {
+        ...state,
+        currentContent: null,
+      };
+
+    case SET_CONTENT:
+      return {
+        ...state,
+        content: [...action.payload, ...state.content],
+      };
+
+    case SET_CURRENTCONTENT:
+      return {
+        ...state,
+        currentContent: action.payload,
+      };
+    case CLEAR_CONTENT:
+      return {
+        ...state,
+        content: state.content.splice(0, state.content.length),
+      };
+    case SET_CURRENTFONT:
+      return {
+        ...state,
+        font: action.payload,
+      };
+    case SET_CURRENTPALLET:
+      return {
+        ...state,
+        pallet: action.payload,
       };
     case CLEAR_CURRENTSITE:
       return {

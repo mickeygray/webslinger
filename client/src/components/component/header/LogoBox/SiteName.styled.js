@@ -1,9 +1,8 @@
 import { useContext } from "react";
 import styled from "styled-components";
 
-let name = "sadsadsa";
 const textinacircleArray = [];
-for (var i = 0; i < name.length; i++) {
+for (var i = 0; i < 20; i++) {
   const spanItem = `.textinacircle span:nth-child(${i}) {
     --units: ${i};
     --rotationUnit: calc((1turn / var(--noOfItems)) * var(--units, 1));
@@ -20,11 +19,10 @@ for (var i = 0; i < name.length; i++) {
 }
 
 export const StyledSiteName = styled.div`
-  @import url("https://fonts.googleapis.com/css?family=Montserrat:900i&display=swap");
   :root {
     --light: 80;
     --threshold: 60;
-    --noOfItems: ${({ theme }) => theme.name.length};
+    --noOfItems: ${({ theme }) => theme.text.length};
   }
 
   body {
@@ -44,16 +42,9 @@ export const StyledSiteName = styled.div`
   .text-dark {
     color: ${({ theme }) => theme.dark};
   }
-  .text-secondary {
-    color: ${({ theme }) => theme.secondary};
-  }
   .text-primary {
     color: ${({ theme }) => theme.primary};
   }
-  .text-background {
-    color: ${({ theme }) => theme.background};
-  }
-
   .text-xsmall {
     font-size: 70%;
   }

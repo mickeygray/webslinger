@@ -13,7 +13,10 @@ router.get("/:id", auth, async (req, res) => {
 router.get("/leads", auth, async (req, res) => {
   const regex = new RegExp(`${req.query.q}`, "gi");
   const leads = await Lead.find({
-    $or: [{ name: regex }, { phone: regex }, { email: regex }],
+    $and: [
+      { $or: [{ name: regex }, { phone: regex }, { email: regex }] },
+      { user: req.body._id },
+    ],
   });
 
   res.json(leads);
@@ -26,6 +29,7 @@ router.post("/", auth, async (req, res) => {
     address,
     city,
     state,
+    user,
     zip,
     plaintiff,
     amount,
@@ -52,6 +56,7 @@ router.post("/", auth, async (req, res) => {
     phone,
     email,
     lexId,
+    user,
     compliant,
     filingStatus,
     cpa,

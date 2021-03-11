@@ -1,7 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import FirmContext from "../../context/firm/firmContext";
+import AuthContext from "../../context/auth/authContext";
 
-const FirmForm = () => {
+const FirmForm = ({ setForm }) => {
+  const authContext = useContext(AuthContext);
+  const { user } = authContext;
+  const { _id } = user;
   const firmContext = useContext(FirmContext);
   const { current, putFirm, postFirm, clearCurrentFirm } = firmContext;
   const [firm, setFirm] = useState({
@@ -11,6 +15,7 @@ const FirmForm = () => {
     email: "",
     phone: "",
     cpa: "",
+    user: "",
     cpapic: "",
     logo: "",
     cpabio: "",
@@ -71,6 +76,23 @@ const FirmForm = () => {
 
   const [serviceType, setServiceType] = useState("");
 
+  const exp = {
+    company: "",
+    project: "",
+    date: "",
+    title: "",
+    img: "",
+    summary: "",
+  };
+  const ack = {
+    company: "",
+    network: "",
+    orgLogo: "",
+    awardLog: "",
+    title: "",
+    summary: "",
+    date: "",
+  };
   const review = {
     reviewer: "",
     review: "",
@@ -95,27 +117,87 @@ const FirmForm = () => {
     const newResults = [...serv, { ...serviceItem }];
     setServices(newResults);
   };
-
+  const [acknowledge, setAcknowledge] = useState([{ ...ack }]);
+  const [experience, setExperience] = useState([{ ...exp }]);
   const [reviews, setReviews] = useState([{ ...review }]);
   const [serv, setServices] = useState([{ ...serviceItem }]);
 
-  const onChangeReview = (i, e) => {
+  const onChangeAck = (i, e, result) => {
     const { value, name } = e.currentTarget;
-    const newResults = [...reviews];
-    newResults[i] = {
-      ...newResults[i],
-      [name]: value,
-    };
-    setReviews(newResults);
+    const newResults = [...acknowledge];
+    if (!result) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+    }
+
+    setAcknowledge(newResults);
   };
 
-  const onChangeService = (i, e) => {
+  const addAck = () => {
+    const newResults = [...acknowledge, { ...ack }];
+    setAcknowledge(newResults);
+  };
+
+  const onChangeExp = (i, e, result) => {
     const { value, name } = e.currentTarget;
+    const newResults = [...experience];
+    if (!result) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+    }
+    setExperience(newResults);
+  };
+
+  const addExp = () => {
+    const newResults = [...experience, { ...exp }];
+    setExperience(newResults);
+  };
+
+  const onChangeAckFile = (i, e) => {
+    const { files, name } = e.target;
     const newResults = [...serv];
     newResults[i] = {
       ...newResults[i],
-      [name]: value,
+      [name]: files[0].name,
     };
+    setAcknowledge(newResults);
+  };
+
+  const onChangeExpFile = (i, e) => {
+    const { files, name } = e.target;
+    const newResults = [...serv];
+    newResults[i] = {
+      ...newResults[i],
+      [name]: files[0].name,
+    };
+    setExperience(newResults);
+  };
+
+  const onChangeReview = (i, e, result) => {
+    const { value, name } = e.currentTarget;
+    const newResults = [...reviews];
+    if (!result) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+    }
+    setReviews(newResults);
+  };
+
+  const onChangeService = (i, e, result) => {
+    const { value, name } = e.currentTarget;
+    const newResults = [...serv];
+    if (!result) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+    }
     setServices(newResults);
   };
 
@@ -163,6 +245,7 @@ const FirmForm = () => {
         avgsavings: current.avgsavings,
         minimum: current.minimum,
         years: current.years,
+        user: current.user,
         bbb: current.bbb,
         cost: current.cost,
         address: current.address,
@@ -278,38 +361,6 @@ const FirmForm = () => {
     state,
   } = firm;
 
-  const firmObj = {
-    name,
-    website,
-    vertical,
-    email,
-    phone,
-    cpa,
-    cpapic,
-    cpabio,
-    stars,
-    logo,
-    types,
-    fees,
-    avgsavings,
-    minimum,
-    years,
-    bbb,
-    cost,
-    address,
-    city,
-    state,
-    pro,
-    con,
-    reviews,
-    serv,
-  };
-
-  console.log(
-    Object.keys(social[0]).map((k) => k),
-    "test"
-  );
-
   const onSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -326,7 +377,8 @@ const FirmForm = () => {
     for (let i = 0; i < file.length; i++) {
       formData.append(`${file[i].filename}`, file[i].file);
     }
-
+    createFormData(formData, "acknowledgements", acknowledge);
+    createFormData(formData, "experiences", experience);
     createFormData(formData, "reviews", reviews);
     createFormData(formData, "services", serv);
     const revpics = file.map(({ filename, reviewIndex, revIttId }) => {
@@ -344,9 +396,10 @@ const FirmForm = () => {
     formData.append("vertical", firm.vertical);
     formData.append("email", firm.email);
     formData.append("phone", firm.phone);
+    formData.append("user", _id);
     formData.append("stars", firm.stars);
     formData.append("cpa", firm.cpa);
-    formData.append("socialLinks", social);
+    formData.append("socialLinks", JSON.stringify(social));
     formData.append("cpabio", firm.cpabio);
     formData.append("fees", firm.fees);
     formData.append("avgsavings", firm.avgsavings);
@@ -376,6 +429,7 @@ const FirmForm = () => {
       postFirm(formData);
     }
     clearCurrentFirm();
+    setForm();
   };
 
   const onChangeServiceFile = (i, e) => {
@@ -572,47 +626,61 @@ const FirmForm = () => {
               ))}
             </div>
             <div className='bg-light'>
-              {social.map((row, i) => (
-                <div key={i} className='row'>
-                  {Object.keys(row)
-                    .filter((k) => k.includes("article"))
-                    .map((key) => (
-                      <div>
-                        <label key={key}>
-                          {key.slice(0, 1).toUpperCase() +
-                            key.slice(1, key.length)}{" "}
-                        </label>
-                        <br />
-                        <input
-                          type='text'
-                          value={row[key]}
-                          name={key}
-                          onChange={(e) => onChangeSocial(i, e)}
-                        />
-                      </div>
-                    ))}
-                </div>
-              ))}
+              {social &&
+                social.map((row, i) => (
+                  <div key={i} className='row'>
+                    {Object.keys(row)
+                      .filter((k) => k.includes("article"))
+                      .map((key) => (
+                        <div>
+                          <label key={key}>
+                            {key.slice(0, 1).toUpperCase() +
+                              key.slice(1, key.length)}{" "}
+                          </label>
+                          <br />
+                          <input
+                            type='text'
+                            value={row[key]}
+                            name={key}
+                            onChange={(e) => onChangeSocial(i, e)}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                ))}
             </div>
           </div>
         </div>
 
         <div className='bg-light card'>
           <h5 className='text-center'>Customer Reviews</h5>
-          <div className='grid-2'>
-            <div className='card'>
-              <button
-                type='button'
-                className='btn btn-primary btn-block'
-                onClick={() => addReview()}>
-                Add New Review
-              </button>
-            </div>
+
+          <div className='card'>
+            <button
+              type='button'
+              className='btn btn-primary btn-block'
+              onClick={() => addReview()}>
+              Add New Review
+            </button>
           </div>
 
           <div className='grid-3'>
             {reviews.map((result, i) => (
-              <div key={i}>
+              <div key={i} className='card bg-primary'>
+                <span
+                  style={{ float: "right", backgroundColor: "#f4f4f4" }}
+                  className='lead'
+                  onClick={(e) => {
+                    if (reviews.length === 1) {
+                      reviews.splice(0, 1);
+                    } else {
+                      reviews.splice(i, 1);
+                    }
+
+                    onChangeReview(i, e, result);
+                  }}>
+                  <a>X</a>
+                </span>
                 <div>
                   <label>Reviewer: </label>
                   <br />
@@ -671,116 +739,322 @@ const FirmForm = () => {
         </div>
         <div className='bg-light'>
           <h5 className='text-center'>Add Services And Sale Items</h5>
-          <div className='grid-2'>
-            <div className='card'>
-              {" "}
-              {serv.map((serv, i) => (
-                <div key={i}>
-                  <div
-                    style={serv.serviceType === "" ? { display: "none" } : {}}>
-                    <label>
-                      {serv.serviceType ? serv.serviceType : serviceType}{" "}
-                      Service
-                    </label>
-                    <br />
-                    <input
-                      type='text'
-                      value={serv.service}
-                      name='service'
-                      onChange={(e) => onChangeService(i, e)}
-                    />
-                    <br />
-                    <label>
-                      {serv.serviceType ? serv.serviceType : serviceType}{" "}
-                      Summary
-                    </label>
-                    <input
-                      type='text'
-                      value={serv.summary}
-                      name='summary'
-                      onChange={(e) => onChangeService(i, e)}
-                    />
-                    <br />
-                    <label>
-                      {serv.serviceType ? serv.serviceType : serviceType} Cost
-                    </label>
-                    <input
-                      type='text'
-                      value={serv.cost}
-                      name='cost'
-                      onChange={(e) => onChangeService(i, e)}
-                    />
-
-                    <label htmlFor='images'>Service Image</label>
-                    <input
-                      type='text'
-                      name='img'
-                      value={serv.img}
-                      onChange={(e) => onChangeService(i, e)}
-                      disabled
-                    />
-                    <label htmlFor='images'>Upload Service Image Here</label>
-                    <input
-                      type='file'
-                      name='img'
-                      onChange={(e) => {
-                        onChangeServiceFile(i, e);
-                        setFile([...file, e.target.files[0]]);
-                      }}
-                      style={{ width: "200px" }}
-                    />
-                  </div>
+          <div className='card py-1'>
+            <select
+              name='serviceType'
+              onChange={(e) => setServiceType(e.target.value)}>
+              <option value=''></option>
+              <option value='taxrelief'>Tax Relief</option>
+              <option value='accounting'>Accounting</option>
+              <option value='investment'>Investment</option>
+              <option value='consulting'>Consulting</option>
+              <option value='loan/credit'>Loan or Credit</option>
+              <option value='crm'>CRM or ERP</option>
+              <option value='other'>Other</option>
+            </select>
+            <div>
+              {serviceType != "federal" ||
+              serviceType != "state" ||
+              serviceType != "accounting" ||
+              serviceType != "investment" ||
+              serviceType != "consulting" ||
+              serviceType != "loan/credit" ||
+              serviceType != "crm" ? (
+                <div>
+                  <label htmlFor='images'>Service Type</label>
+                  <input
+                    type='text'
+                    name='serviceType'
+                    value={serviceType}
+                    onChange={(e) => setServiceType(e.target.value)}
+                  />
                 </div>
-              ))}
+              ) : (
+                ""
+              )}
             </div>
-            <div className='card py-1'>
-              <select
-                name='serviceType'
-                onChange={(e) => setServiceType(e.target.value)}>
-                <option value=''></option>
-                <option value='taxrelief'>Tax Relief</option>
-                <option value='accounting'>Accounting</option>
-                <option value='investment'>Investment</option>
-                <option value='consulting'>Consulting</option>
-                <option value='loan/credit'>Loan or Credit</option>
-                <option value='crm'>CRM or ERP</option>
-                <option value='other'>Other</option>
-              </select>
-              <div>
-                {serviceType != "federal" ||
-                serviceType != "state" ||
-                serviceType != "accounting" ||
-                serviceType != "investment" ||
-                serviceType != "consulting" ||
-                serviceType != "loan/credit" ||
-                serviceType != "crm" ? (
-                  <div>
-                    <label htmlFor='images'>Service Type</label>
-                    <input
-                      type='text'
-                      name='serviceType'
-                      value={serviceType}
-                      onChange={(e) => setServiceType(e.target.value)}
-                    />
-                  </div>
-                ) : (
-                  ""
-                )}
+            <button
+              type='button'
+              className='my btn btn-primary btn-block'
+              onClick={() => addService(serviceType)}>
+              Add Service
+            </button>
+          </div>
+          <div className='grid-3 card'>
+            {serv.map((serva, i) => (
+              <div key={i} className='card bg-primary'>
+                <div style={serv.serviceType === "" ? { display: "none" } : {}}>
+                  {" "}
+                  <span
+                    style={{ float: "right", backgroundColor: "#f4f4f4" }}
+                    className='lead'
+                    onClick={(e) => {
+                      if (serv.length === 1) {
+                        serv.splice(0, 1);
+                      } else {
+                        serv.splice(i, 1);
+                      }
+
+                      onChangeService(i, e, serv);
+                    }}>
+                    <a>X</a>
+                  </span>
+                  <label>
+                    {serva.serviceType ? serva.serviceType : serviceType}{" "}
+                    Service
+                  </label>
+                  <input
+                    type='text'
+                    value={serva.service}
+                    name='service'
+                    onChange={(e) => onChangeService(i, e)}
+                  />
+                  <label>
+                    {serva.serviceType ? serva.serviceType : serviceType}{" "}
+                    Summary
+                  </label>
+                  <input
+                    type='text'
+                    value={serva.summary}
+                    name='summary'
+                    onChange={(e) => onChangeService(i, e)}
+                  />
+                  <label>
+                    {serva.serviceType ? serva.serviceType : serviceType} Cost
+                  </label>
+                  <input
+                    type='text'
+                    value={serva.cost}
+                    name='cost'
+                    onChange={(e) => onChangeService(i, e)}
+                  />
+                  <label htmlFor='images'>Service Image</label>
+                  <input
+                    type='text'
+                    name='img'
+                    value={serva.img}
+                    onChange={(e) => onChangeService(i, e)}
+                    disabled
+                  />
+                  <label htmlFor='images'>Upload Service Image Here</label>
+                  <input
+                    type='file'
+                    name='img'
+                    onChange={(e) => {
+                      onChangeServiceFile(i, e);
+                      setFile([...file, e.target.files[0]]);
+                    }}
+                    style={{ width: "200px" }}
+                  />
+                </div>
               </div>
-              <button
-                type='button'
-                className='my btn btn-primary btn-block'
-                onClick={() => addService(serviceType)}>
-                Add Service
-              </button>
-            </div>
+            ))}
           </div>
         </div>
+
+        <div className='bg-light my-1'>
+          <h5 className='text-center'>Add Acknowledgement or Award</h5>
+
+          <button
+            type='button'
+            className='my btn btn-primary btn-block'
+            onClick={() => addAck()}>
+            Add Acknowledgement
+          </button>
+        </div>
+        <div className='grid-3 bg-light card'>
+          {acknowledge.map((acka, i) => (
+            <div key={i} className='card bg-primary'>
+              {" "}
+              <span
+                style={{ float: "right", backgroundColor: "#f4f4f4" }}
+                className='lead'
+                onClick={(e) => {
+                  if (acknowledge.length === 1) {
+                    acknowledge.splice(0, 1);
+                  } else {
+                    acknowledge.splice(i, 1);
+                  }
+
+                  onChangeAck(i, e, acka);
+                }}>
+                <a>X</a>
+              </span>
+              <br />
+              <label>Company Awarding</label>
+              <input
+                type='text'
+                value={acka.company}
+                name='company'
+                onChange={(e) => onChangeAck(i, e)}
+              />
+              <label>Network Appeared On</label>
+              <input
+                type='text'
+                value={acka.network}
+                name='network'
+                onChange={(e) => onChangeAck(i, e)}
+              />
+              <label>Award Title</label>
+              <input
+                type='text'
+                value={acka.title}
+                name='title'
+                onChange={(e) => onChangeAck(i, e)}
+              />
+              <label>Award Summary</label>
+              <input
+                type='text'
+                value={acka.summary}
+                name='summary'
+                onChange={(e) => onChangeAck(i, e)}
+              />
+              <label>Award Date</label>
+              <input
+                type='text'
+                value={acka.date}
+                name='date'
+                onChange={(e) => onChangeAck(i, e)}
+              />
+              <label htmlFor='images'>Awarding Org / Network Image</label>
+              <input
+                type='text'
+                name='orgLogo'
+                value={acka.orgLogo}
+                onChange={(e) => onChangeAck(i, e)}
+                disabled
+              />
+              <label htmlFor='images'>Award Image</label>
+              <input
+                type='text'
+                name='awardLogo'
+                value={acka.orgLogo}
+                onChange={(e) => onChangeAck(i, e)}
+                disabled
+              />
+              <div className='grid-2'>
+                <div>
+                  {" "}
+                  <label htmlFor='images'>Upload Org Image Here</label>
+                  <input
+                    type='file'
+                    name='orgLogo'
+                    onChange={(e) => {
+                      onChangeAckFile(i, e);
+                      setFile([...file, e.target.files[0]]);
+                    }}
+                    style={{ width: "200px" }}
+                  />
+                </div>
+                <div>
+                  {" "}
+                  <label htmlFor='images'>Upload Award Image Here</label>
+                  <input
+                    type='file'
+                    name='awardLogo'
+                    onChange={(e) => {
+                      onChangeAckFile(i, e);
+                      setFile([...file, e.target.files[0]]);
+                    }}
+                    style={{ width: "200px" }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className='bg-light my-1'>
+          <h5 className='text-center'>Add Experience </h5>
+
+          <button
+            type='button'
+            className='my btn btn-primary btn-block'
+            onClick={() => addExp()}>
+            Add Experience
+          </button>
+        </div>
+        <div className='grid-3 bg-light card'>
+          {experience.map((expe, i) => (
+            <div key={i} className='card bg-primary'>
+              {" "}
+              <span
+                style={{ float: "right", backgroundColor: "#f4f4f4" }}
+                className='lead'
+                onClick={(e) => {
+                  if (experience.length === 1) {
+                    experience.splice(0, 1);
+                  } else {
+                    experience.splice(i, 1);
+                  }
+
+                  onChangeExp(i, e, expe);
+                }}>
+                <a>X</a>
+              </span>
+              <br />
+              <label>Company Worked For</label>
+              <input
+                type='text'
+                value={expe.company}
+                name='company'
+                onChange={(e) => onChangeExp(i, e)}
+              />
+              <label>Project Worked On</label>
+              <input
+                type='text'
+                value={expe.project}
+                name='project'
+                onChange={(e) => onChangeExp(i, e)}
+              />
+              <label>Experience Title</label>
+              <input
+                type='text'
+                value={expe.title}
+                name='title'
+                onChange={(e) => onChangeExp(i, e)}
+              />
+              <label>Experience Summary</label>
+              <input
+                type='text'
+                value={expe.summary}
+                name='summary'
+                onChange={(e) => onChangeExp(i, e)}
+              />
+              <label>Experience Date</label>
+              <input
+                type='text'
+                value={expe.date}
+                name='date'
+                onChange={(e) => onChangeExp(i, e)}
+              />
+              <label htmlFor='images'>Experience Image</label>
+              <input
+                type='text'
+                name='img'
+                value={expe.img}
+                onChange={(e) => onChangeExp(i, e)}
+                disabled
+              />
+              <label htmlFor='images'>Upload Experience Image Here</label>
+              <input
+                type='file'
+                name='img'
+                onChange={(e) => {
+                  onChangeExpFile(i, e);
+                  setFile([...file, e.target.files[0]]);
+                }}
+                style={{ width: "200px" }}
+              />
+            </div>
+          ))}
+        </div>
+
         <div className='card bg-light'>
           <label htmlFor='images'>Upload Firm Images Here</label>
           <input
             type='file'
-            name='fs'
+            name='img1'
             onChange={readmultifiles}
             style={{ width: "200px" }}
             multiple

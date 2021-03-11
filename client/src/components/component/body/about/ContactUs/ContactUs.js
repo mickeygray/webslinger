@@ -2,9 +2,10 @@ import React from "react";
 import { StyledContactUs } from "./ContactUs.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../../state/globals";
-import { theme } from "../../../state/theme";
+import { useTheme } from "../../../state/useTheme";
 
 const ContactUs = ({ section, contactStyle }) => {
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />

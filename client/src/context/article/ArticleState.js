@@ -23,7 +23,7 @@ const ArticleState = (props) => {
 
   const [state, dispatch] = useReducer(articleReducer, initialState);
 
-  const getArticles = async () => {
+  const getArticles = async (_id) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const ArticleState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/articles", config);
+      const res = await axios.get(`/api/articles?q=${_id}`, config);
 
       dispatch({
         type: GET_ARTICLES,

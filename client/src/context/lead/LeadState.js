@@ -24,7 +24,7 @@ const LeadState = (props) => {
 
   const [state, dispatch] = useReducer(leadReducer, initialState);
 
-  const getLeads = async () => {
+  const getLeads = async (_id) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +32,7 @@ const LeadState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/leads", config);
+      const res = await axios.get(`/api/leads?q=${_id}`, config);
 
       dispatch({
         type: GET_LEADS,

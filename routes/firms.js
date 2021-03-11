@@ -36,7 +36,7 @@ const upload = multer({ storage });
 
 router.get("/", auth, async (req, res) => {
   try {
-    const firms = await Firm.find();
+    const firms = await Firm.find({ "user": req.query.q });
     res.json(firms);
   } catch (err) {
     console.error(err.message);
@@ -81,11 +81,14 @@ router.post(
       years,
       bbb,
       cost,
+      user,
       address,
       city,
       state,
       services,
       pros,
+      acknowledgements,
+      experiences,
       cons,
       reviews,
     } = req.body;
@@ -101,9 +104,10 @@ router.post(
         cpa,
         cpapic,
         cpabio,
-        socialLinks,
+        socialLinks: JSON.parse(socialLinks),
         stars,
         states,
+        user,
         fees,
         avgsavings,
         minimum,
@@ -114,6 +118,8 @@ router.post(
         address,
         city,
         state,
+        acknowledgements: acknowledgements.filter((e) => typeof e !== "string"),
+        experiences: experiences.filter((e) => typeof e !== "string"),
         services: services
           .filter((e) => typeof e !== "string")
           .filter((e) => e.serviceType !== ""),
@@ -153,6 +159,8 @@ router.put("/:id", auth, upload.any(), async (req, res) => {
     years,
     bbb,
     cost,
+    acknowledgements,
+    experiences,
     address,
     city,
     state,
@@ -162,6 +170,7 @@ router.put("/:id", auth, upload.any(), async (req, res) => {
     reviews,
   } = req.body;
 
+  const sLinks = JSON.parse(socialLinks);
   // Build firm object
   const firmFields = {};
   if (name) firmFields.name = name;
@@ -170,7 +179,7 @@ router.put("/:id", auth, upload.any(), async (req, res) => {
   if (email) firmFields.email = email;
   if (cpa) firmFields.cpa = cpa;
   if (cpabio) firmFields.cpabio = cpabio;
-  if (socialLinks) firmFields.socialLinks = socialLinks;
+  if (sLinks) firmFields.socialLinks = sLinks;
   if (cpapic) firmFields.cpapic = cpapic;
   if (stars) firmFields.stars = stars;
   if (states) firmFields.states = states;

@@ -36,7 +36,7 @@ const upload = multer({ storage });
 
 router.get("/", auth, async (req, res) => {
   try {
-    const sites = await Site.find();
+    const sites = await Site.find({ "user": req.query.q });
     res.json(sites);
   } catch (err) {
     console.error(err.message);

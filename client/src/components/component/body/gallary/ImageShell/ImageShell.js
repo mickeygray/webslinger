@@ -2,10 +2,11 @@ import React from "react";
 
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../../state/globals";
-import { theme } from "../../../state/theme";
+import { useTheme } from "../../../state/useTheme";
 import { StyledImageShell } from "./ImageShell.styled";
 
 const ImageShell = ({ img, imgStyle }) => {
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
@@ -34,7 +35,10 @@ const ImageShell = ({ img, imgStyle }) => {
 
         {imgStyle === "reflexive" ? (
           <div class='reflection-container'>
-            <div class='reflection-content'>{img}</div>
+            <div class='reflection-content'>
+              {" "}
+              <img src={img} className='img' alt='' />
+            </div>
           </div>
         ) : (
           ""
@@ -44,13 +48,13 @@ const ImageShell = ({ img, imgStyle }) => {
           <div class='container'>
             <div class='container__image'>
               <div class='container__info container__author'>
-                Photo by{" "}
+                <h3>Photo by </h3>
                 <a class='link' href='#' target='_blank'>
                   Silvia Diaconescu
                 </a>
               </div>
               <div class='container__info container__location'>
-                Geneva Lake Switzerland{" "}
+                <p> Geneva Lake Switzerland </p>
               </div>
             </div>
           </div>
@@ -62,7 +66,7 @@ const ImageShell = ({ img, imgStyle }) => {
           <div className='images-selector'>
             <input type='radio' id={img} name={img} value={img} />
             <label htmlFor={img} className='img-card'>
-              {img}
+              <img src={img} className='img' alt='' />
             </label>
           </div>
         ) : (
@@ -72,7 +76,6 @@ const ImageShell = ({ img, imgStyle }) => {
           <div class='image-expander'>
             <div class='box'>
               <img src={img} />
-              <span>STUFF</span>
             </div>
           </div>
         ) : (

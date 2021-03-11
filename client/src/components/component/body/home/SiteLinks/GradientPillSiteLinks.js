@@ -2,9 +2,10 @@ import React from "react";
 import { StyledSiteLinks } from "./GradientPillSiteLinks.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../../state/globals";
-import { theme } from "../../../state/theme";
+import { useTheme } from "../../../state/useTheme";
 
 const GradientPillSiteLinks = ({ themeColor, faIcon, faIconPosition }) => {
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
@@ -17,10 +18,10 @@ const GradientPillSiteLinks = ({ themeColor, faIcon, faIconPosition }) => {
           ) : (
             ""
           )}
-          <a class={`btn-${themeColor}`}>
+          <button class={`btn-${themeColor}`}>
             {faIconPosition === "front" ? <i class={faIcon}></i> : ""} Button{" "}
             {faIconPosition === "back" ? <i class={faIcon}></i> : ""}
-          </a>
+          </button>
           {faIconPosition === "bottom" ? (
             <div className='text-center'>
               <i class={faIcon}></i>

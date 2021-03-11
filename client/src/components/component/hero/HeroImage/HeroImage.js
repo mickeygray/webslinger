@@ -1,20 +1,33 @@
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../state/globals";
-import { theme } from "../../state/theme";
+import { useTheme } from "../../state/useTheme";
+
 import { StyledHeroImage } from "./HeroImage.styled";
 
-const HeroImage = ({ section, heroStyle }) => {
+const HeroImage = ({ section, compStyle, img, img2 }) => {
+  const { theme } = useTheme();
   const dualImage = [];
+
   for (let i = 0; i < 50; i++) {
-    dualImage.push(<div className='i'></div>);
+    dualImage.push(
+      <div
+        className='i'
+        style={{
+          background: `rgba(#424242, 0.5) url(${img}) repeat fixed`,
+        }}></div>
+    );
   }
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <StyledHeroImage>
-        {heroStyle === "dualImage" ? (
-          <div className='w'>
+        {compStyle === "dualImage" ? (
+          <div
+            className='w'
+            style={{
+              background: `rgba(#424242, 0.5) url(${img2}) repeat fixed`,
+            }}>
             {dualImage.map((dual) => dual)}
             <div className='h'>
               <h1>{section.heading}</h1>
@@ -23,7 +36,7 @@ const HeroImage = ({ section, heroStyle }) => {
         ) : (
           ""
         )}
-        {heroStyle === "layoverfade" ? (
+        {compStyle === "layoverfade" ? (
           <div className='layover-fade'>
             <a href='#' target='_blank'>
               <img src={section.img} alt='hero' />{" "}
@@ -37,7 +50,7 @@ const HeroImage = ({ section, heroStyle }) => {
           ""
         )}
 
-        {heroStyle === "focusedlayover" ? (
+        {compStyle === "focusedlayover" ? (
           <div className='focused-layover'>
             <img src={section.img} alt='' />
             <div className='figcaption'>

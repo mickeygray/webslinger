@@ -1,4 +1,4 @@
 {
-  "mongoURI": "mongodb+srv://mickeygray:5THBz7k0BdK5iJHq@cluster0.xmo5h.mongodb.net/walletwarrior",
+  "mongoURI": "mongodb+srv://mickeygray:5THBz7k0BdK5iJHq@cluster0.xmo5h.mongodb.net/WalletWarrior",
   "jwtSecret": "idfiuewryrf98wu"
 }

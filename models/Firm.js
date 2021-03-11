@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const FirmSchema = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+  },
   name: {
     type: String,
   },
@@ -21,14 +25,30 @@ const FirmSchema = mongoose.Schema({
   },
   socialLinks: [
     {
-      facebook: "",
-      twitter: "",
-      instagram: "",
-      linkedin: "",
-      article1: "",
-      article2: "",
-      article3: "",
-      article4: "",
+      facebook: {
+        type: String,
+      },
+      twitter: {
+        type: String,
+      },
+      instagram: {
+        type: String,
+      },
+      linkedin: {
+        type: String,
+      },
+      article1: {
+        type: String,
+      },
+      article2: {
+        type: String,
+      },
+      article3: {
+        type: String,
+      },
+      article4: {
+        type: String,
+      },
     },
   ],
   cpapic: {
@@ -107,6 +127,53 @@ const FirmSchema = mongoose.Schema({
         type: String,
       },
       pic: {
+        type: String,
+      },
+    },
+  ],
+  experiences: [
+    {
+      company: {
+        type: String,
+      },
+      project: {
+        type: String,
+      },
+      date: {
+        type: String,
+      },
+      title: {
+        type: String,
+      },
+      img: {
+        type: String,
+      },
+      summary: {
+        type: String,
+      },
+    },
+  ],
+  acknowledgements: [
+    {
+      company: {
+        type: String,
+      },
+      network: {
+        type: String,
+      },
+      orgLogo: {
+        type: String,
+      },
+      awardLog: {
+        type: String,
+      },
+      title: {
+        type: String,
+      },
+      summary: {
+        type: String,
+      },
+      date: {
         type: String,
       },
     },

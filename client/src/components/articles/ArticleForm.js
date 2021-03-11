@@ -1,9 +1,12 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
-
+import AuthContext from "../../context/auth/authContext";
 import ArticleContext from "../../context/article/articleContext";
-import ArticlePreviewer from "./ArticlePreviewer";
 
 const ArticleForm = ({ setForm }) => {
+  const authContext = useContext(AuthContext);
+  const { user } = authContext;
+  const { _id } = user;
+
   const articleContext = useContext(ArticleContext);
   const {
     current,
@@ -15,6 +18,8 @@ const ArticleForm = ({ setForm }) => {
     title: "",
     author: "",
     vertical: "",
+    verticalName: "",
+    img1: "",
     firm: "",
     adPreference: "",
     date: Intl.DateTimeFormat(
@@ -36,6 +41,7 @@ const ArticleForm = ({ setForm }) => {
     img: "",
     video: "",
     backlink: "",
+    backlinkText: "",
   };
 
   const [body, setBody] = useState([{ ...empty }]);
@@ -44,13 +50,15 @@ const ArticleForm = ({ setForm }) => {
     const newResults = [...body, { ...empty }];
     setBody(newResults);
   };
-  const onChangeArticle = (i, e) => {
+  const onChangeArticle = (i, e, result) => {
     const { value, name } = e.currentTarget;
     const newResults = [...body];
-    newResults[i] = {
-      ...newResults[i],
-      [name]: value,
-    };
+    if (!result) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+    }
     setBody(newResults);
   };
 
@@ -69,6 +77,8 @@ const ArticleForm = ({ setForm }) => {
         title: current.title,
         author: current.author,
         vertical: current.vertical,
+        verticalName: current.verticalName,
+        img1: current.img1,
         date: current.date,
         firm: current.firm,
         adPreference: current.adPreference,
@@ -79,6 +89,8 @@ const ArticleForm = ({ setForm }) => {
         title: "",
         author: "",
         firm: "",
+        verticalName: "",
+        img1: "",
         adPreference: "",
         vertical: "",
         date: Intl.DateTimeFormat(
@@ -124,7 +136,10 @@ const ArticleForm = ({ setForm }) => {
     }
     createFormData(formData, "body", body);
     formData.append("title", article.title);
-    formData.append("vertical", article.vertical);
+
+    formData.append("user", _id);
+    formData.append("verticalName", article.verticalName);
+    formData.append("img1", article.img1);
     formData.append("author", article.author);
     formData.append("date", article.date);
     formData.append("adPreference", article.adPreference);
@@ -142,26 +157,25 @@ const ArticleForm = ({ setForm }) => {
 
   console.log(article);
   console.log(body);
-  const { title, author, vertical, date, firm, adPreference } = article;
+  const {
+    title,
+    author,
+    vertical,
+    date,
+    verticalName,
+    img1,
+    firm,
+    adPreference,
+  } = article;
 
   return (
     <div>
-      {previewState ? (
-        <ArticlePreviewer article={article} resetPreview={resetPreview} />
-      ) : (
-        <form onSubmit={onSubmit}>
-          <div className='card bg-light'>
+      <form onSubmit={onSubmit}>
+        <div className='card bg-light grid-2'>
+          <div>
+            {" "}
             <label htmlFor='name'>Article Title</label>
             <input type='text' onChange={onChange} name='title' value={title} />
-            <label htmlFor='name'>Vertical</label>
-            <input
-              type='text'
-              onChange={onChange}
-              name='vertical'
-              value={vertical}
-            />
-            <label htmlFor='name'>Firm</label>
-            <input type='text' onChange={onChange} name='firm' value={firm} />
             <label htmlFor='name'>Article Author</label>
             <input
               type='text'
@@ -171,7 +185,35 @@ const ArticleForm = ({ setForm }) => {
             />
             <label htmlFor='name'>Date</label>
             <input type='text' onChange={onChange} name='date' value={date} />
-
+            <label htmlFor='images'>Card Image</label>
+            <input
+              type='text'
+              name='img1'
+              value={img1}
+              onChange={onChange}
+              disabled
+            />
+            <label htmlFor='images'>Upload Card Image Here</label>
+            <input
+              type='file'
+              name='img1'
+              onChange={(e) => {
+                onChange(e);
+                setFile([...file, e.target.files[0]]);
+              }}
+              style={{ width: "200px" }}
+            />
+          </div>
+          <div>
+            <label htmlFor='name'>Vertical Name</label>
+            <input
+              type='text'
+              onChange={onChange}
+              name='verticalName'
+              value={verticalName}
+            />
+            <label htmlFor='name'>Firm</label>
+            <input type='text' onChange={onChange} name='firm' value={firm} />
             <label htmlFor='name'>Ad Preference</label>
 
             <select
@@ -192,23 +234,33 @@ const ArticleForm = ({ setForm }) => {
               </option>
             </select>
           </div>
-          <div className='card bg-light'>
-            <p>
-              Adding $&#123;backlink&#125; to Section Body Will Render A
-              Clickable Button As A Link in the article please include as many
-              exterior links as possible. Include numbers in section heading if
-              you would like them.
-            </p>
-            <button
-              type='button'
-              className='btn btn-primary'
-              onClick={() => addBody()}>
-              Add Article Section
-            </button>
+        </div>
+        <div className='card bg-light'>
+          <button
+            type='button'
+            className='btn btn-primary'
+            onClick={() => addBody()}>
+            Add Article Section
+          </button>
+
+          <div className='grid-3 bg-light'>
             {body.map((result, i) => (
-              <div className='card' key={i}>
-                <div></div>
+              <div className='card bg-primary' key={i}>
                 <div>
+                  <span
+                    style={{ float: "right", backgroundColor: "#f4f4f4" }}
+                    className='lead'
+                    onClick={(e) => {
+                      if (body.length === 1) {
+                        body.splice(0, 1);
+                      } else {
+                        body.splice(i, 1);
+                      }
+
+                      onChangeArticle(i, e, result);
+                    }}>
+                    <a>X</a>
+                  </span>
                   <label>Section Heading </label>
                   <br />
                   <input
@@ -230,7 +282,7 @@ const ArticleForm = ({ setForm }) => {
                   />
                 </div>
                 <div>
-                  <label>Backlink: </label>
+                  <label>Backlink URL: </label>
                   <br />
                   <input
                     type='text'
@@ -239,6 +291,17 @@ const ArticleForm = ({ setForm }) => {
                     onChange={(e) => onChangeArticle(i, e)}
                   />
                 </div>
+                <div>
+                  <label>Backlink Text: </label>
+                  <br />
+                  <input
+                    type='text'
+                    name='backlinkText'
+                    value={result.backlinkText}
+                    onChange={(e) => onChangeArticle(i, e)}
+                  />
+                </div>
+
                 <div>
                   <label>Video: </label>
                   <br />
@@ -270,20 +333,15 @@ const ArticleForm = ({ setForm }) => {
               </div>
             ))}
           </div>
-          <br />
-          <input
-            type='submit'
-            className='btn btn-primary btn-block'
-            value={current !== null ? "Update Article" : "Add Article"}
-          />
-          <br />
-          <button
-            onClick={() => setPreviewState((prevState) => !prevState)}
-            className='btn btn-secondary btn-block'>
-            Preview Article
-          </button>
-        </form>
-      )}
+        </div>
+        <br />
+        <input
+          type='submit'
+          className='btn btn-primary btn-block'
+          value={current !== null ? "Update Article" : "Add Article"}
+        />
+        <br />
+      </form>
     </div>
   );
 };

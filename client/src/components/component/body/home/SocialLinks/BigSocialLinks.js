@@ -2,9 +2,10 @@ import React, { useState, useRef } from "react";
 import { ThemeProvider } from "styled-components";
 import { StyledSocialLinks } from "./BigSocialLinks.styled";
 import { GlobalStyles } from "../../../state/globals";
-import { theme } from "../../../state/theme";
+import { useTheme } from "../../../state/useTheme";
 
 const BigSocialLinks = () => {
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <>
@@ -18,7 +19,7 @@ const BigSocialLinks = () => {
                   <span></span>
                   <span></span>
                   <span></span>
-                  <span class='fa fa-facebook'></span>
+                  <i className='fa fa-facebook'></i>
                 </a>
               </li>
               <li>
@@ -27,7 +28,7 @@ const BigSocialLinks = () => {
                   <span></span>
                   <span></span>
                   <span></span>
-                  <span class='fa fa-twitter'></span>
+                  <i class='fa fa-twitter'></i>
                 </a>
               </li>
               <li>
@@ -36,7 +37,7 @@ const BigSocialLinks = () => {
                   <span></span>
                   <span></span>
                   <span></span>
-                  <span class='fa fa-instagram'></span>
+                  <i class='fa fa-instagram'></i>
                 </a>
               </li>
               <li>
@@ -45,7 +46,7 @@ const BigSocialLinks = () => {
                   <span></span>
                   <span></span>
                   <span></span>
-                  <span class='fa fa-linkedin'></span>
+                  <i class='fa fa-linkedin'></i>
                 </a>
               </li>
             </ul>

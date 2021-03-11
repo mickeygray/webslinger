@@ -1,18 +1,32 @@
 const mongoose = require("mongoose");
 
 const VerticalSchema = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+  },
   name: {
     type: String,
   },
   descrip1: {
     type: String,
   },
-  articleTitle: {
-    type: String,
-  },
-  quizTitle: {
-    type: String,
-  },
+  qna: [
+    {
+      question: {
+        type: String,
+      },
+      answer: {
+        type: String,
+      },
+      img: {
+        type: String,
+      },
+      video: {
+        type: String,
+      },
+    },
+  ],
   vLogSummary: {
     type: String,
   },

@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const ReviewSchema = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+  },
   verticalName: {
     type: String,
   },

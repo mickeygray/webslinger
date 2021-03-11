@@ -3,9 +3,11 @@ import styled from "styled-components";
 import { StyledVerticalNavlink } from "./VerticalNavlinks.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../state/globals";
-import { theme } from "../../state/theme";
+import { useTheme } from "../../state/useTheme";
 
 const VerticalNavlinks = () => {
+  const { theme } = useTheme();
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />

@@ -9,6 +9,7 @@ import {
   GET_SITE,
   SET_CURRENTSITE,
   CLEAR_CURRENTSITE,
+  CLEAR_CURRENTCONTENT,
   DELETE_SITE,
   POST_SITE,
   PUT_SITE,
@@ -23,12 +24,8 @@ import {
   GET_FIRMSSEARCHED,
   GET_BLOGSSEARCHED,
   GET_QUIZSSEARCHED,
-  GET_RANGEREVIEWS,
-  GET_RANGEVERTICALS,
-  GET_RANGEFIRMS,
-  GET_RANGEBLOGS,
-  GET_RANGEQUIZS,
-  GET_RANGEARTICLES,
+  SET_CURRENTSECTION,
+  CLEAR_CURRENTSECTION,
   PREVIEW_COMPONENT,
   MOUNT_COMPONENT,
   PUT_PAGECSS,
@@ -38,6 +35,11 @@ import {
   CLEAR_SITESITECSS,
   ENFORCE_SITELAYOUT,
   GET_ARTICLESSEARCHED,
+  SET_CURRENTFONT,
+  SET_CURRENTPALLET,
+  SET_CURRENTCONTENT,
+  SET_CONTENT,
+  CLEAR_CONTENT,
 } from "../types";
 
 const SiteState = (props) => {
@@ -46,12 +48,17 @@ const SiteState = (props) => {
     sites: null,
     error: null,
     layout: null,
+    currentSection: null,
+    currentContent: null,
     page: null,
+    font: null,
+    pallet: null,
+    content: [],
   };
 
   const [state, dispatch] = useReducer(siteReducer, initialState);
 
-  const getSites = async () => {
+  const getSites = async (_id) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +66,7 @@ const SiteState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/sites", config);
+      const res = await axios.get(`/api/sites?q=${_id}`, config);
 
       dispatch({
         type: GET_SITES,
@@ -91,7 +98,6 @@ const SiteState = (props) => {
         type: GET_SITE,
         payload: res.data,
       });
-      setCurrentSite(res.data);
     } catch (err) {
       dispatch({
         type: SITE_ERROR,
@@ -100,10 +106,30 @@ const SiteState = (props) => {
     }
   };
 
-  const setCurrentSite = (current) => {
+  const setCurrentFont = (font) => {
     dispatch({
-      type: SET_CURRENTSITE,
-      payload: current,
+      type: SET_CURRENTFONT,
+      payload: font,
+    });
+  };
+
+  const setCurrentSection = (section) => {
+    dispatch({
+      type: SET_CURRENTSECTION,
+      payload: section,
+    });
+  };
+
+  const clearCurrentSection = () => {
+    dispatch({
+      type: CLEAR_CURRENTSECTION,
+    });
+  };
+
+  const setCurrentPallet = (pallet) => {
+    dispatch({
+      type: SET_CURRENTPALLET,
+      payload: pallet,
     });
   };
 
@@ -277,7 +303,6 @@ const SiteState = (props) => {
         type: GET_COMPONENT,
         payload: res.data,
       });
-      setCurrentSite(res.data);
     } catch (err) {
       dispatch({
         type: SITE_ERROR,
@@ -419,88 +444,102 @@ const SiteState = (props) => {
     });
   };
 
-  const getFirms = async (text) => {
-    const res = await axios.get(`/api/firms?q=${text}`);
+  const setContent = (content) => {
+    dispatch({
+      type: SET_CONTENT,
+      payload: content,
+    });
+  };
+  const clearContent = () => {
+    dispatch({
+      type: CLEAR_CONTENT,
+    });
+  };
+
+  const setCurrentContent = (content) => {
+    console.log(content);
+    dispatch({ type: SET_CURRENTCONTENT, payload: content });
+  };
+
+  const clearCurrentContent = () => {
+    dispatch({ type: CLEAR_CURRENTCONTENT });
+  };
+
+  const getFirms = async (_id) => {
+    const res = await axios.get(`/api/firms?q=${_id}`);
+    res.data.forEach((piece) => {
+      piece.contentType = "firm";
+      setContent(res.data);
+    });
 
     dispatch({ type: GET_FIRMSSEARCHED, payload: res.data });
   };
-  const getReviews = async (text) => {
-    const res = await axios.get(`/api/reviews?q=${text}`);
+  const getReviews = async (_id) => {
+    const res = await axios.get(`/api/reviews?q=${_id}`);
+    res.data.forEach((piece) => {
+      piece.contentType = "review";
+      setContent(res.data);
+    });
+    console.log(res.data);
 
     dispatch({ type: GET_REVIEWSSEARCHED, payload: res.data });
   };
 
-  const getArticles = async (text) => {
-    const res = await axios.get(`/api/articles?q=${text}`);
-
+  const getArticles = async (_id) => {
+    const res = await axios.get(`/api/articles?q=${_id}`);
+    res.data.forEach((piece) => {
+      piece.contentType = "article";
+    });
+    setContent(res.data);
     dispatch({ type: GET_ARTICLESSEARCHED, payload: res.data });
   };
 
-  const getBlogs = async (text) => {
-    const res = await axios.get(`/api/blogs?q=${text}`);
-
+  const getBlogs = async (_id) => {
+    const res = await axios.get(`/api/blogs?q=${_id}`);
+    res.data.forEach((piece) => {
+      piece.contentType = "blog";
+    });
+    setContent(res.data);
     dispatch({ type: GET_BLOGSSEARCHED, payload: res.data });
   };
 
-  const getQuizs = async (text) => {
-    const res = await axios.get(`/api/quizs?q=${text}`);
-
+  const getQuizs = async (_id) => {
+    const res = await axios.get(`/api/quizs?q=${_id}`);
+    res.data.forEach((piece) => {
+      piece.contentType = "quiz";
+    });
+    setContent(res.data);
     dispatch({ type: GET_QUIZSSEARCHED, payload: res.data });
   };
 
-  const getVerticals = async (text) => {
-    const res = await axios.get(`/api/verticals?q=${text}`);
-
+  const getVerticals = async (_id) => {
+    const res = await axios.get(`/api/verticals?q=${_id}`);
+    res.data.forEach((piece) => {
+      piece.contentType = "vertical";
+    });
+    setContent(res.data);
     dispatch({ type: GET_VERTICALSSEARCHED, payload: res.data });
   };
 
-  const getRangeFirms = async (range) => {
-    const res = await axios.get(`/api/firms?q=${range}`);
-
-    dispatch({ type: GET_RANGEFIRMS, payload: res.data });
-  };
-
-  const getRangeArticles = async (range) => {
-    const res = await axios.get(`/api/articles?q=${range}`);
-
-    dispatch({ type: GET_RANGEARTICLES, payload: res.data });
-  };
-
-  const getRangeBlogs = async (range) => {
-    const res = await axios.get(`/api/blogs?q=${range}`);
-
-    dispatch({ type: GET_RANGEBLOGS, payload: res.data });
-  };
-
-  const getRangeQuizs = async (range) => {
-    const res = await axios.get(`/api/quizs?q=${range}`);
-
-    dispatch({ type: GET_RANGEQUIZS, payload: res.data });
-  };
-
-  const getRangeVerticals = async (range) => {
-    const res = await axios.get(`/api/verticals?q=${range}`);
-
-    dispatch({ type: GET_RANGEVERTICALS, payload: res.data });
-  };
-
-  const getRangeReviews = async (range) => {
-    const res = await axios.get(`/api/reviews?q=${range}`);
-
-    dispatch({ type: GET_RANGEREVIEWS, payload: res.data });
-  };
   return (
     <SiteContext.Provider
       value={{
         current: state.current,
         sites: state.sites,
+        content: state.content,
+        currentContent: state.currentContent,
         layout: state.layout,
         page: state.page,
+        font: state.font,
+        pallet: state.pallet,
         error: state.error,
         getSites,
         getSite,
-        setCurrentSite,
+        setCurrentFont,
+        setCurrentPallet,
         clearCurrentSite,
+        setCurrentSection,
+        clearCurrentSection,
         deleteSite,
         postSite,
         putSite,
@@ -517,22 +556,19 @@ const SiteState = (props) => {
         getPages,
         postPages,
         putPages,
+        clearContent,
         deletePage,
         createSiteCSS,
         insertCSSOverride,
         clearSiteCSS,
+        setCurrentContent,
         getFirms,
         getVerticals,
+        clearCurrentContent,
         getBlogs,
         getArticles,
         getQuizs,
         getReviews,
-        getRangeFirms,
-        getRangeVerticals,
-        getRangeBlogs,
-        getRangeArticles,
-        getRangeQuizs,
-        getRangeReviews,
       }}>
       {props.children}
     </SiteContext.Provider>

@@ -2,9 +2,10 @@ import React from "react";
 import { StyledHeroText } from "./HeroText.styled";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../state/globals";
-import { theme } from "../../state/theme";
+import { useTheme } from "../../state/useTheme";
 
 const SiteName = ({ textStyle, heroText, selectedTheme }) => {
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
@@ -36,22 +37,28 @@ const SiteName = ({ textStyle, heroText, selectedTheme }) => {
         )}
 
         {textStyle === "rainbowshadow" ? (
-          <div className='rainbowshadow'>{heroText}</div>
+          <div className='rainbowshadow'>
+            <p>{heroText}</p>
+          </div>
         ) : (
           ""
         )}
 
         {textStyle === `dimension-${selectedTheme}` ? (
-          <div className={`dimension-${selectedTheme}`}>{heroText}</div>
+          <div className={`dimension-${selectedTheme}`}>
+            <p>{heroText}</p>
+          </div>
         ) : (
           ""
         )}
 
         {textStyle === `textinacircle-${selectedTheme}` ? (
           <div className={`textinacircle-${selectedTheme}`}>
-            {Array.from(heroText).map((char) => (
-              <span>{char}</span>
-            ))}
+            <p>
+              {Array.from(heroText).map((char) => (
+                <span>{char}</span>
+              ))}
+            </p>
           </div>
         ) : (
           ""
@@ -59,11 +66,19 @@ const SiteName = ({ textStyle, heroText, selectedTheme }) => {
 
         {textStyle === `deconstructed-${selectedTheme}` ? (
           <div className='deconstructed'>
-            {heroText}
-            <div className={`${selectedTheme}`}>{heroText}</div>
-            <div className={`${selectedTheme}`}>{heroText}</div>
-            <div className={`${selectedTheme}`}>{heroText}</div>
-            <div className={`${selectedTheme}`}>{heroText}</div>
+            <p>{heroText}</p>
+            <div className={`${selectedTheme}`}>
+              <p>{heroText}</p>
+            </div>
+            <div className={`${selectedTheme}`}>
+              <p>{heroText}</p>
+            </div>
+            <div className={`${selectedTheme}`}>
+              <p>{heroText}</p>
+            </div>
+            <div className={`${selectedTheme}`}>
+              <p>{heroText}</p>
+            </div>
           </div>
         ) : (
           ""

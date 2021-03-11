@@ -3,6 +3,10 @@ const { Schema } = mongoose;
 
 const leadSchema = new Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+    },
     firstName: String,
     lastName: String,
     fullName: String,

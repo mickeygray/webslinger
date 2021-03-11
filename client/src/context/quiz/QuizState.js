@@ -23,7 +23,7 @@ const QuizState = (props) => {
 
   const [state, dispatch] = useReducer(quizReducer, initialState);
 
-  const getQuizs = async () => {
+  const getQuizs = async (_id) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const QuizState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/quizs", config);
+      const res = await axios.get(`/api/quizs?q=${_id}`, config);
 
       dispatch({
         type: GET_QUIZS,

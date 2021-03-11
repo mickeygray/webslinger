@@ -4,7 +4,7 @@ import Spinner from "../layout/Spinner";
 import ReviewForm from "./ReviewForm";
 
 const ReviewItem = ({ review }) => {
-  const { reviewName, date, vertical, _id } = review;
+  const { title, date, vertical, _id } = review;
   const { getReview, clearCurrentReview, deleteReview, current } = useContext(
     ReviewContext
   );
@@ -20,14 +20,14 @@ const ReviewItem = ({ review }) => {
               onClick={
                 current ? () => clearCurrentReview() : () => getReview(_id)
               }>
-              {current ? `Clear ${reviewName} update` : `Edit ${reviewName}`}
+              {current ? `Clear ${title} update` : `Edit ${title}`}
             </button>
           </div>
           <div className='p-2'>
             <button
               className='btn btn-sm btn-danger'
               onClick={() => deleteReview(_id)}>
-              Delete {reviewName}
+              Delete {title}
             </button>
           </div>
           <div>

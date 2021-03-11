@@ -36,7 +36,7 @@ const upload = multer({ storage });
 
 router.get("/", auth, async (req, res) => {
   try {
-    const verticals = await Vertical.find();
+    const verticals = await Vertical.find({ "user": req.query.q });
     res.json(verticals);
   } catch (err) {
     console.error(err.message);
@@ -64,9 +64,9 @@ router.post("/", auth, upload.any(), async (req, res) => {
   const {
     name,
     descrip1,
-    articleTitle,
-    quizTitle,
+    qna,
     vLogTitle,
+    user,
     vLogSummary,
     navText,
     vids,
@@ -80,10 +80,10 @@ router.post("/", auth, upload.any(), async (req, res) => {
     const newVertical = new Vertical({
       name,
       descrip1,
-      articleTitle,
-      quizTitle,
+      qna,
       vLogTitle,
       vLogSummary,
+      user,
       navText,
       vids,
       img1,
@@ -105,11 +105,11 @@ router.put("/:id", upload.any(), auth, async (req, res) => {
   const {
     name,
     descrip1,
-    articleTitle,
-    quizTitle,
+    qna,
     vLogTitle,
     vLogSummary,
     navText,
+
     vids,
     img1,
     img2,
@@ -121,8 +121,7 @@ router.put("/:id", upload.any(), auth, async (req, res) => {
   const verticalFields = {};
   if (name) verticalFields.name = name;
   if (descrip1) verticalFields.descrip1 = descrip1;
-  if (articleTitle) verticalFields.articleTitle = articleTitle;
-  if (quizTitle) verticalFields.quizTitle = quizTitle;
+  if (qna) verticalFields.qna = qna;
   if (vLogTitle) verticalFields.vLogTitle = vLogTitle;
   if (navText) verticalFields.navText = navText;
   if (vLogSummary) verticalFields.vLogSummary = vLogSummary;

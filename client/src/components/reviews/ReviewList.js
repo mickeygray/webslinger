@@ -2,14 +2,18 @@ import React, { useContext, useEffect } from "react";
 import ReviewContext from "../../context/review/reviewContext";
 import ReviewItem from "./ReviewItem";
 import Spinner from "../layout/Spinner";
-
+import AuthContext from "../../context/auth/authContext";
 const ReviewList = () => {
   const reviewContext = useContext(ReviewContext);
   const { reviews, loading, getReviews } = reviewContext;
-
+  const authContext = useContext(AuthContext);
+  const { user } = authContext;
+  const { _id } = user;
   useEffect(() => {
-    getReviews();
-  }, []);
+    if (user) {
+      getReviews(_id);
+    }
+  }, [user, authContext]);
 
   return (
     <div>

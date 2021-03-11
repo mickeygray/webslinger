@@ -10,6 +10,7 @@ import {
   DELETE_IMAGE,
   SET_CURRENTIMAGE,
   CLEAR_CURRENTIMAGE,
+  GET_CONTENTIMAGE,
   PUT_IMAGE,
 } from "../types";
 
@@ -51,6 +52,24 @@ const ImageState = (props) => {
     console.log(res.data);
     dispatch({
       type: GET_IMAGE,
+      payload: res.data,
+    });
+  };
+
+  const getContentImage = async (img) => {
+    const config = {
+      headers: {
+        "Content-Type": `image/png`,
+      },
+      responseType: "arraybuffer",
+    };
+
+    console.log(img);
+    const res = await axios.get(`/api/images/content?q=${img}`, config);
+
+    console.log(res.data);
+    dispatch({
+      type: GET_CONTENTIMAGE,
       payload: res.data,
     });
   };
@@ -98,11 +117,13 @@ const ImageState = (props) => {
       value={{
         current: state.current,
         images: state.images,
+        image: state.image,
         error: state.error,
         deleteImage,
         putImage,
         getImages,
         getImage,
+        getContentImage,
         setCurrentImage,
         clearCurrentImage,
       }}>

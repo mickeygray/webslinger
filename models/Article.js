@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const ArticleSchema = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+  },
   title: {
     type: String,
   },
@@ -8,6 +12,12 @@ const ArticleSchema = mongoose.Schema({
     type: String,
   },
   author: {
+    type: String,
+  },
+  img1: {
+    type: String,
+  },
+  verticalName: {
     type: String,
   },
   body: [

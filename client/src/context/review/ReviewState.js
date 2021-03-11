@@ -23,7 +23,7 @@ const ReviewState = (props) => {
 
   const [state, dispatch] = useReducer(reviewReducer, initialState);
 
-  const getReviews = async () => {
+  const getReviews = async (_id) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const ReviewState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/reviews", config);
+      const res = await axios.get(`/api/reviews?q=${_id}`, config);
 
       dispatch({
         type: GET_REVIEWS,

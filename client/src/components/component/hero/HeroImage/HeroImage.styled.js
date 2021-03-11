@@ -1,8 +1,5 @@
 import styled from "styled-components";
 
-let img;
-let img2;
-
 export const StyledHeroImage = styled.div`
   body {
     background: #111b25;
@@ -33,7 +30,7 @@ export const StyledHeroImage = styled.div`
     right: 0;
     bottom: 0;
     overflow: hidden;
-    background: rgba(#424242, 0.5) url(${img}) repeat fixed;
+
     background-position: 50% 100%;
     background-size: cover;
     position: relative;
@@ -48,7 +45,7 @@ export const StyledHeroImage = styled.div`
     z-index: 4;
     padding: 2px;
     transition: all 1.3s ease-in-out;
-    background: rgba(#424242, 0.5) url(${img2}) repeat fixed;
+
     background-size: cover;
     background-position: 50% 100%;
     border-radius: 0%;

@@ -23,7 +23,7 @@ const FirmState = (props) => {
 
   const [state, dispatch] = useReducer(firmReducer, initialState);
 
-  const getFirms = async () => {
+  const getFirms = async (_id) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const FirmState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/firms", config);
+      const res = await axios.get(`/api/firms?q=${_id}`, config);
 
       dispatch({
         type: GET_FIRMS,

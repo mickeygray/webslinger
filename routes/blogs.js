@@ -36,7 +36,7 @@ const upload = multer({ storage });
 
 router.get("/", auth, async (req, res) => {
   try {
-    const blogs = await Blog.find();
+    const blogs = await Blog.find({ "user": req.query.q });
     res.json(blogs);
   } catch (err) {
     console.error(err.message);
@@ -79,6 +79,7 @@ router.post(
       p3,
       p4,
       p5,
+      user,
       img1,
       img2,
       img3,
@@ -91,6 +92,7 @@ router.post(
         author,
         p1,
         firm,
+        user,
         adPreference,
         vertical,
         p2,

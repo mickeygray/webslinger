@@ -2,14 +2,20 @@ import React, { useContext, useEffect } from "react";
 import VerticalContext from "../../context/vertical/verticalContext";
 import VerticalItem from "./VerticalItem";
 import Spinner from "../layout/Spinner";
+import AuthContext from "../../context/auth/authContext";
 
 const VerticalList = () => {
   const verticalContext = useContext(VerticalContext);
   const { verticals, loading, getVerticals } = verticalContext;
 
+  const authContext = useContext(AuthContext);
+  const { user } = authContext;
+  const { _id } = user;
   useEffect(() => {
-    getVerticals();
+    getVerticals(_id);
   }, []);
+
+  console.log(verticals);
 
   return (
     <div>

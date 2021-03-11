@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "../../../state/globals";
-import { theme } from "../../../state/theme";
+import { useTheme } from "../../../state/useTheme";
 import { StyledSiteLinks } from "./SlidingSiteLinks.styled";
 const BouncySiteLinks = ({ section }) => {
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
       <>
@@ -17,7 +18,7 @@ const BouncySiteLinks = ({ section }) => {
             ) : (
               ""
             )}
-            <a class={`btn-${section.themeColor}`}>
+            <button class={`btn-${section.themeColor}`}>
               {section.faIconPosition === "front" ? (
                 <i class={section.faIcon}></i>
               ) : (
@@ -29,7 +30,7 @@ const BouncySiteLinks = ({ section }) => {
               ) : (
                 ""
               )}
-            </a>
+            </button>
             {section.faIconPosition === "bottom" ? (
               <div className='text-center'>
                 <i class={section.faIcon}></i>

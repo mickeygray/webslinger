@@ -23,7 +23,7 @@ const BlogState = (props) => {
 
   const [state, dispatch] = useReducer(blogReducer, initialState);
 
-  const getBlogs = async () => {
+  const getBlogs = async (_id) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const BlogState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/blogs", config);
+      const res = await axios.get(`/api/blogs?q=${_id}`, config);
 
       dispatch({
         type: GET_BLOGS,

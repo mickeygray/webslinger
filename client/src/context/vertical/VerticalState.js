@@ -23,7 +23,7 @@ const VerticalState = (props) => {
 
   const [state, dispatch] = useReducer(verticalReducer, initialState);
 
-  const getVerticals = async () => {
+  const getVerticals = async (_id) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const VerticalState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/verticals", config);
+      const res = await axios.get(`/api/verticals?q=${_id}`, config);
 
       dispatch({
         type: GET_VERTICALS,
