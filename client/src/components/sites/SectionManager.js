@@ -26,14 +26,26 @@ const SectionManager = ({
   onChangeVid,
   onChangeP,
   onChangeLi,
+  contentList,
+  setContentList,
 }) => {
   const imageBlob = useRef("");
   const siteContext = useContext(SiteContext);
-  const { font, pallet, currentContent, clearCurrentContent } = siteContext;
+  const {
+    font,
+    pallet,
+    currentContent,
+    clearCurrentContent,
+    myComponents,
+  } = siteContext;
   const imageContext = useContext(ImageContext);
   const { getContentImage } = imageContext;
 
-  console.log(h);
+  const [actionComponents, setActionComponents] = useState({
+    actionComponent1: "",
+    actionComponent2: "",
+  });
+
   return (
     <Fragment>
       <div className='bg-light grid-4'>
@@ -223,8 +235,13 @@ const SectionManager = ({
                           value={row[key]}
                           className='btn btn-sm'
                           onClick={(e) => {
-                            const c = currentContent;
+                            const c = currentContent.content;
+
                             onChangeH(index, e, c, key);
+                            setContentList((prevState) => [
+                              ...prevState,
+                              { ...currentContent },
+                            ]);
                             clearCurrentContent();
                           }}>
                           Add Content
@@ -380,8 +397,12 @@ const SectionManager = ({
                         <button
                           className='btn btn-sm'
                           onClick={(e) => {
-                            const c = currentContent;
+                            const c = currentContent.content;
                             onChangeP(i, e, c, key);
+                            setContentList((prevState) => [
+                              ...prevState,
+                              { ...currentContent },
+                            ]);
                             clearCurrentContent();
                           }}>
                           Add Content
@@ -668,16 +689,82 @@ const SectionManager = ({
                   {key === "action" ? (
                     <select
                       name='action'
-                      onChange={(e) => onChangeButton(i, e)}>
+                      onChange={(e) => onChangeButton(i, e)}
+                      value={row[key]}
+                      multiple>
                       <option>Button Action...</option>
                       <option value='toggleModal'>Toggle Modal</option>
                       <option value='postForm'>Post Form</option>
+                      <option value='getContent'>Get Content</option>
+                      <option value='internalSiteLink'>Link Site Pages</option>
                       <option value='nextElement'>Next Element</option>
                       <option value='prevElement'>Previous Element</option>
                     </select>
                   ) : (
                     ""
                   )}
+
+                  {row["action"].length > 0 ? (
+                    <div>
+                      <h5>
+                        Please Select The Component The Button Action Will Fire
+                        From
+                      </h5>
+                      <select
+                        name='actionComponent1'
+                        onChange={(e) =>
+                          setActionComponents({
+                            ...actionComponents,
+                            [e.target.name]: e.target.value,
+                          })
+                        }
+                        value={row[key]}>
+                        <option>My Saved Components...</option>
+                        {myComponents.map((comp) => (
+                          <option value={comp.name} name='actionComponent1'>
+                            {comp.name}
+                          </option>
+                        ))}{" "}
+                      </select>
+                      <br />
+                      <h5>
+                        Please Select The Component The Button Action Will Load
+                      </h5>
+                      <p style={{ textSize: "8px" }}>
+                        <i>
+                          Please Select Site Link and Action to force Redirect
+                          On Submission
+                        </i>
+                      </p>
+                      <select
+                        name='actionComponent2'
+                        onChange={(e) =>
+                          setActionComponents({
+                            ...actionComponents,
+                            [e.target.name]: e.target.value,
+                          })
+                        }
+                        value={row[key]}>
+                        <option>My Saved Components...</option>
+                        {myComponents.map((comp) => (
+                          <option value={comp.name} name='actionComponent1'>
+                            {comp.name}
+                          </option>
+                        ))}{" "}
+                      </select>
+
+                      <button
+                        className='btn btn-sm'
+                        onClick={(e) => {
+                          onChangeButton(i, e, actionComponents);
+                        }}>
+                        Add Button Actions
+                      </button>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+
                   {key === "text" ? (
                     <div>
                       <input
@@ -691,8 +778,12 @@ const SectionManager = ({
                         <button
                           className='btn btn-sm'
                           onClick={(e) => {
-                            const c = currentContent;
+                            const c = currentContent.content;
                             onChangeButton(i, e, c, key);
+                            setContentList((prevState) => [
+                              ...prevState,
+                              { ...currentContent },
+                            ]);
                             clearCurrentContent();
                           }}>
                           Add Content
@@ -888,8 +979,12 @@ const SectionManager = ({
                         <button
                           className='btn btn-sm'
                           onClick={(e) => {
-                            const c = currentContent;
+                            const c = currentContent.content;
                             onChangeA(i, e, c, key);
+                            setContentList((prevState) => [
+                              ...prevState,
+                              { ...currentContent },
+                            ]);
                             clearCurrentContent();
                           }}>
                           Add Content
@@ -912,8 +1007,12 @@ const SectionManager = ({
                         <button
                           className='btn btn-sm'
                           onClick={(e) => {
-                            const c = currentContent;
+                            const c = currentContent.content;
                             onChangeA(i, e, c, key);
+                            setContentList((prevState) => [
+                              ...prevState,
+                              { ...currentContent },
+                            ]);
                             clearCurrentContent();
                           }}>
                           Add Content
@@ -1077,8 +1176,12 @@ const SectionManager = ({
                         <button
                           className='btn btn-sm'
                           onClick={(e) => {
-                            const c = currentContent;
+                            const c = currentContent.content;
                             onChangeLi(i, e, c, key);
+                            setContentList((prevState) => [
+                              ...prevState,
+                              { ...currentContent },
+                            ]);
                             clearCurrentContent();
                           }}>
                           Add Content
@@ -1101,8 +1204,12 @@ const SectionManager = ({
                         <button
                           className='btn btn-sm'
                           onClick={(e) => {
-                            const c = currentContent;
+                            const c = currentContent.content;
                             onChangeLi(i, e, c, key);
+                            setContentList((prevState) => [
+                              ...prevState,
+                              { ...currentContent },
+                            ]);
                             clearCurrentContent();
                           }}>
                           Add Content
@@ -1230,8 +1337,12 @@ const SectionManager = ({
                             type='button'
                             className='btn btn-sm'
                             onClick={(e) => {
-                              getContentImage(currentContent);
-                              onChangeImg(i, e, currentContent);
+                              getContentImage(currentContent.content);
+                              onChangeImg(i, e, currentContent.content);
+                              setContentList((prevState) => [
+                                ...prevState,
+                                { ...currentContent },
+                              ]);
                               clearCurrentContent();
                             }}>
                             Add Content

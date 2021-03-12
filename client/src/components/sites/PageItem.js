@@ -1,10 +1,9 @@
 import React, { Fragment, useContext } from "react";
 import SiteContext from "../../context/site/siteContext";
-import SiteForm from "./SiteForm";
 
-const SiteItem = ({ site }) => {
-  const { name, _id } = site;
-  const { getSite, clearCurrentSite, deleteSite, current } = useContext(
+const PageItem = ({ page }) => {
+  const { name, _id } = page;
+  const { getPage, clearCurrentPage, deletePage, currentPage } = useContext(
     SiteContext
   );
   return (
@@ -13,14 +12,16 @@ const SiteItem = ({ site }) => {
         <div className='p-2'>
           <button
             className='btn btn-sm btn-dark'
-            onClick={current ? () => clearCurrentSite() : () => getSite(_id)}>
-            {current ? `Clear ${name} update` : `Edit ${name}`}
+            onClick={
+              currentPage ? () => clearCurrentPage() : () => getPage(_id)
+            }>
+            {currentPage ? `Clear ${name} update` : `Edit ${name}`}
           </button>
         </div>
         <div className='p-2'>
           <button
             className='btn btn-sm btn-danger'
-            onClick={() => deleteSite(_id)}>
+            onClick={() => deletePage(_id)}>
             Delete {name}
           </button>
         </div>
@@ -29,4 +30,4 @@ const SiteItem = ({ site }) => {
   );
 };
 
-export default SiteItem;
+export default PageItem;

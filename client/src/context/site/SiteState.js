@@ -9,14 +9,23 @@ import {
   GET_SITE,
   SET_CURRENTSITE,
   CLEAR_CURRENTSITE,
+  SET_CURRENTPAGE,
+  CLEAR_CURRENTPAGE,
+  SET_CURRENTCOMPONENT,
+  CLEAR_CURRENTCOMPONENT,
   CLEAR_CURRENTCONTENT,
   DELETE_SITE,
+  DELETE_AREA,
   POST_SITE,
   PUT_SITE,
   DELETE_PAGE,
   POST_PAGES,
   PUT_PAGES,
   GET_PAGES,
+  GET_PAGE,
+  PUT_COMPONENT,
+  POST_COMPONENT,
+  DELETE_COMPONENT,
   GET_COMPONENT,
   GET_COMPONENTS,
   GET_REVIEWSSEARCHED,
@@ -24,16 +33,7 @@ import {
   GET_FIRMSSEARCHED,
   GET_BLOGSSEARCHED,
   GET_QUIZSSEARCHED,
-  SET_CURRENTSECTION,
-  CLEAR_CURRENTSECTION,
-  PREVIEW_COMPONENT,
-  MOUNT_COMPONENT,
-  PUT_PAGECSS,
-  SET_CURRENTSITECSS,
-  GET_SITELAYOUTS,
   CLEAR_SITELAYOUT,
-  CLEAR_SITESITECSS,
-  ENFORCE_SITELAYOUT,
   GET_ARTICLESSEARCHED,
   SET_CURRENTFONT,
   SET_CURRENTPALLET,
@@ -44,21 +44,23 @@ import {
 
 const SiteState = (props) => {
   const initialState = {
-    current: null,
-    sites: null,
     error: null,
     layout: null,
-    currentSection: null,
     currentContent: null,
-    page: null,
+    currentPage: null,
+    currentSite: null,
+    currentComponent: null,
     font: null,
     pallet: null,
     content: [],
+    myComponents: null,
+    pages: null,
+    sites: null,
   };
 
   const [state, dispatch] = useReducer(siteReducer, initialState);
 
-  const getSites = async (_id) => {
+  const getSites = async (userid) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +68,7 @@ const SiteState = (props) => {
     };
 
     try {
-      const res = await axios.get(`/api/sites?q=${_id}`, config);
+      const res = await axios.get(`/api/sites/sites?q=${userid}`, config);
 
       dispatch({
         type: GET_SITES,
@@ -84,6 +86,10 @@ const SiteState = (props) => {
     dispatch({ type: CLEAR_CURRENTSITE });
   };
 
+  const setCurrentSite = (site) => {
+    dispatch({ type: SET_CURRENTSITE, payload: site });
+  };
+
   const getSite = async (_id) => {
     const config = {
       headers: {
@@ -92,7 +98,7 @@ const SiteState = (props) => {
     };
 
     try {
-      const res = await axios.get(`/api/sites/${_id}`, config);
+      const res = await axios.get(`/api/sites/sites/${_id}`, config);
 
       dispatch({
         type: GET_SITE,
@@ -113,19 +119,6 @@ const SiteState = (props) => {
     });
   };
 
-  const setCurrentSection = (section) => {
-    dispatch({
-      type: SET_CURRENTSECTION,
-      payload: section,
-    });
-  };
-
-  const clearCurrentSection = () => {
-    dispatch({
-      type: CLEAR_CURRENTSECTION,
-    });
-  };
-
   const setCurrentPallet = (pallet) => {
     dispatch({
       type: SET_CURRENTPALLET,
@@ -133,14 +126,14 @@ const SiteState = (props) => {
     });
   };
 
-  const postSite = async (formData) => {
+  const postSite = async (site) => {
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     };
     try {
-      const res = await axios.post("/api/sites/", formData, config);
+      const res = await axios.post("/api/sites/sites", site, config);
       dispatch({
         type: POST_SITE,
         payload: res.data,
@@ -153,14 +146,14 @@ const SiteState = (props) => {
     }
   };
 
-  const putSite = async (formData, _id) => {
+  const putSite = async (site, _id) => {
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     };
     try {
-      const res = await axios.put(`/api/sites/${_id}`, formData, config);
+      const res = await axios.put(`/api/sites/sites/${_id}`, site, config);
       dispatch({
         type: PUT_SITE,
         payload: res.data,
@@ -175,7 +168,7 @@ const SiteState = (props) => {
 
   const deleteSite = async (_id) => {
     try {
-      await axios.delete(`/api/sites/${_id}`);
+      await axios.delete(`/api/sites/sites/${_id}`);
 
       dispatch({
         type: DELETE_SITE,
@@ -189,7 +182,7 @@ const SiteState = (props) => {
     }
   };
 
-  const getPages = async () => {
+  const deleteArea = async (_id, area) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -197,7 +190,44 @@ const SiteState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/sites/:id/pages", config);
+      await axios.put(`/api/sites/pages/${_id}/areas`, area, config);
+
+      dispatch({
+        type: DELETE_AREA,
+        payload: _id,
+      });
+    } catch (err) {
+      dispatch({
+        type: SITE_ERROR,
+        payload: err.response.data.msg,
+      });
+    }
+  };
+
+  const deleteComponent = async (_id) => {
+    try {
+      await axios.delete(`/api/sites/components/${_id}`);
+
+      dispatch({
+        type: DELETE_COMPONENT,
+        payload: _id,
+      });
+    } catch (err) {
+      dispatch({
+        type: SITE_ERROR,
+        payload: err.response.data.msg,
+      });
+    }
+  };
+  const getPages = async (userid) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.get(`/api/sites/pages?q=${userid}`, config);
 
       dispatch({
         type: GET_PAGES,
@@ -211,14 +241,36 @@ const SiteState = (props) => {
     }
   };
 
-  const postPages = async (formData) => {
+  const getPage = async (_id) => {
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.get(`/api/sites/pages/${_id}`, config);
+
+      dispatch({
+        type: GET_PAGE,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: SITE_ERROR,
+        payload: err.response.data.msg,
+      });
+    }
+  };
+
+  const postPage = async (page) => {
+    const config = {
+      headers: {
+        "Content-Type": "appplication/json",
       },
     };
     try {
-      const res = await axios.post("/api/sites/:id/pages", formData, config);
+      const res = await axios.post("/api/sites/pages", page, config);
       dispatch({
         type: POST_PAGES,
         payload: res.data,
@@ -231,14 +283,14 @@ const SiteState = (props) => {
     }
   };
 
-  const putPages = async (formData, _id) => {
+  const putPage = async (page) => {
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     };
     try {
-      const res = await axios.put(`/api/sites/${_id}/pages`, formData, config);
+      const res = await axios.put(`/api/sites/pages/${page._id}`, page, config);
       dispatch({
         type: PUT_PAGES,
         payload: res.data,
@@ -253,7 +305,7 @@ const SiteState = (props) => {
 
   const deletePage = async (_id) => {
     try {
-      await axios.delete(`/api/sites/${_id}/pages`);
+      await axios.delete(`/api/sites/pages/${_id}`);
 
       dispatch({
         type: DELETE_PAGE,
@@ -267,7 +319,7 @@ const SiteState = (props) => {
     }
   };
 
-  const getComponents = async () => {
+  const getComponents = async (userid) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -275,7 +327,7 @@ const SiteState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/sites/components", config);
+      const res = await axios.get(`/api/sites/components?q=${userid}`, config);
 
       dispatch({
         type: GET_COMPONENTS,
@@ -311,7 +363,7 @@ const SiteState = (props) => {
     }
   };
 
-  const getSiteLayouts = async () => {
+  const postComponent = async (component) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -319,10 +371,10 @@ const SiteState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/sites/layouts", config);
+      const res = await axios.post(`/api/sites/components/`, component, config);
 
       dispatch({
-        type: GET_SITELAYOUTS,
+        type: POST_COMPONENT,
         payload: res.data,
       });
     } catch (err) {
@@ -333,7 +385,7 @@ const SiteState = (props) => {
     }
   };
 
-  const getSiteLayout = async () => {
+  const putComponent = async (component) => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -341,10 +393,14 @@ const SiteState = (props) => {
     };
 
     try {
-      const res = await axios.get("/api/sites/layouts/:id", config);
+      const res = await axios.post(
+        `/api/sites/components/${component._id}`,
+        component,
+        config
+      );
 
       dispatch({
-        type: GET_SITELAYOUTS,
+        type: PUT_COMPONENT,
         payload: res.data,
       });
     } catch (err) {
@@ -366,84 +422,6 @@ const SiteState = (props) => {
     });
   };
 
-  const getCSSLibrary = async () => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    try {
-      const res = await axios.get("/api/sites/csslibrary", config);
-
-      dispatch({
-        type: GET_SITELAYOUTS,
-        payload: res.data,
-      });
-    } catch (err) {
-      dispatch({
-        type: SITE_ERROR,
-        payload: err.response.data.msg,
-      });
-    }
-  };
-
-  const createSiteCSS = (css) => {
-    dispatch({
-      type: SET_CURRENTSITECSS,
-      payload: css,
-    });
-  };
-
-  const clearSiteCSS = () => {
-    dispatch({ type: CLEAR_SITESITECSS });
-  };
-
-  const insertCSSOverride = async (formData, _id) => {
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
-    try {
-      const res = await axios.put(
-        `/api/sites/${_id}/pages/pageCSS`,
-        formData,
-        config
-      );
-      dispatch({
-        type: PUT_PAGECSS,
-        payload: res.data,
-      });
-    } catch (err) {
-      dispatch({
-        type: SITE_ERROR,
-        payload: err.response.data.msg,
-      });
-    }
-  };
-
-  const enforceSiteLayout = (siteLayout, page) => {
-    dispatch({
-      type: ENFORCE_SITELAYOUT,
-      payload: page,
-    });
-  };
-
-  const mountComponent = (data, component) => {
-    dispatch({
-      type: MOUNT_COMPONENT,
-      payload: component,
-    });
-  };
-
-  const previewComponent = (component) => {
-    dispatch({
-      type: PREVIEW_COMPONENT,
-      payload: component,
-    });
-  };
-
   const setContent = (content) => {
     dispatch({
       type: SET_CONTENT,
@@ -453,6 +431,30 @@ const SiteState = (props) => {
   const clearContent = () => {
     dispatch({
       type: CLEAR_CONTENT,
+    });
+  };
+
+  const setCurrentComponent = (component) => {
+    dispatch({
+      type: SET_CURRENTCOMPONENT,
+      payload: component,
+    });
+  };
+  const clearCurrentComponent = () => {
+    dispatch({
+      type: CLEAR_CURRENTCOMPONENT,
+    });
+  };
+
+  const setCurrentPage = (page) => {
+    dispatch({
+      type: SET_CURRENTPAGE,
+      payload: page,
+    });
+  };
+  const clearCurrentPage = () => {
+    dispatch({
+      type: CLEAR_CURRENTPAGE,
     });
   };
 
@@ -486,10 +488,13 @@ const SiteState = (props) => {
   };
 
   const getArticles = async (_id) => {
+    console.log(_id);
     const res = await axios.get(`/api/articles?q=${_id}`);
     res.data.forEach((piece) => {
       piece.contentType = "article";
     });
+
+    console.log(res.data);
     setContent(res.data);
     dispatch({ type: GET_ARTICLESSEARCHED, payload: res.data });
   };
@@ -524,51 +529,53 @@ const SiteState = (props) => {
   return (
     <SiteContext.Provider
       value={{
-        current: state.current,
-        sites: state.sites,
-        content: state.content,
-        currentContent: state.currentContent,
+        error: state.error,
         layout: state.layout,
-        page: state.page,
+        currentContent: state.currentContent,
+        currentPage: state.currentPage,
+        currentSite: state.currentSite,
+        currentComponent: state.currentComponent,
         font: state.font,
         pallet: state.pallet,
-        error: state.error,
-        getSites,
-        getSite,
+        content: state.content,
+        myComponents: state.myComponents,
+        pages: state.pages,
+        sites: state.sites,
         setCurrentFont,
         setCurrentPallet,
+        getSites,
+        getSite,
+        setCurrentSite,
         clearCurrentSite,
-        setCurrentSection,
-        clearCurrentSection,
         deleteSite,
         postSite,
         putSite,
-        previewComponent,
-        mountComponent,
+        setCurrentContent,
+        setContent,
+        clearContent,
+        postComponent,
         getComponent,
         getComponents,
-        getCSSLibrary,
-        getSiteLayouts,
-        getSiteLayout,
-        enforceSiteLayout,
-        setSiteLayout,
-        clearSiteLayout,
-        getPages,
-        postPages,
-        putPages,
-        clearContent,
+        putComponent,
+        deleteComponent,
+        deleteArea,
+        setCurrentComponent,
+        clearCurrentComponent,
         deletePage,
-        createSiteCSS,
-        insertCSSOverride,
-        clearSiteCSS,
-        setCurrentContent,
+        postPage,
+        getPage,
+        getPages,
+        putPage,
+        setCurrentPage,
+        clearCurrentPage,
+        deletePage,
         getFirms,
         getVerticals,
-        clearCurrentContent,
         getBlogs,
         getArticles,
         getQuizs,
         getReviews,
+        clearCurrentContent,
       }}>
       {props.children}
     </SiteContext.Provider>

@@ -4,7 +4,7 @@ import SiteContext from "../../context/site/siteContext";
 const SiteCreator = () => {
   const [newSite, setNewSite] = useState(false);
   const siteContext = useContext(SiteContext);
-  const { clearCurrentSite, current, clearContent, content } = siteContext;
+  const { clearCurrentSite, currentSite, clearContent, content } = siteContext;
   const setForm = useCallback(() => {
     setNewSite((prevState) => !prevState);
   }, []);
@@ -12,10 +12,12 @@ const SiteCreator = () => {
   return (
     <Fragment>
       <div
-        className={current !== null ? "grid-2 bg-light card" : "bg-light card"}>
+        className={
+          currentSite !== null ? "grid-2 bg-light card" : "bg-light card"
+        }>
         <button
           onClick={
-            current != null
+            currentSite != null
               ? () => {
                   clearCurrentSite();
                   clearContent();
@@ -23,13 +25,12 @@ const SiteCreator = () => {
                 }
               : () => {
                   setNewSite((prevState) => !prevState);
-                  clearContent();
                 }
           }
           className='btn btn-block btn-primary'>
           {newSite === false ? "Create New Site" : "Clear New Site"}
         </button>
-        {current !== null ? (
+        {currentSite !== null ? (
           <button
             onClick={() => {
               clearCurrentSite();

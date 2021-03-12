@@ -4,29 +4,31 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  Component,
 } from "react";
-import App from "../component/site/_App";
 import SiteContext from "../../context/site/siteContext";
 import ImageContext from "../../context/image/imageContext";
+import PageList from "./PageList";
+import SiteList from "./SiteList";
+import PageViewer from "./PageViewer";
+import SiteManager from "./SiteManager";
+import PageManager from "./PageManager";
+import ComponentList from "./ComponentList";
 import AuthContext from "../../context/auth/authContext";
 import ColorPalletPicker from "./ColorPalletPicker";
 import FontStylePicker from "./FontStylePicker";
-import ElementCreator from "./ElementCreator";
-import styled, { ThemeProvider } from "styled-components";
 import { useTheme } from "../../components/component/state/useTheme";
-import { GlobalStyles } from "../../components/component/state/globals";
 import SectionManager from "./SectionManager";
 import SectionViewer from "./SectionViewer";
 import ContentManager from "./ContentManager";
 import WebFont from "webfontloader";
 import { useComponentContext } from "../component/state/componentState";
-import { NIL } from "uuid";
-import { set } from "lodash";
 
-const SiteForm = ({ site }) => {
+const SiteForm = () => {
   const { themeChange, setThemeChange, getFonts } = useTheme();
+  const { user } = useContext(AuthContext);
+  const userid = user._id;
 
+  console.log(userid);
   const { components } = useComponentContext();
 
   useEffect(() => {
@@ -37,35 +39,33 @@ const SiteForm = ({ site }) => {
     });
   });
   const siteContext = useContext(SiteContext);
-  const authContext = useContext(AuthContext);
+
   const imageContext = useContext(ImageContext);
   const { getContentImage, image } = imageContext;
-  const { user } = authContext;
-  const { _id } = user;
+
   const {
     setCurrentFont,
     setCurrentPallet,
-    getSites,
-    getSite,
-    setCurrentSite,
+    clearCurrentPage,
+    clearCurrentComponent,
     clearCurrentSite,
-    deleteSite,
+    currentSite,
+    currentPage,
+    currentComponent,
     postSite,
     putSite,
-    previewComponent,
-    mountComponent,
-    getThemes,
-    getSiteLayouts,
-    setSiteLayout,
-    clearSiteLayout,
     postPage,
-    current,
     putPage,
-    deletePage,
+    postComponent,
+    putComponent,
+    getComponents,
+    getPages,
+    getSites,
+    myComponents,
+    sites,
+    pages,
     getFirms,
     getVerticals,
-    setCurrentElements,
-    currentElements,
     getBlogs,
     getArticles,
     getQuizs,
@@ -74,17 +74,19 @@ const SiteForm = ({ site }) => {
     font,
     pallet,
     currentContent,
-    clearCurrentContent,
   } = siteContext;
 
   useEffect(() => {
-    if (content.length === 0) {
-      getVerticals(_id);
-      getBlogs(_id);
-      getArticles(_id);
-      getQuizs(_id);
-      getReviews(_id);
-      getFirms(_id);
+    if (userid !== null) {
+      getSites(userid);
+      getPages(userid);
+      getComponents(userid);
+      getVerticals(userid);
+      getBlogs(userid);
+      getArticles(userid);
+      getQuizs(userid);
+      getReviews(userid);
+      getFirms(userid);
     }
   }, []);
 
@@ -129,6 +131,7 @@ const SiteForm = ({ site }) => {
     faIconPosition: "",
     fontStyle: "",
     font: "",
+    buttonStyle: "",
     background: "",
     color: "",
     sectionOrdinality: 0,
@@ -170,6 +173,11 @@ const SiteForm = ({ site }) => {
     type: "button",
     text: "",
     action: "",
+    actionComponent1: "",
+    actionComponent2: "",
+    attachedContent: "",
+    simulatedState: "",
+    code: {},
     sectionArea: "",
     font: "",
     color: "",
@@ -187,6 +195,8 @@ const SiteForm = ({ site }) => {
   const [button, setButton] = useState([]);
   const [img, setImg] = useState([]);
   const [vid, setVid] = useState([]);
+  const [simulateModal, setSimulateModal] = useState(false);
+  const [simulateElArr, setSimulateElArr] = useState(0);
 
   const HTMLElement = (key) => {
     const newH = [...h, { ...sectionH }];
@@ -229,23 +239,26 @@ const SiteForm = ({ site }) => {
     if (typeof delCheck !== "number" && currentContent) {
       newResults[i] = {
         ...newResults[i],
-        [key]: currentContent,
+        [key]: currentContent.content,
       };
     }
-
     if (components.map((comp) => comp.name).includes(delCheck)) {
       newResults[i] = {
         ...newResults[i],
         [name]: value,
       };
 
-      componentH.current = [...componentH.current, { ...newResults[i] }];
-      forceUpdate();
+      setVariableComponent({
+        ...VariableComponent,
+        props: { ...VariableComponent.props, h: newResults },
+      });
     }
 
     setH(newResults);
-  };
 
+    console.log(VariableComponent);
+  };
+  const [componentString, setComponentString] = useState("");
   const onChangeP = (i, e, delCheck, font, pallet) => {
     const { value, name } = e.currentTarget;
     let newResults = [...p];
@@ -259,8 +272,19 @@ const SiteForm = ({ site }) => {
     if (typeof delCheck !== "number" && currentContent) {
       newResults[i] = {
         ...newResults[i],
-        [name]: currentContent,
+        [name]: currentContent.content,
       };
+    }
+    if (components.map((comp) => comp.name).includes(delCheck)) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+
+      setVariableComponent({
+        ...VariableComponent,
+        props: { ...VariableComponent.props, p: newResults },
+      });
     }
     setP(newResults);
   };
@@ -273,9 +297,22 @@ const SiteForm = ({ site }) => {
         [name]: value,
       };
     }
+
+    if (components.map((comp) => comp.name).includes(delCheck)) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+
+      setVariableComponent({
+        ...VariableComponent,
+        props: { ...VariableComponent.props, icon: newResults },
+      });
+    }
     setI(newResults);
   };
   const onChangeA = (i, e, delCheck) => {
+    //STYLE AS BUTTON TOGGLE FOR EXTERNAL LINKS
     const { value, name } = e.currentTarget;
     let newResults = [...a];
     if (!delCheck) {
@@ -283,6 +320,24 @@ const SiteForm = ({ site }) => {
         ...newResults[i],
         [name]: value,
       };
+    }
+
+    if (typeof delCheck !== "number" && currentContent) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: currentContent.content,
+      };
+    }
+    if (components.map((comp) => comp.name).includes(delCheck)) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+
+      setVariableComponent({
+        ...VariableComponent,
+        props: { ...VariableComponent.props, a: newResults },
+      });
     }
     setA(newResults);
   };
@@ -295,8 +350,144 @@ const SiteForm = ({ site }) => {
         [name]: value,
       };
     }
+
+    let button = newResults[i];
+
+    if (typeof delCheck !== "number" && currentContent) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: currentContent.content,
+      };
+    }
+
+    if (button["action"] === "toggleModal" && delCheck.actionComponent1) {
+      newResults[i] = {
+        ...newResults[i],
+        code: {
+          importStatements: ['import {useState} from "react"'],
+          funcCode: [
+            `const [${delCheck.actionComponent1}Modal, toggle${delCheck.actionComponent1}Modal] = useState(false)`,
+          ],
+          actionComponent1: `(e)=>toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)`,
+          actionComponent2Load: `{${delCheck.actionComponet1}Modal === "true" && MyComponent }`,
+          actionComponent2Revert: `(e)=>toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)`,
+        },
+        actionComponent1: delCheck.actionComponent1,
+        actionComponent2: delCheck.actionComponent2,
+        simulateState: simulateModal,
+        simulateFunc: setSimulateModal((prevState) => !prevState),
+      };
+    } else if (value === "postForm" && delCheck.actionComponent1) {
+      newResults[i] = {
+        ...newResults[i],
+        code: {
+          importStatements: [
+            'import { useAppContext } from "../contexts/state.js";',
+            'import { useRouter } from "next/router";',
+          ],
+          funcCode: [
+            `const {addLead}= useAppContext()`,
+            "const router = useRouter();",
+          ],
+          actionComponent1:
+            delCheck.actionComponent2 === delCheck.actionComponent1
+              ? `(e)=>{ addLead(lead); toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)};`
+              : `(e)=>{ addLead(lead); router.push({
+                pathname: /${delCheck.actionComponent2.name}/${delCheck.actionComponent2.id},
+                query: { data: ${delCheck.actionComponent2.id} },
+              });}`,
+        },
+        actionComponent1: delCheck.actionComponent1,
+        actionComponent2: delCheck.actionComponent2,
+      };
+    } else if (value === "getContent" && delCheck.actionComponent1) {
+      newResults[i] = {
+        ...newResults[i],
+        code: {
+          importStatements: [
+            'import { useAppContext } from "../contexts/state.js";',
+            'import { useRouter } from "next/router";',
+          ],
+          funcCode: [
+            `const {getContent}= useAppContext()`,
+            "const router = useRouter();",
+          ],
+          actionComponent1:
+            delCheck.actionComponent2 === delCheck.actionComponent1
+              ? `(e)=>{ getContent(_id); toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)};`
+              : `(e)=>{ addLead(lead); router.push({
+                pathname: /${delCheck.actionComponent2.name}/${delCheck.actionComponent2.id},
+                query: { data: ${delCheck.actionComponent2.id} },
+              });}`,
+        },
+        actionComponent1: delCheck.actionComponent1,
+        actionComponent2: delCheck.actionComponent2,
+        attachedContent: "",
+      };
+    } else if (value === "internalSiteLink" && delCheck.actionComponent1) {
+      newResults[i] = {
+        ...newResults[i],
+        code: {
+          importStatements: ['import { useRouter } from "next/router";'],
+          funcCode: ["const router = useRouter();"],
+          actionComponent1: `(e)=>{ router.push({
+                pathname: /${delCheck.actionComponent2.name}/${delCheck.actionComponent2.id},
+                query: { data: ${delCheck.ctionComponent2.id} },
+              });}`,
+        },
+        actionComponent1: delCheck.actionComponent1,
+        actionComponent2: delCheck.actionComponent2,
+      };
+    } else if (value === "prevElement" && delCheck.actionComponent1) {
+      newResults[i] = {
+        ...newResults[i],
+        code: {
+          importStatements: ['import {useState} from "react"'],
+          funcCode: [
+            `const [${delCheck.actionComponent1}Incrementer, toggle${delCheck.actionComponent1}Incrementer] = useState(0)`,
+          ],
+          actionComponent1: `toggle${delCheck.actionComponent1}Incrementer(${delCheck.actionComponent1}Incrementer-1)`,
+          actionComponent2Load: `{${delCheck.actionComponet1}Modal === "true" && MyComponent }`,
+          actionComponent2Revert: `(e)=>toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)`,
+        },
+        actionComponent1: delCheck.actionComponent1,
+        actionComponent2: delCheck.actionComponent2,
+        simulateState: simulateElArr,
+        simulateFunc: setSimulateElArr(simulateElArr - 1),
+      };
+    } else if (value === "nextElement" && delCheck.actionComponent1) {
+      newResults[i] = {
+        ...newResults[i],
+        code: {
+          importStatements: ['import {useState} from "react"'],
+          funcCode: [
+            `const [${delCheck.actionComponent1}Incrementer, toggle${delCheck.actionComponent1}Incrementer] = useState(0)`,
+          ],
+          actionComponent1: `toggle${delCheck.actionComponent1}Incrementer(${delCheck.actionComponent1}Incrementer+1)`,
+          actionComponent2Load: `{${delCheck.actionComponet1}Modal === "true" && MyComponent }`,
+          actionComponent2Revert: `(e)=>toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)`,
+        },
+        actionComponent1: delCheck.actionComponent1,
+        actionComponent2: delCheck.actionComponent2,
+        simulateState: simulateElArr,
+        simulateFunc: setSimulateElArr(simulateElArr + 1),
+      };
+    }
+
+    if (components.map((comp) => comp.name).includes(delCheck)) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+
+      setVariableComponent({
+        ...VariableComponent,
+        props: { ...VariableComponent.props, button: newResults },
+      });
+    }
     setButton(newResults);
   };
+
   const onChangeImg = (i, e, delCheck) => {
     const { value, name } = e.currentTarget;
     let newResults = [...img];
@@ -308,6 +499,25 @@ const SiteForm = ({ site }) => {
         code: URL.createObjectURL(new Blob([image], { type: "img/png" })),
       };
       setImg(newResults);
+    }
+
+    if (typeof delCheck !== "number" && currentContent) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: currentContent.content,
+      };
+    }
+
+    if (components.map((comp) => comp.name).includes(delCheck)) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+
+      setVariableComponent({
+        ...VariableComponent,
+        props: { ...VariableComponent.props, img: newResults },
+      });
     }
   };
 
@@ -333,6 +543,24 @@ const SiteForm = ({ site }) => {
         [name]: value,
       };
     }
+    if (typeof delCheck !== "number" && currentContent) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: currentContent.content,
+      };
+    }
+    if (components.map((comp) => comp.name).includes(delCheck)) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+
+      setVariableComponent({
+        ...VariableComponent,
+        props: { ...VariableComponent.props, vid: newResults },
+      });
+    }
+
     setVid(newResults);
   };
 
@@ -345,81 +573,109 @@ const SiteForm = ({ site }) => {
         [name]: value,
       };
     }
+    if (components.map((comp) => comp.name).includes(delCheck)) {
+      newResults[i] = {
+        ...newResults[i],
+        [name]: value,
+      };
+
+      setVariableComponent({
+        ...VariableComponent,
+        props: { ...VariableComponent.props, li: newResults },
+      });
+    }
     setLi(newResults);
   };
 
   const section = {
-    html: "",
-    javascript: "",
+    components: [
+      {
+        html: "",
+        javascript: "",
+        name: "",
+        sectionArea: "",
+      },
+    ],
     staticAssets: "",
+    area: "",
   };
 
-  const [pages, setPages] = useState([
-    {
-      url: "",
-      route: "",
-      pageType: "",
-      firm: {},
-      verticals: [{}],
-      areas: {
-        head: {
-          metaTags: [{ tag: "", content: "" }],
-          title: "",
+  const [page, setPage] = useState({
+    url: "",
+    route: "",
+    pageType: "",
+    name: "",
+    firm: {},
+    verticals: [{}],
+    areas: {
+      head: {
+        metaTags: [{ tag: "", content: "" }],
+        title: "",
+      },
+      nav: {
+        logobox: {
+          sections: [{ ...section }],
         },
-        nav: {
-          logobox: {
-            sections: [{ ...section }],
-          },
-          nav1: {
-            sections: [{ ...section }],
-          },
-          nav2: {
-            sections: [{ ...section }],
-          },
-          siteLinks: {
-            sections: [{ ...section }],
-          },
+        nav1: {
+          sections: [{ ...section }],
         },
-        header: {
-          heroText: {
-            sections: [{ ...section }],
-          },
-          heroImage: {
-            sections: [{ ...section }],
-          },
-          featuredContent: {
-            sections: [{ ...section }],
-          },
-          heroForm: {
-            sections: [{ ...section }],
-          },
+        nav2: {
+          sections: [{ ...section }],
         },
-        main: {
-          rows: [
-            {
-              left: [{ ...section }],
-              center: [{ ...section }],
-              right: [{ ...section }],
-            },
-          ],
+        siteLinks: {
+          sections: [{ ...section }],
         },
-        footer: {
-          logobox: {
-            sections: [{ ...section }],
+      },
+      header: {
+        heroText: {
+          sections: [{ ...section }],
+        },
+        heroImage: {
+          sections: [{ ...section }],
+        },
+        featuredContent: {
+          sections: [{ ...section }],
+        },
+        heroForm: {
+          sections: [{ ...section }],
+        },
+      },
+      main: {
+        rows: [
+          {
+            left: [{ ...section }],
+            center: [{ ...section }],
+            right: [{ ...section }],
           },
-          footer1: {
-            sections: [{ ...section }],
-          },
-          footer2: {
-            sections: [{ ...section }],
-          },
-          siteLinks: {
-            sections: [{ ...section }],
-          },
+        ],
+      },
+      footer: {
+        logobox: {
+          sections: [{ ...section }],
+        },
+        footer1: {
+          sections: [{ ...section }],
+        },
+        footer2: {
+          sections: [{ ...section }],
+        },
+        siteLinks: {
+          sections: [{ ...section }],
         },
       },
     },
-  ]);
+  });
+
+  const [site, setSite] = useState({
+    name: "",
+    url: "",
+    type: "",
+    staticAssets: [],
+    pages: [{ ...page }],
+    firm: "",
+    verticals: [],
+    metaTags: [{ tag: "", content: "" }],
+  });
 
   const siteTypes = [
     {
@@ -908,44 +1164,6 @@ const SiteForm = ({ site }) => {
     },
   ];
 
-  const componentStyles = [
-    "dropdowncontact",
-    "simplelayover",
-    "layovercollapse",
-    "imageopen",
-    "logostack",
-    "horizontalimg",
-    "expandingcircle",
-    "imagesselector",
-    "imageexpander",
-    "reflexive",
-    "bouncysitelinks",
-    "gradientpillsitelinks",
-    "layoverboxsitelinks",
-    "slidingsitelinks",
-    "bigsociallinks",
-    "smallsociallinks",
-    "curlreveal",
-    "navbutton1",
-    "navbutton2",
-    "dropdown",
-    "burgermenu",
-    "imageset",
-    "halfhalf",
-    "vertical",
-    "halfhalf-animated",
-    "dimension",
-    "textinacircle",
-    "deconstructed",
-    "threeD",
-    "verticalnavlinks",
-    "dualImage",
-    "layoverfade",
-    "focusedlayover",
-    "shortbounce",
-    "textreveal",
-  ];
-
   const [currentTheme, setCurrentTheme] = useState({
     primary: "",
     light: "",
@@ -985,19 +1203,25 @@ const SiteForm = ({ site }) => {
 
     return setCurrentFont(font);
   };
-  const [keya, setKey] = useState("");
 
+  const [keya, setKey] = useState("");
   const [mount, setMount] = useState(null);
   const [compStyle, setCompStyle] = useState(null);
   const [loaded, setLoaded] = useState(false);
-  const [currentComponent, setCurrentComponent] = useState(null);
+  const [currComponent, setCurrComponent] = useState(null);
   const [VariableComponent, setVariableComponent] = useState(null);
   const [sectAr, setSectionArea] = useState(null);
+  const [displayState, setDisplayState] = useState("");
+  const [contentList, setContentList] = useState([]);
+  const changeDisplay = useCallback((displayState) => {
+    setDisplayState(displayState);
+  }, []);
+
   useEffect(() => {
     if (mount != null) {
       const component = components.filter((comp) => comp.name === mount)[0];
 
-      setCurrentComponent(component);
+      setCurrComponent(component);
     }
   }, [mount]);
 
@@ -1010,9 +1234,23 @@ const SiteForm = ({ site }) => {
   const componentLi = useRef(li);
   const componentButton = useRef(button);
 
-  const convertStringToComponent = (currentComponent, compStyle, sectAr) => {
-    if (currentComponent && currentComponent.styles && compStyle) {
-      const strArr = currentComponent.styles
+  const component = {
+    h,
+    p,
+    icon,
+    img,
+    vid,
+    a,
+    li,
+    button,
+    contentList,
+    componentString,
+  };
+
+  console.log(component);
+  const convertStringToComponent = (currComponent, compStyle, sectAr) => {
+    if (currComponent && currComponent.styles && compStyle) {
+      const strArr = currComponent.styles
         .filter((comp) => comp.compStyle === compStyle)
         .map((comp) => comp.els)[0];
 
@@ -1025,7 +1263,7 @@ const SiteForm = ({ site }) => {
             font: "",
             color: "",
             compStyle: compStyle,
-            componentName: currentComponent.name,
+            componentName: currComponent.name,
             type: "h",
             fontStyle: "",
             background: "",
@@ -1037,7 +1275,7 @@ const SiteForm = ({ site }) => {
           setH((prevState) => [...prevState, { ...sectH }]);
           componentH.current = [...componentH.current, { ...sectH }];
         } else {
-          currentComponent.els.forEach((el) => {
+          strArr.forEach((el) => {
             el === "p" &&
               setP((prevState) => [
                 ...prevState,
@@ -1046,7 +1284,7 @@ const SiteForm = ({ site }) => {
                   sectionArea: sectAr,
                   text: "Sample Text",
                   compStyle: compStyle,
-                  componentName: currentComponent.name,
+                  componentName: currComponent.name,
                 },
               ]);
             componentP.current = [
@@ -1056,7 +1294,7 @@ const SiteForm = ({ site }) => {
                 sectionArea: sectAr,
                 text: "Sample Text",
                 compStyle: compStyle,
-                componentName: currentComponent.name,
+                componentName: currComponent.name,
               },
             ];
             el === "li" &&
@@ -1067,7 +1305,7 @@ const SiteForm = ({ site }) => {
                   sectionArea: sectAr,
                   text: "Sample Text",
                   compStyle: compStyle,
-                  componentName: currentComponent.name,
+                  componentName: currComponent.name,
                 },
               ]);
             componentLi.current = [
@@ -1077,7 +1315,7 @@ const SiteForm = ({ site }) => {
                 sectionArea: sectAr,
                 text: "Sample Text",
                 compStyle: compStyle,
-                componentName: currentComponent.name,
+                componentName: currComponent.name,
               },
             ];
             el === "i" &&
@@ -1088,7 +1326,7 @@ const SiteForm = ({ site }) => {
                   sectionArea: sectAr,
                   faIcon: "fas fa-glasses",
                   compStyle: compStyle,
-                  componentName: currentComponent.name,
+                  componentName: currComponent.name,
                 },
               ]);
             componentI.current = [
@@ -1098,7 +1336,7 @@ const SiteForm = ({ site }) => {
                 sectionArea: sectAr,
                 faIcon: "fas fa-glasses",
                 compStyle: compStyle,
-                componentName: currentComponent.name,
+                componentName: currComponent.name,
               },
             ];
             el === "a" &&
@@ -1109,7 +1347,7 @@ const SiteForm = ({ site }) => {
                   sectionArea: sectAr,
                   text: "Sample Text",
                   compStyle: compStyle,
-                  componentName: currentComponent.name,
+                  componentName: currComponent.name,
                 },
               ]);
             componentA.current = [
@@ -1119,7 +1357,7 @@ const SiteForm = ({ site }) => {
                 sectionArea: sectAr,
                 text: "Sample Text",
                 compStyle: compStyle,
-                componentName: currentComponent.name,
+                componentName: currComponent.name,
               },
             ];
             el === "button" &&
@@ -1130,7 +1368,7 @@ const SiteForm = ({ site }) => {
                   sectionArea: sectAr,
                   text: "Sample Text",
                   compStyle: compStyle,
-                  componentName: currentComponent.name,
+                  componentName: currComponent.name,
                 },
               ]);
             componentButton.current = [
@@ -1140,7 +1378,7 @@ const SiteForm = ({ site }) => {
                 sectionArea: sectAr,
                 text: "Sample Text",
                 compStyle: compStyle,
-                componentName: currentComponent.name,
+                componentName: currComponent.name,
               },
             ];
             el === "img" &&
@@ -1150,7 +1388,7 @@ const SiteForm = ({ site }) => {
                   ...sectionImg,
                   sectionArea: sectAr,
                   compStyle: compStyle,
-                  componentName: currentComponent.name,
+                  componentName: currComponent.name,
                 },
               ]);
             componentImg.current = [
@@ -1159,7 +1397,7 @@ const SiteForm = ({ site }) => {
                 ...sectionImg,
                 sectionArea: sectAr,
                 compStyle: compStyle,
-                componentName: currentComponent.name,
+                componentName: currComponent.name,
               },
             ];
             el === "vid" &&
@@ -1169,7 +1407,7 @@ const SiteForm = ({ site }) => {
                   ...sectionVid,
                   sectionArea: sectAr,
                   compStyle: compStyle,
-                  componentName: currentComponent.name,
+                  componentName: currComponent.name,
                 },
               ]);
             componentVid.current = [
@@ -1178,14 +1416,14 @@ const SiteForm = ({ site }) => {
                 ...sectionVid,
                 sectionArea: sectAr,
                 compStyle: compStyle,
-                componentName: currentComponent.name,
+                componentName: currComponent.name,
               },
             ];
           });
         }
       }
     }
-    const ComponentName = currentComponent.func;
+    const ComponentName = currComponent.func;
 
     return (otherProps) => (
       <ComponentName
@@ -1206,22 +1444,76 @@ const SiteForm = ({ site }) => {
     );
   };
 
-  console.log(h);
+  console.log(componentString);
   return (
     <div>
-      <div style={{ height: "75px" }} className='grid-4 bg-light'>
-        {pallet && (
-          <div
-            className='card text-center py-1 bg-dark'
-            style={{ height: "50px", width: "200px" }}>
-            Pallet: {pallet.name}
-          </div>
-        )}
-        {font && <div className='card lead bg-dark '>Font: {font}</div>}
-        {currentContent && (
-          <div className='card lead bg-dark '>Content Set</div>
-        )}
-        <div>Section array for this area</div>
+      <div style={{ height: "75px" }} className='navbar bg-light'>
+        <ul>
+          {pallet && (
+            <li
+              className='card text-center py-1 bg-dark'
+              style={{ height: "50px", width: "200px" }}>
+              Pallet: {pallet.name}
+            </li>
+          )}
+          {font && <div className='card lead bg-dark '>Font: {font}</div>}
+          {currentContent && (
+            <li
+              style={{ height: "50px", width: "200px" }}
+              className='card lead bg-dark '>
+              Content Set
+            </li>
+          )}
+          {currentComponent || currentSite || currentPage ? (
+            <li
+              style={{ height: "50px", width: "200px" }}
+              className='card lead bg-dark '>
+              <button
+                className='btn btn-secondary btn-sm'
+                onClick={() => {
+                  (currentComponent && putComponent(currentComponent._id)) ||
+                    (currentPage && putPage(currentPage._id)) ||
+                    (currentSite && putSite(currentSite._id));
+                  (currentComponent && clearCurrentComponent()) ||
+                    (currentPage && clearCurrentPage()) ||
+                    (currentSite && clearCurrentSite());
+                }}>
+                Update
+                {(currentComponent && currentComponent.name) ||
+                  (currentPage && currentPage.name) ||
+                  (currentSite && currentSite.name)}
+              </button>
+            </li>
+          ) : (
+            <li className='card all-center grid-2 mx-3'>
+              <div>
+                {" "}
+                <select
+                  name='displayState'
+                  onChange={(e) => setDisplayState(e.target.value)}>
+                  <option>Get Started...</option>
+                  <option value='site'>Create New Site</option>
+                  <option value='page'>Create New Page</option>
+                  <option value='component'>Create New Component</option>
+                </select>
+              </div>
+              <div>
+                {" "}
+                <button
+                  className='btn btn-dark btn-block'
+                  onClick={() =>
+                    (displayState === "site" && postSite(site)) ||
+                    (displayState === "page" && postPage(page)) ||
+                    (displayState === "component" && postComponent(section))
+                  }>
+                  Save New{" "}
+                  {displayState.slice(0, 1).toUpperCase() +
+                    displayState.slice(1, displayState.length)}
+                </button>
+              </div>
+            </li>
+          )}
+        </ul>
       </div>
 
       <div className='grid-3b'>
@@ -1275,19 +1567,19 @@ const SiteForm = ({ site }) => {
                 </option>
               ))}
             </select>
-            {currentComponent && (
+            {currComponent && (
               <input
                 type='text'
                 name='sectAr'
                 onChange={(e) => setSectionArea(e.target.value)}
               />
             )}
-            {currentComponent && currentComponent.hasOwnProperty("styles") ? (
+            {currComponent && currComponent.hasOwnProperty("styles") ? (
               <select
                 name='compStyle'
                 onChange={(e) => setCompStyle(e.target.value)}>
                 <option></option>
-                {currentComponent.styles.map((style, i) => (
+                {currComponent.styles.map((style, i) => (
                   <option key={i} value={style.compStyle}>
                     {style.compStyle}
                   </option>
@@ -1300,7 +1592,7 @@ const SiteForm = ({ site }) => {
               className='btn primary btn-block'
               onClick={() => {
                 const comp = convertStringToComponent(
-                  currentComponent,
+                  currComponent,
                   compStyle,
                   sectAr
                 );
@@ -1309,14 +1601,71 @@ const SiteForm = ({ site }) => {
                   setLoaded((prevState) => !prevState),
                   2000
                 );
-                setCurrentComponent(null);
+                setCurrComponent(null);
               }}>
               Add Component
             </button>
           </div>
         </div>
         <div>
-          <SectionViewer
+          {displayState === "component" && (
+            <SectionViewer
+              a={a}
+              icon={icon}
+              li={li}
+              p={p}
+              componentString={componentString}
+              setComponentString={setComponentString}
+              h={h}
+              vid={vid}
+              img={img}
+              button={button}
+              section={section}
+              loaded={loaded}
+              pallet={pallet}
+              VariableComponent={VariableComponent}
+            />
+          )}
+
+          {displayState === "page" && (
+            <PageViewer
+              a={a}
+              icon={icon}
+              li={li}
+              p={p}
+              h={h}
+              vid={vid}
+              img={img}
+              button={button}
+              section={section}
+              loaded={loaded}
+              pallet={pallet}
+              VariableComponent={VariableComponent}
+            />
+          )}
+
+          {displayState === "site" && (
+            <SiteManager changeDisplay={changeDisplay} />
+          )}
+        </div>
+        <div>
+          <ContentManager />
+        </div>
+      </div>
+
+      <div className='card bg-light'>
+        {displayState === "component" && (
+          <SectionManager
+            onChangeA={onChangeA}
+            onChangeButton={onChangeButton}
+            onChangeP={onChangeP}
+            onChangeH={onChangeH}
+            onChangeIcon={onChangeIcon}
+            onChangeImg={onChangeImg}
+            onChangeImg2={onChangeImg2}
+            setContentList={setContentList}
+            onChangeVid={onChangeVid}
+            onChangeLi={onChangeLi}
             a={a}
             icon={icon}
             li={li}
@@ -1325,35 +1674,24 @@ const SiteForm = ({ site }) => {
             vid={vid}
             img={img}
             button={button}
-            section={section}
-            loaded={loaded}
-            pallet={pallet}
-            VariableComponent={VariableComponent}
           />
+        )}
+        {displayState === "page" && (
+          <PageManager changeDisplay={changeDisplay} />
+        )}
+      </div>
+
+      <div className='card bg-light'>
+        <div className='my-1'>
+          {sites && <SiteList changeDisplay={changeDisplay} />}
         </div>
-        <div>
-          <ContentManager />
+        <div className='my-1'>
+          {pages && <PageList changeDisplay={changeDisplay} />}
+        </div>
+        <div className='my-1'>
+          {myComponents && <ComponentList changeDisplay={changeDisplay} />}
         </div>
       </div>
-      <SectionManager
-        onChangeA={onChangeA}
-        onChangeButton={onChangeButton}
-        onChangeP={onChangeP}
-        onChangeH={onChangeH}
-        onChangeIcon={onChangeIcon}
-        onChangeImg={onChangeImg}
-        onChangeImg2={onChangeImg2}
-        onChangeVid={onChangeVid}
-        onChangeLi={onChangeLi}
-        a={a}
-        icon={icon}
-        li={li}
-        p={p}
-        h={h}
-        vid={vid}
-        img={img}
-        button={button}
-      />
     </div>
   );
 };

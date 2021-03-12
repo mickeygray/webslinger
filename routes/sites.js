@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const Site = require("../models/Site");
+const Page = require("../models/Page");
+const Component = require("../models/Component");
 const { check, validationResult } = require("express-validator");
 const GridFsStorage = require("multer-gridfs-storage");
 const config = require("config");
@@ -34,7 +36,7 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
-router.get("/", auth, async (req, res) => {
+router.get("/sites", auth, async (req, res) => {
   try {
     const sites = await Site.find({ "user": req.query.q });
     res.json(sites);
@@ -44,11 +46,119 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.get("/:id", auth, async (req, res) => {
+router.get("/components", auth, async (req, res) => {
+  try {
+    const components = await Component.find({ "user": req.query.q });
+    res.json(components);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.get("/pages", auth, async (req, res) => {
+  try {
+    const pages = await Page.find({ "user": req.query.q });
+    res.json(pages);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.get("/sites/:id", auth, async (req, res) => {
   try {
     console.log(req.params);
     const site = await Site.findById(req.params.id);
     res.json(site);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.get("/pages/:id", auth, async (req, res) => {
+  try {
+    console.log(req.params);
+    const page = await Page.findById(req.params.id);
+    res.json(page);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+router.get("/components/:id", auth, async (req, res) => {
+  try {
+    console.log(req.params);
+    const component = await Component.findById(req.params.id);
+    res.json(component);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.post("/sites", auth, upload.any(), async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const {
+    name,
+    url,
+    type,
+    staticAssets,
+    pages,
+    firm,
+    vertical,
+    metaTags,
+  } = req.body;
+
+  try {
+    const newSite = new Site({
+      name,
+      url,
+      type,
+      staticAssets,
+      pages,
+      firm,
+      vertical,
+      metaTags,
+    });
+
+    const site1 = await newSite.save();
+
+    res.json(site1);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+router.post("/pages", auth, upload.any(), async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { name, url, route, pageType, firm, verticals, areas } = req.body;
+
+  try {
+    const newPage = new Page({
+      url,
+      name,
+      route,
+      pageType,
+      name,
+      firm,
+      verticals,
+      areas,
+    });
+
+    const page1 = await newPage.save();
+
+    res.json(page1);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -310,48 +420,28 @@ router.get("/blogs/latest", auth, async (req, res) => {
   res.json(blogs);
 });
 
-router.put("/:id", upload.any(), auth, async (req, res) => {
+router.put("/sites/:id", upload.any(), auth, async (req, res) => {
   const {
     name,
     url,
-    globalCSS,
     type,
-    navbar,
-    faq,
-    forms,
-    logo,
-    sitePages,
+    staticAssets,
+    pages,
     firm,
-    vertical,
-    aboutPage,
-    homePage,
-    splashPages,
+    verticals,
     metaTags,
-    pageStyle,
-    enforcePageStyle,
-    colors,
   } = req.body;
 
   // Build site object
   const siteFields = {};
   if (name) siteFields.name = name;
   if (url) siteFields.url = url;
-  if (globalCSS) siteFields.globalCSS = globalCSS;
   if (type) siteFields.type = type;
-  if (faq) siteFields.faq = faq;
-  if (navbar) siteFields.navbar = navbar;
-  if (forms) siteFields.forms = forms;
-  if (logo) siteFields.logo = logo;
-  if (sitePages) siteFields.sitePages = sitePages;
   if (firm) siteFields.firm = firm;
-  if (vertical) siteFields.vertical = vertical;
-  if (aboutPage) siteFields.aboutPage = aboutPage;
-  if (homePage) siteFields.homePage = homePage;
-  if (splashPages) siteFields.splashPages = splashPages;
+  if (verticals) siteFields.verticals = verticals;
   if (metaTags) siteFields.metaTags = metaTags;
-  if (colors) siteFields.colors = colors;
-  if (pageStyle) siteFields.pageStyle = pageStyle;
-  if (colors) siteFields.enforcePageStyle = enforcePageStyle;
+  if (pages) siteFields.pages = pages;
+  if (staticAssets) siteFields.staticAssets = staticAssets;
 
   try {
     let site = await Site.findByIdAndUpdate(

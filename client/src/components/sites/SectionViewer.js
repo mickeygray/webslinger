@@ -2,9 +2,12 @@ import React, {
   Fragment,
   useState,
   useEffect,
+  useRef,
   useContext,
   useCallback,
 } from "react";
+import ReactDOMServer from "react-dom/server";
+import ReactDOM from "react-dom";
 import parse from "html-react-parser";
 import YouTube from "react-youtube";
 import styled from "styled-components";
@@ -25,6 +28,8 @@ const SectionViewer = ({
   img,
   VariableComponent,
   loaded,
+  componentString,
+  setComponentString,
 }) => {
   const siteContext = useContext(SiteContext);
   const { font, pallet, currentContent, clearCurrentContent } = siteContext;
@@ -35,6 +40,7 @@ const SectionViewer = ({
     setSection({ ...section, [e.target.name]: e.target.value });
   };
 
+  console.log(VariableComponent);
   const [section, setSection] = useState({
     columns: "",
     rows: "",
@@ -43,7 +49,6 @@ const SectionViewer = ({
     horizontalAlignment: "",
     verticalAlignment: "",
   });
-
   const [sectionContent, setSectionContent] = useState([
     ...h,
     ...p,
@@ -68,6 +73,31 @@ const SectionViewer = ({
     ]);
   }, [h, p, icon, li, button, a, vid, img]);
 
+  const [componentDivs, setComponentDivs] = useState([]);
+  const cell = {
+    top: "",
+    width: 1,
+    height: 2,
+    left: "",
+    background: "",
+    position: "",
+    id: 1,
+    viewState: false,
+    viewToggle: "",
+    code: URL.createObjectURL(new Blob([image], { type: "img/png" })),
+  };
+
+  const [cells, setCells] = useState([{ ...cell }]);
+
+  console.log(componentDivs);
+  useEffect(() => {
+    const containerInnerHTML = document.querySelector(
+      `#component${cells.length - 1}`
+    ).innerHTML;
+    setComponentDivs([...componentDivs, containerInnerHTML]);
+    setComponentString(ReactDOMServer.renderToString(componentDivs));
+  }, [VariableComponent, sectionContent, cells]);
+
   Array.prototype.clean = function (deleteValue) {
     for (var i = 0; i < this.length; i++) {
       if (this[i] == deleteValue) {
@@ -84,21 +114,6 @@ const SectionViewer = ({
     .clean("")
     .join('","')
     .replaceAll('"', "");
-
-  const cell = {
-    top: "",
-    width: 1,
-    height: 2,
-    left: "",
-    background: "",
-    position: "",
-    id: 1,
-    viewState: false,
-    viewToggle: "",
-    code: URL.createObjectURL(new Blob([image], { type: "img/png" })),
-  };
-
-  const [cells, setCells] = useState([{ ...cell }]);
 
   const onChangeCell = (i, e, check) => {
     const { value, name } = e.currentTarget;
@@ -143,8 +158,7 @@ const SectionViewer = ({
     setCells(newCell);
   };
 
-  console.log(VariableComponent);
-
+  console.log(sectionContent);
   return (
     <>
       <span style={{ float: "right" }}>
@@ -326,54 +340,85 @@ const SectionViewer = ({
                     </form>
                   </div>
                 ) : (
-                  <>
-                    {" "}
+                  <Fragment>
                     <div
+                      style={{
+                        height: "10px",
+                        width: "10px",
+                        float: "left",
+                        padding: 0,
+                        background: "#f4f4f4",
+                        position: "absolute",
+                        zIndex: 9999999,
+                      }}>
+                      <a>
+                        <select
+                          name='viewToggle'
+                          style={{
+                            height: "10px",
+                            width: "10px",
+
+                            WebkitAppearance: "none",
+                            MozAppearance: "none",
+                            texIndent: "1px",
+                            textOverflow: "",
+                            zIndex: 9999999,
+                          }}
+                          onChange={(e) => onChangeCell(i, e)}>
+                          <option style={{ textSize: "3px" }} value=''>
+                            {i}
+                          </option>
+                          <option style={{ textSize: "3px" }} value='open'>
+                            Open
+                          </option>
+                          <option style={{ textSize: "3px" }} value='delete'>
+                            Delete
+                          </option>
+                        </select>
+                      </a>
+                    </div>
+
+                    <div
+                      id={`component${i}`}
                       style={{
                         wordWrap: "breakWord",
                         wordBreak: "breakAll",
                       }}
                       onClick={(e) => onChangeCell(i, e)}>
-                      <span
-                        style={{
-                          height: "5px",
-                          width: "5px",
-                          float: "left",
-                          padding: 0,
-                          background: "#f4f4f4",
-                        }}>
-                        <a>
-                          <select
-                            name='viewToggle'
-                            style={{
-                              height: "5px",
-                              width: "5px",
-                              display: "inline",
-                              WebkitAppearance: "none",
-                              MozAppearance: "none",
-                              texIndent: "1px",
-                              textOverflow: "",
-                            }}
-                            onChange={(e) => onChangeCell(i, e)}>
-                            <option style={{ textSize: "3px" }} value=''>
-                              {i}
-                            </option>
-                            <option style={{ textSize: "3px" }} value='open'>
-                              Open
-                            </option>
-                            <option style={{ textSize: "3px" }} value='delete'>
-                              Delete
-                            </option>
-                          </select>
-                        </a>
-                      </span>
-
-                      {loaded === true ? VariableComponent : ""}
+                      {loaded === true &&
+                      parseInt(
+                        VariableComponent.props.h.map(
+                          (h) => h.sectionArea
+                        )[0] ||
+                          VariableComponent.props.li.map(
+                            (h) => h.sectionArea
+                          )[0] ||
+                          VariableComponent.props.p.map(
+                            (h) => h.sectionArea
+                          )[0] ||
+                          VariableComponent.props.a.map(
+                            (h) => h.sectionArea
+                          )[0] ||
+                          VariableComponent.props.li.map(
+                            (h) => h.sectionArea
+                          )[0] ||
+                          VariableComponent.props.button.sectionArea.map(
+                            (h) => h.sectionArea
+                          )[0] ||
+                          VariableComponent.props.vid.sectionArea.map(
+                            (h) => h.sectionArea
+                          )[0] ||
+                          VariableComponent.props.img.sectionArea.map(
+                            (h) => h.sectionArea
+                          )[0]
+                      ) === i
+                        ? VariableComponent
+                        : ""}
 
                       {sectionContent
                         .filter((h) => h.text != "")
                         .filter((h) => parseInt(h.sectionArea) === i)
-                        .filter((h) => h.componentName === null)
+                        .filter((h) => h.componentName === undefined)
                         .sort(
                           (a, b) =>
                             parseInt(a.sectionOrdinality) -
@@ -849,7 +894,7 @@ const SectionViewer = ({
                           )
                         )}
                     </div>
-                  </>
+                  </Fragment>
                 )}
               </Cell>
             );

@@ -19,43 +19,6 @@ const SiteName = ({ p, h, pallet, compStyle }) => {
     success: "",
     mobile: "576px",
   });
-  useEffect(() => {
-    if (selectedTheme != null) {
-      setTheme({
-        ...colorPack,
-        primary: "",
-        dark: "",
-        light: "",
-        danger: "",
-        success: "",
-        mobile: "",
-      });
-
-      const themeKeys = uniq(Object.keys(theme));
-
-      const reducedTheme = themeKeys
-        .map((k) => {
-          let obj = {
-            ...colorPack,
-            mobile: "576px",
-          };
-          return obj;
-        })
-        .filter((theme) => Object.keys(theme).includes(selectedTheme));
-
-      setTheme(reducedTheme[0]);
-    } else {
-      setTheme({
-        primary: "",
-        dark: "",
-        light: "",
-        danger: "",
-        success: "",
-        text: "",
-        mobile: "",
-      });
-    }
-  }, [selectedTheme]);
 
   useEffect(() => {
     if (h.length > 0) {
@@ -70,14 +33,14 @@ const SiteName = ({ p, h, pallet, compStyle }) => {
               return key;
             });
 
-          setSelectedTheme(themeName[0]);
-
           const obj = {
-            [selectedTheme]: color,
+            [`${themeName[0]}`]: color,
             text: text,
+            mobile: "576px",
           };
 
-          setColorPack(obj);
+          setTheme(obj);
+          setSelectedTheme(themeName[0]);
         }
       });
     }
@@ -90,7 +53,16 @@ const SiteName = ({ p, h, pallet, compStyle }) => {
       <StyledSiteName>
         {compStyle === "halfhalf" ? (
           <div className='text-box halfhalf'>
-            <h1>
+            <h1
+              style={{
+                color: `${
+                  h.filter(
+                    (h) =>
+                      h.componentName === "Site Name" &&
+                      h.compStyle === "halfhalf"
+                  )[0].color
+                }`,
+              }}>
               {
                 h.filter(
                   (h) =>
@@ -99,7 +71,16 @@ const SiteName = ({ p, h, pallet, compStyle }) => {
                 )[0].text
               }
             </h1>
-            <p>
+            <p
+              style={{
+                color: `${
+                  p.filter(
+                    (h) =>
+                      h.componentName === "Site Name" &&
+                      h.compStyle === "halfhalf"
+                  )[0].color
+                }`,
+              }}>
               {
                 p.filter(
                   (h) =>
@@ -114,7 +95,13 @@ const SiteName = ({ p, h, pallet, compStyle }) => {
         )}
         {compStyle === "vertical" ? (
           <div className='vertical'>
-            <h2 className='rotate'>
+            <h2
+              style={{
+                color: `${
+                  Object.values(theme).filter((f) => f.includes("#"))[0]
+                }`,
+              }}
+              className='rotate'>
               {
                 h.filter(
                   (h) =>
@@ -123,7 +110,12 @@ const SiteName = ({ p, h, pallet, compStyle }) => {
                 )[0].text
               }
             </h2>
-            <h2>
+            <h2
+              style={{
+                color: `${
+                  Object.values(theme).filter((f) => f.includes("#"))[0]
+                }`,
+              }}>
               {" "}
               {
                 h.filter(

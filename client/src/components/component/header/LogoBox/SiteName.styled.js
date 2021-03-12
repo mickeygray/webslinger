@@ -472,7 +472,7 @@ export const StyledSiteName = styled.div`
     }
   }
 
-  .threeD {
+  .threeD p {
     white-space: nowrap;
     position: absolute;
     top: 50%;
@@ -487,7 +487,7 @@ export const StyledSiteName = styled.div`
       5px 13px 15px black;
   }
 
-  .threeD:hover {
+  .threeD p:hover {
     transition: 0.3s;
     transform: scale(1.1) translate(-50%, -50%);
     text-shadow: 1px -1px 0 grey, 1px -2px 0 grey, 1px -3px 0 grey,
