@@ -65,35 +65,6 @@ export const StyledSiteName = styled.div`
     justify-content: center;
   }
 
-  .halfhalf {
-    font-family: "Inter", sans-serif;
-    font-size: 8vw;
-    font-weight: 900;
-    display: block;
-    padding: 0.5em;
-  }
-
-  .halfhalf:nth-child(2) {
-    position: absolute;
-    clip-path: inset(-1% -1% 50% -1%);
-  }
-
-  .halfhalf p {
-    font-size: 2vw;
-    font-weight: 900;
-    margin-top: 1em;
-    text-align: center;
-    span {
-      display: block;
-      transform: rotate(90deg);
-      margin-top: 0.25em;
-    }
-  }
-
-  .rotate {
-    transform: rotate(180deg);
-  }
-
   .vertical {
     display: grid;
     height: 100%;
@@ -198,6 +169,7 @@ export const StyledSiteName = styled.div`
     position: absolute;
     top: 50%;
     left: 50%;
+    background-color: "yellow";
     transform: translate(-50%, -50%);
     font-size: 120px;
     letter-spacing: 0.1em;
@@ -205,6 +177,34 @@ export const StyledSiteName = styled.div`
     -webkit-text-stroke-width: 3px;
     -webkit-text-stroke-color: white;
     text-shadow: 8px 8px #ff1f8f, 20px 20px #000000;
+  }
+
+  .shiningtext {
+    position: relative;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    font-size: 2em;
+    letter-spacing: 4px;
+    overflow: hidden;
+    background: linear-gradient(90deg, #000, #fff, #000);
+    background-repeat: no-repeat;
+    background-size: 80%;
+    animation: animate 3s linear infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: rgba(255, 255, 255, 0);
+  }
+
+  canvas {
+    display: block;
+  }
+
+  @keyframes animate {
+    0% {
+      background-position: -500%;
+    }
+    100% {
+      background-position: 500%;
+    }
   }
 
   .dimensioncolors {
@@ -225,13 +225,6 @@ export const StyledSiteName = styled.div`
     animation: fadeIn 2.5s linear forwards;
   }
 
-  .dimensioncolors-secondary {
-    font-size: 10vw;
-    text-shadow: 4px 4px 0px ${({ theme }) => theme.secondary};
-    mix-blend-mode: screen;
-    animation: fadeIn 2.5s linear forwards;
-  }
-
   .dimensioncolors-dark {
     font-size: 10vw;
     text-shadow: 4px 4px 0px ${({ theme }) => theme.dark};
@@ -239,7 +232,7 @@ export const StyledSiteName = styled.div`
     animation: fadeIn 2.5s linear forwards;
   }
 
-  .dimensioncolors-success {
+  .dimensioncolors-success p {
     font-size: 10vw;
     text-shadow: 4px 4px 0px ${({ theme }) => theme.success};
     mix-blend-mode: screen;

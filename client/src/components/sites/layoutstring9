@@ -4251,3 +4251,523 @@
                 .clean("")
             : ""
         }
+
+
+         const siteTypes = [
+    {
+      splashDownload: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+      splashFeatured: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+      splashFormFocused: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+      verticalEnthusiast: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        aboutPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        blogPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        articlePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        quizPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        reviewPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        firmPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        gallaryPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        verticalPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+      verticalProfessional: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        aboutPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        blogPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        articlePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        quizPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        reviewPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        firmPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        gallaryPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        verticalPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+      verticalEducational: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        aboutPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        blogPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        articlePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        quizPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        reviewPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        firmPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        gallaryPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        verticalPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+      personalFirmMarketing: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        aboutPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        blogPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        articlePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        quizPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        reviewPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        firmPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        gallaryPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        verticalPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+      personalFirmMedia: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        aboutPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        blogPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        articlePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        quizPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        reviewPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        firmPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        gallaryPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        verticalPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+      companyFirmSales: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        aboutPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        blogPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        articlePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        quizPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        reviewPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        firmPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        gallaryPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        verticalPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+      companyFirmMarketing: {
+        homePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        aboutPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        blogPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        articlePage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        quizPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        reviewPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        firmPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        gallaryPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+        verticalPage: {
+          site: "",
+          nav: "",
+          header: "",
+          main: "",
+          footer: "",
+        },
+      },
+    },
+  ];
+
+
+    /*
+  const [componentDivs, setComponentDivs] = useState([]);
+
+  useEffect(() => {
+    if (cells.length > 0) {
+      const containerInnerHTML = document.querySelector(
+        `#component${cells.length - 1}`
+      ).innerHTML;
+      setComponentDivs([...componentDivs, containerInnerHTML]);
+      setComponentString(ReactDOMServer.renderToString(componentDivs));
+    }
+  }, [VariableComponent, cells]);
+
+  Array.prototype.clean = function (deleteValue) {
+    for (var i = 0; i < this.length; i++) {
+      if (this[i] == deleteValue) {
+        this.splice(i, 1);
+        i--;
+      }
+    }
+    return this;
+  };
+
+  const layoutString = section.layout
+    .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+    .map((it) => it.replace(/^"|"$/g, ""))
+    .clean("")
+    .join('","')
+    .replaceAll('"', "");
+*/
