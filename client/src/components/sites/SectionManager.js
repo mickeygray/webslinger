@@ -8,6 +8,7 @@ import React, {
 import { findIndex, camelCase } from "lodash";
 import SiteContext from "../../context/site/siteContext";
 import ImageContext from "../../context/image/imageContext";
+import { v4 as uuidV4 } from "uuid";
 const SectionManager = ({
  h,
  p,
@@ -37,7 +38,8 @@ const SectionManager = ({
   myComponents,
   cellStructure,
  } = siteContext;
-
+ const imageContext = useContext(ImageContext);
+ const { contentImage } = imageContext;
  const [actionComponents, setActionComponents] = useState({
   actionComponent1: "",
   actionComponent2: "",
@@ -47,14 +49,9 @@ const SectionManager = ({
   <Fragment>
    <div className='bg-light grid-4'>
     {h.map((row, i) => {
-     const index = h.findIndex((x) => x.id === row.id);
-     const componentName = row.componentName;
-     const compStyle = row.compStyle;
+     const { compStyle, componentName } = row;
      return (
-      <div
-       style={{ width: "200px" }}
-       key={row.sectionArea}
-       className='row card bg-dark'>
+      <div style={{ width: "200px" }} key={i} className='row card bg-dark'>
        <span
         style={{ float: "right", background: "#f4f4f4" }}
         className='lead'
@@ -62,23 +59,25 @@ const SectionManager = ({
          let delCheck = 1;
          if (h.length === 1) {
           h.splice(0, 1);
-         } else if (h.length > 1 && index) {
-          h.splice(index, 1);
+         } else if (h.length > 1 && i) {
+          h.splice(i, 1);
          }
+         onChangeH(i, e, delCheck);
         }}>
         <a>X</a>
        </span>
        <h3>
-        {row.sectionArea ? "Main Level" : ""}{" "}
-        {row.grandParent ? "Sub Level" : ""} {row.parent ? "Body Level" : ""}{" "}
+        {row.level === "cell" ? "Main Level" : ""}{" "}
+        {row.level === "subcell" ? "Sub Level" : ""}{" "}
+        {row.level === "bodycell" ? "Body Level" : ""}{" "}
         {row.componentName && row.componentName} Heading
        </h3>
-       {Object.keys(row).map((key, i) => (
+       {Object.keys(row).map((key) => (
         <div>
          {key === "fontStyle" ? (
           <select
            name='fontStyle'
-           onChange={(e) => onChangeH(index, e, componentName, compStyle)}>
+           onChange={(e) => onChangeH(i, e, row.componentName, compStyle)}>
            <option>Font Styling...</option>
            <option value='b'>Bold</option>
            <option value='i'>Italic</option>
@@ -91,7 +90,7 @@ const SectionManager = ({
           <div>
            <select
             name='color'
-            onChange={(e) => onChangeH(index, e, componentName, compStyle)}>
+            onChange={(e) => onChangeH(i, e, row.componentName, compStyle)}>
             <option>Font Color...</option>
             <option value={pallet.primary}>Primary</option>
             <option value={pallet.dark}>Dark</option>
@@ -100,10 +99,10 @@ const SectionManager = ({
             <option value={pallet.primary}>Success</option>
            </select>
            <h5>Current Text Color</h5>
-           <input type='text' value={row[key]} name='color' disabled />
+           <input type='text' value={row[key]} name='color' />
            <button
             className='btn btn-dark btn-sm'
-            onClick={(e) => onChangeH(index, e, componentName, compStyle)}>
+            onClick={(e) => onChangeH(i, e, row.componentName, compStyle)}>
             Set Text Color
            </button>
           </div>
@@ -114,10 +113,10 @@ const SectionManager = ({
          {key === "font" ? (
           <div>
            <h5>Current Font</h5>
-           <input type='text' value={row[key]} disabled />
+           <input type='text' value={row[key]} />
            <button
             className='btn btn-dark btn-sm'
-            onClick={(e) => onChangeH(index, e)}>
+            onClick={(e) => onChangeH(i, e, font, "font")}>
             Set Font
            </button>
           </div>
@@ -131,7 +130,7 @@ const SectionManager = ({
            <input
             type='number'
             name='sectionOrdinality'
-            onChange={(e) => onChangeH(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeH(i, e, row.componentName, compStyle)}
             value={row[key]}
            />
           </div>
@@ -141,9 +140,7 @@ const SectionManager = ({
 
          {key === "background" && pallet ? (
           <div>
-           <select
-            name='background'
-            onChange={(e) => onChangeH(index, e, componentName, compStyle)}>
+           <select name='background' onChange={(e) => onChangeH(i, e)}>
             <option>Background Color...</option>
             <option value={pallet.primary}>Primary</option>
             <option value={pallet.dark}>Dark</option>
@@ -159,7 +156,7 @@ const SectionManager = ({
          {key === "headingSize" ? (
           <select
            name='headingSize'
-           onChange={(e) => onChangeH(index, e, componentName, compStyle)}
+           onChange={(e) => onChangeH(i, e)}
            value={row[key]}>
            <option>Heading Size...</option>
            <option value='h1'>X-Large</option>
@@ -172,9 +169,7 @@ const SectionManager = ({
           ""
          )}
          {key === "faIconPosition" ? (
-          <select
-           name='faIconPosition'
-           onChange={(e) => onChangeH(index, e, componentName, compStyle)}>
+          <select name='faIconPosition' onChange={(e) => onChangeH(i, e)}>
            <option>Icon Position...</option>
            <option value='top'>Top</option>
            <option value='front'>Front</option>
@@ -185,7 +180,7 @@ const SectionManager = ({
           ""
          )}
          {key === "sectionArea" ? (
-          <select name='sectionArea' onChange={(e) => onChangeH(index, e)}>
+          <select name='sectionArea' onChange={(e) => onChangeH(i, e)}>
            <option></option>
            {cellStructure.map((cell) => {
             const { name, id, children } = cell;
@@ -216,7 +211,7 @@ const SectionManager = ({
             value={row[key]}
             placeholder='Text..'
             name={key}
-            onChange={(e) => onChangeH(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeH(i, e)}
            />
            <span style={{ float: "right" }}>
             <button
@@ -225,7 +220,7 @@ const SectionManager = ({
              onClick={(e) => {
               const c = currentContent.content;
 
-              onChangeH(index, e, c, key);
+              onChangeH(i, e, c, key);
 
               clearCurrentContent();
              }}>
@@ -242,7 +237,7 @@ const SectionManager = ({
            placeholder='Url...'
            value={row[key]}
            name={key}
-           onChange={(e) => onChangeH(index, e, componentName, compStyle)}
+           onChange={(e) => onChangeH(i, e)}
           />
          ) : (
           ""
@@ -260,7 +255,7 @@ const SectionManager = ({
             placeholder='Type your Font Awesome Icon Here'
             value={row[key]}
             name={key}
-            onChange={(e) => onChangeH(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeH(i, e)}
            />
           </div>
          ) : (
@@ -276,9 +271,9 @@ const SectionManager = ({
      let delCheck = 1;
      const componentName = row.componentName;
      const compStyle = row.compStyle;
-     const index = p.findIndex((x) => x.id === row.id);
+
      return (
-      <div style={{ width: "200px" }} key={row.id} className='row card bg-dark'>
+      <div style={{ width: "200px" }} key={i} className='row card bg-dark'>
        <span
         style={{ float: "right", background: "#f4f4f4" }}
         className='lead'
@@ -286,25 +281,25 @@ const SectionManager = ({
          if (p.length === 1) {
           p.splice(0, 1);
          } else {
-          p.splice(index, 1);
+          p.splice(i, 1);
          }
-         onChangeP(index, e, delCheck);
+         onChangeP(i, e, delCheck);
         }}>
         <a>X</a>
        </span>
        <h3>
         {" "}
-        {row.sectionArea ? "Main Level" : ""}{" "}
-        {row.grandParent ? "Sub Level" : ""} {row.parent ? "Body Level" : ""}{" "}
-        Paragraph
+        {row.level === "cell" ? "Main Level" : ""}{" "}
+        {row.level === "subcell" ? "Sub Level" : ""}{" "}
+        {row.level === "bodycell" ? "Body Level" : ""} Paragraph
        </h3>
        {Object.keys(row).map((key) => (
-        <div>
+        <div key={key}>
          {key === "fontStyle" ? (
           <select
            value={row[key]}
            name='fontStyle'
-           onChange={(e) => onChangeP(index, e, componentName, compStyle)}>
+           onChange={(e) => onChangeP(i, e, componentName, compStyle)}>
            <option>Font Styling...</option>
            <option value='b'>Bold</option>
            <option value='i'>Italic</option>
@@ -327,11 +322,25 @@ const SectionManager = ({
           ""
          )}
 
+         {key === "font" ? (
+          <div>
+           <h5>Current Font</h5>
+           <input type='text' value={row[key]} />
+           <button
+            className='btn btn-dark btn-sm'
+            onClick={(e) => onChangeP(i, e, font, "font")}>
+            Set Font
+           </button>
+          </div>
+         ) : (
+          ""
+         )}
+
          {key === "color" && pallet ? (
           <select
            value={row[key]}
            name='color'
-           onChange={(e) => onChangeP(index, e, componentName, compStyle)}>
+           onChange={(e) => onChangeP(i, e, componentName, compStyle)}>
            <option>Font Color...</option>
            <option value={pallet.primary}>Primary</option>
            <option value={pallet.dark}>Dark</option>
@@ -347,7 +356,7 @@ const SectionManager = ({
           <select
            value={row[key]}
            name='background'
-           onChange={(e) => onChangeP(index, e, componentName, compStyle)}>
+           onChange={(e) => onChangeP(i, e, componentName, compStyle)}>
            <option>Background Color...</option>
            <option value={pallet.primary}>Primary</option>
            <option value={pallet.dark}>Dark</option>
@@ -359,7 +368,7 @@ const SectionManager = ({
           ""
          )}
          {key === "sectionArea" ? (
-          <select name='sectionArea' onChange={(e) => onChangeP(index, e)}>
+          <select name='sectionArea' onChange={(e) => onChangeP(i, e)}>
            <option></option>
            {cellStructure.map((cell) => {
             const { name, id, children } = cell;
@@ -390,14 +399,14 @@ const SectionManager = ({
             value={row[key]}
             placeholder='Text..'
             name={key}
-            onChange={(e) => onChangeP(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeP(i, e, componentName, compStyle)}
            />
            <span style={{ float: "right" }}>
             <button
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeP(index, e, c, key);
+              onChangeP(i, e, c, key);
 
               clearCurrentContent();
              }}>
@@ -432,7 +441,7 @@ const SectionManager = ({
             placeholder='Type your Font Awesome Icon Here'
             value={row[key]}
             name={key}
-            onChange={(e) => onChangeP(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeP(i, e, componentName, compStyle)}
            />
           </div>
          ) : (
@@ -446,7 +455,7 @@ const SectionManager = ({
 
     {icon.map((row, i) => {
      let delCheck = 1;
-     const index = icon.findIndex((x) => x.id === row.id);
+
      const componentName = row.componentName;
      const compStyle = row.compStyle;
      return (
@@ -458,17 +467,17 @@ const SectionManager = ({
          if (icon.length === 1) {
           icon.splice(0, 1);
          } else {
-          icon.splice(index, 1);
+          icon.splice(i, 1);
          }
-         onChangeIcon(index, e, delCheck);
+         onChangeIcon(i, e, delCheck);
         }}>
         <a>X</a>
        </span>
        <h3>
         {" "}
-        {row.sectionArea ? "Main Level" : ""}{" "}
-        {row.grandParent ? "Sub Level" : ""} {row.parent ? "Body Level" : ""}{" "}
-        Icon
+        {row.level === "cell" ? "Main Level" : ""}{" "}
+        {row.level === "subcell" ? "Sub Level" : ""}{" "}
+        {row.level === "bodycell" ? "Body Level" : ""} Icon
        </h3>
        {Object.keys(row).map((key) => (
         <div>
@@ -476,7 +485,7 @@ const SectionManager = ({
           <select
            name='fontStyle'
            value={row[key]}
-           onChange={(e) => onChangeIcon(index, e, componentName, compStyle)}>
+           onChange={(e) => onChangeIcon(i, e, componentName, compStyle)}>
            <option>Font Styling...</option>
            <option value='b'>Bold</option>
            <option value='i'>Italic</option>
@@ -488,7 +497,7 @@ const SectionManager = ({
           <select
            value={row[key]}
            name='faIconPosition'
-           onChange={(e) => onChangeIcon(index, e, componentName, compStyle)}>
+           onChange={(e) => onChangeIcon(i, e, componentName, compStyle)}>
            <option>Icon Position...</option>
            <option value='top'>Top</option>
            <option value='front'>Front</option>
@@ -504,7 +513,7 @@ const SectionManager = ({
            <input
             type='number'
             name='sectionOrdinality'
-            onChange={(e) => onChangeIcon(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeIcon(i, e, componentName, compStyle)}
             value={row[key]}
            />
           </div>
@@ -515,7 +524,7 @@ const SectionManager = ({
           <select
            value={row[key]}
            name='color'
-           onChange={(e) => onChangeIcon(index, e, font, pallet)}>
+           onChange={(e) => onChangeIcon(i, e, font, pallet)}>
            <option>Icon Color...</option>
            <option value={pallet.primary}>Primary</option>
            <option value={pallet.dark}>Dark</option>
@@ -531,7 +540,7 @@ const SectionManager = ({
           <select
            value={row[key]}
            name='background'
-           onChange={(e) => onChangeIcon(index, e, font, pallet)}>
+           onChange={(e) => onChangeIcon(i, e, font, pallet)}>
            <option>Background Color...</option>
            <option value={pallet.primary}>Primary</option>
            <option value={pallet.dark}>Dark</option>
@@ -543,7 +552,7 @@ const SectionManager = ({
           ""
          )}
          {key === "sectionArea" ? (
-          <select name='sectionArea' onChange={(e) => onChangeIcon(index, e)}>
+          <select name='sectionArea' onChange={(e) => onChangeIcon(i, e)}>
            <option></option>
            {cellStructure.map((cell) => {
             const { name, id, children } = cell;
@@ -580,7 +589,7 @@ const SectionManager = ({
             placeholder='Type your Font Awesome Icon Here'
             value={row[key]}
             name={key}
-            onChange={(e) => onChangeIcon(index, e)}
+            onChange={(e) => onChangeIcon(i, e)}
            />
           </div>
          ) : (
@@ -594,9 +603,8 @@ const SectionManager = ({
 
     {button.map((row, i) => {
      let delCheck = 1;
-     const index = button.findIndex((x) => x.id === row.id);
-     const componentName = row.componentName;
-     const compStyle = row.compStyle;
+     const { componentName, compStyle } = row;
+
      return (
       <div style={{ width: "200px" }} key={row.id} className='row card bg-dark'>
        <span
@@ -606,17 +614,17 @@ const SectionManager = ({
          if (button.length === 1) {
           button.splice(0, 1);
          } else {
-          button.splice(index, 1);
+          button.splice(i, 1);
          }
-         onChangeButton(index, e, delCheck);
+         onChangeButton(i, e, delCheck);
         }}>
         <a>X</a>
        </span>
        <h3>
         {" "}
-        {row.sectionArea ? "Main Level" : ""}{" "}
-        {row.grandParent ? "Sub Level" : ""} {row.parent ? "Body Level" : ""}{" "}
-        Button
+        {row.level === "cell" ? "Main Level" : ""}{" "}
+        {row.level === "subcell" ? "Sub Level" : ""}{" "}
+        {row.level === "bodycell" ? "Body Level" : ""} Button
        </h3>
        {Object.keys(row).map((key) => (
         <div>
@@ -624,7 +632,7 @@ const SectionManager = ({
           <select
            value={row[key]}
            name='fontStyle'
-           onChange={(e) => onChangeButton(index, e, componentName, compStyle)}>
+           onChange={(e) => onChangeButton(i, e, componentName, compStyle)}>
            <option>Font Styling...</option>
            <option value='b'>Bold</option>
            <option value='i'>Italic</option>
@@ -637,7 +645,7 @@ const SectionManager = ({
           <select
            value={row[key]}
            name='faIconPosition'
-           onChange={(e) => onChangeButton(index, e, componentName, compStyle)}>
+           onChange={(e) => onChangeButton(i, e, componentName, compStyle)}>
            <option>Icon Position...</option>
            <option value='top'>Top</option>
            <option value='front'>Front</option>
@@ -648,11 +656,25 @@ const SectionManager = ({
           ""
          )}
 
+         {key === "font" ? (
+          <div>
+           <h5>Current Font</h5>
+           <input type='text' value={row[key]} />
+           <button
+            className='btn btn-dark btn-sm'
+            onClick={(e) => onChangeButton(i, e, font, "font")}>
+            Set Font
+           </button>
+          </div>
+         ) : (
+          ""
+         )}
+
          {key === "color" && pallet ? (
           <select
            value={row[key]}
            name='color'
-           onChange={(e) => onChangeButton(index, e, font, pallet)}>
+           onChange={(e) => onChangeButton(i, e, font, pallet)}>
            <option>Font Color...</option>
            <option value={pallet.primary}>Primary</option>
            <option value={pallet.dark}>Dark</option>
@@ -670,7 +692,7 @@ const SectionManager = ({
             value={row[key]}
             type='number'
             name='sectionOrdinality'
-            onChange={(e) => onChangeButton(index, e, font, pallet)}
+            onChange={(e) => onChangeButton(i, e, font, pallet)}
             value={row[key]}
            />
           </div>
@@ -680,7 +702,7 @@ const SectionManager = ({
          {key === "background" && pallet ? (
           <select
            name='background'
-           onChange={(e) => onChangeButton(index, e, font, pallet)}>
+           onChange={(e) => onChangeButton(i, e, font, pallet)}>
            <option>Background Color...</option>
            <option value={pallet.primary}>Primary</option>
            <option value={pallet.dark}>Dark</option>
@@ -692,7 +714,7 @@ const SectionManager = ({
           ""
          )}
          {key === "sectionArea" ? (
-          <select name='sectionArea' onChange={(e) => onChangeButton(index, e)}>
+          <select name='sectionArea' onChange={(e) => onChangeButton(i, e)}>
            <option></option>
            {cellStructure.map((cell) => {
             const { name, id, children } = cell;
@@ -719,7 +741,7 @@ const SectionManager = ({
          {key === "action" ? (
           <select
            name='action'
-           onChange={(e) => onChangeButton(index, e, componentName, compStyle)}
+           onChange={(e) => onChangeButton(i, e, componentName, compStyle)}
            value={row[key]}
            multiple>
            <option>Button Action...</option>
@@ -780,7 +802,7 @@ const SectionManager = ({
            <button
             className='btn btn-sm'
             onClick={(e) => {
-             onChangeButton(index, e, actionComponents);
+             onChangeButton(i, e, actionComponents);
             }}>
             Add Button Actions
            </button>
@@ -803,7 +825,7 @@ const SectionManager = ({
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeButton(index, e, c, key);
+              onChangeButton(i, e, c, key);
 
               clearCurrentContent();
              }}>
@@ -820,7 +842,7 @@ const SectionManager = ({
            placeholder='Url...'
            value={row[key]}
            name={key}
-           onChange={(e) => onChangeButton(index, e, componentName, compStyle)}
+           onChange={(e) => onChangeButton(i, e, componentName, compStyle)}
           />
          ) : (
           ""
@@ -838,7 +860,7 @@ const SectionManager = ({
             placeholder='Type your Font Awesome Icon Here'
             value={row[key]}
             name={key}
-            onChange={(e) => onChangeButton(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeButton(i, e, componentName, compStyle)}
            />
           </div>
          ) : (
@@ -854,7 +876,6 @@ const SectionManager = ({
      let delCheck = 1;
      const componentName = row.componentName;
      const compStyle = row.compStyle;
-     const index = findIndex((x) => x.id === row.id);
 
      return (
       <div style={{ width: "200px" }} key={row.id} className='row card bg-dark'>
@@ -865,17 +886,17 @@ const SectionManager = ({
          if (a.length === 1) {
           a.splice(0, 1);
          } else {
-          a.splice(index, 1);
+          a.splice(i, 1);
          }
-         onChangeA(index, e, delCheck);
+         onChangeA(i, e, delCheck);
         }}>
         <a>X</a>
        </span>
        <h3>
         {" "}
-        {row.sectionArea ? "Main Level" : ""}{" "}
-        {row.grandParent ? "Sub Level" : ""} {row.parent ? "Body Level" : ""}{" "}
-        Link
+        {row.level === "cell" ? "Main Level" : ""}{" "}
+        {row.level === "subcell" ? "Sub Level" : ""}{" "}
+        {row.level === "bodycell" ? "Body Level" : ""} Link
        </h3>
        {Object.keys(row).map((key) => (
         <div>
@@ -887,6 +908,31 @@ const SectionManager = ({
            <option>Font Styling...</option>
            <option value='b'>Bold</option>
            <option value='i'>Italic</option>
+          </select>
+         ) : (
+          ""
+         )}
+         {key === "font" ? (
+          <div>
+           <h5>Current Font</h5>
+           <input type='text' value={row[key]} />
+           <button
+            className='btn btn-dark btn-sm'
+            onClick={(e) => onChangeA(i, e, font, "font")}>
+            Set Font
+           </button>
+          </div>
+         ) : (
+          ""
+         )}
+         {key === "buttonStyle" ? (
+          <select
+           name='buttonStyle'
+           value={row[key]}
+           onChange={(e) => onChangeA(i, e, componentName, compStyle)}>
+           <option>Apply Button Styles</option>
+           <option value='btn'>Button</option>
+           <option value=''>Regular</option>
           </select>
          ) : (
           ""
@@ -914,7 +960,7 @@ const SectionManager = ({
            <input
             type='number'
             name='sectionOrdinality'
-            onChange={(e) => onChangeA(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeA(i, e, componentName, compStyle)}
             value={row[key]}
            />
           </div>
@@ -967,7 +1013,7 @@ const SectionManager = ({
           ""
          )}
          {key === "sectionArea" ? (
-          <select name='sectionArea' onChange={(e) => onChangeA(index, e)}>
+          <select name='sectionArea' onChange={(e) => onChangeA(i, e)}>
            <option></option>
            {cellStructure.map((cell) => {
             const { name, id, children } = cell;
@@ -1070,7 +1116,6 @@ const SectionManager = ({
      let delCheck = 1;
      const componentName = row.componentName;
      const compStyle = row.compStyle;
-     const index = li.findIndex((x) => x.id === row.id);
 
      return (
       <div style={{ width: "200px" }} key={row.id} className='row card bg-dark'>
@@ -1081,26 +1126,40 @@ const SectionManager = ({
          if (li.length === 1) {
           li.splice(0, 1);
          } else {
-          li.splice(index, 1);
+          li.splice(i, 1);
          }
-         onChangeLi(index, e, delCheck);
+         onChangeLi(i, e, delCheck);
         }}>
         <a>X</a>
-        <h3>
-         {" "}
-         {row.sectionArea ? "Main Level" : ""}{" "}
-         {row.grandParent ? "Sub Level" : ""} {row.parent ? "Body Level" : ""}{" "}
-         List Item
-        </h3>
        </span>
+       <h3>
+        {" "}
+        {row.level === "cell" ? "Main Level" : ""}{" "}
+        {row.level === "subcell" ? "Sub Level" : ""}{" "}
+        {row.level === "bodycell" ? "Body Level" : ""} List Item
+       </h3>
        {Object.keys(row).map((key) => (
         <div>
          {key === "fontStyle" ? (
-          <select name='fontStyle' onChange={(e) => onChangeLi(index, e)}>
+          <select name='fontStyle' onChange={(e) => onChangeLi(i, e)}>
            <option>Font Styling...</option>
            <option value='b'>Bold</option>
            <option value='i'>Italic</option>
           </select>
+         ) : (
+          ""
+         )}
+
+         {key === "font" ? (
+          <div>
+           <h5>Current Font</h5>
+           <input type='text' value={row[key]} />
+           <button
+            className='btn btn-dark btn-sm'
+            onClick={(e) => onChangeLi(i, e, font, "font")}>
+            Set Font
+           </button>
+          </div>
          ) : (
           ""
          )}
@@ -1110,7 +1169,7 @@ const SectionManager = ({
            <input
             type='number'
             name='sectionOrdinality'
-            onChange={(e) => onChangeLi(index, e, font, pallet)}
+            onChange={(e) => onChangeLi(i, e, font, pallet)}
             value={row[key]}
            />
           </div>
@@ -1118,9 +1177,7 @@ const SectionManager = ({
           ""
          )}
          {key === "color" && pallet ? (
-          <select
-           name='color'
-           onChange={(e) => onChangeLi(index, e, font, pallet)}>
+          <select name='color' onChange={(e) => onChangeLi(i, e, font, pallet)}>
            <option>Font Color...</option>
            <option value={pallet.primary}>Primary</option>
            <option value={pallet.dark}>Dark</option>
@@ -1134,7 +1191,7 @@ const SectionManager = ({
          {key === "background" && pallet ? (
           <select
            name='background'
-           onChange={(e) => onChangeH(index, e, font, pallet)}>
+           onChange={(e) => onChangeLi(i, e, font, pallet)}>
            <option>Background Color...</option>
            <option value={pallet.primary}>Primary</option>
            <option value={pallet.dark}>Dark</option>
@@ -1146,7 +1203,7 @@ const SectionManager = ({
           ""
          )}
          {key === "headingSize" ? (
-          <select name='headingSize' onChange={(e) => onChangeLi(index, e)}>
+          <select name='headingSize' onChange={(e) => onChangeLi(i, e)}>
            <option>Heading Size...</option>
            <option value='h1'>X-Large</option>
            <option value='h2'>Large</option>
@@ -1158,7 +1215,7 @@ const SectionManager = ({
           ""
          )}
          {key === "faIconPosition" ? (
-          <select name='faIconPosition' onChange={(e) => onChangeLi(index, e)}>
+          <select name='faIconPosition' onChange={(e) => onChangeLi(i, e)}>
            <option>Icon Position...</option>
            <option value='top'>Top</option>
            <option value='front'>Front</option>
@@ -1169,7 +1226,7 @@ const SectionManager = ({
           ""
          )}
          {key === "sectionArea" ? (
-          <select name='sectionArea' onChange={(e) => onChangeLi(index, e)}>
+          <select name='sectionArea' onChange={(e) => onChangeLi(i, e)}>
            <option></option>
            {cellStructure.map((cell) => {
             const { name, id, children } = cell;
@@ -1200,14 +1257,14 @@ const SectionManager = ({
             value={row[key]}
             placeholder='Text..'
             name={key}
-            onChange={(e) => onChangeLi(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeLi(i, e, componentName, compStyle)}
            />
            <span style={{ float: "right" }}>
             <button
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeLi(index, e, c, key);
+              onChangeLi(i, e, c, key);
 
               clearCurrentContent();
              }}>
@@ -1225,14 +1282,14 @@ const SectionManager = ({
             placeholder='Url...'
             value={row[key]}
             name={key}
-            onChange={(e) => onChangeLi(index, e)}
+            onChange={(e) => onChangeLi(i, e)}
            />
            <span style={{ float: "right" }}>
             <button
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeLi(index, e, c, key);
+              onChangeLi(i, e, c, key);
 
               clearCurrentContent();
              }}>
@@ -1249,7 +1306,7 @@ const SectionManager = ({
            placeholder='Listname...'
            value={row[key]}
            name={key}
-           onChange={(e) => onChangeLi(index, e, componentName, compStyle)}
+           onChange={(e) => onChangeLi(i, e, componentName, compStyle)}
           />
          ) : (
           ""
@@ -1267,7 +1324,7 @@ const SectionManager = ({
             placeholder='Type your Font Awesome Icon Here'
             value={row[key]}
             name={key}
-            onChange={(e) => onChangeLi(index, e)}
+            onChange={(e) => onChangeLi(i, e)}
            />
           </div>
          ) : (
@@ -1283,7 +1340,6 @@ const SectionManager = ({
      const componentName = row.componentName;
      const compStyle = row.compStyle;
      let delCheck = 1;
-     const index = img.findIndex((x) => x.id === row.id);
 
      return (
       <div style={{ width: "200px" }} key={row.id} className='row card bg-dark'>
@@ -1294,23 +1350,23 @@ const SectionManager = ({
          if (img.length === 1) {
           img.splice(0, 1);
          } else {
-          img.splice(index, 1);
+          img.splice(i, 1);
          }
-         onChangeImg(index, e, delCheck);
+         onChangeImg(i, e, delCheck);
         }}>
         <a>X</a>
        </span>
        <h3>
         {" "}
-        {row.sectionArea ? "Main Level" : ""}{" "}
-        {row.grandParent ? "Sub Level" : ""} {row.parent ? "Body Level" : ""}{" "}
-        Image
+        {row.level === "cell" ? "Main Level" : ""}{" "}
+        {row.level === "subcell" ? "Sub Level" : ""}{" "}
+        {row.level === "bodycell" ? "Body Level" : ""} Image
        </h3>
        {Object.keys(row).map((key) => (
         <div>
          <form onSubmit={(e) => e.preventDefault()}>
           {key === "sectionArea" ? (
-           <select name='sectionArea' onChange={(e) => onChangeImg(index, e)}>
+           <select name='sectionArea' onChange={(e) => onChangeImg(i, e)}>
             <option></option>
             {cellStructure.map((cell) => {
              const { name, id, children } = cell;
@@ -1340,7 +1396,7 @@ const SectionManager = ({
             <input
              type='number'
              name='sectionOrdinality'
-             onChange={(e) => onChangeImg(index, e, font, pallet)}
+             onChange={(e) => onChangeImg(i, e, font, pallet)}
              value={row[key]}
             />
            </div>
@@ -1351,7 +1407,7 @@ const SectionManager = ({
            <select
             name='background'
             value={row[key]}
-            onChange={(e) => onChangeImg(index, e)}>
+            onChange={(e) => onChangeImg(i, e)}>
             <option>Background Color...</option>
             <option value={pallet.primary}>Primary</option>
             <option value={pallet.dark}>Dark</option>
@@ -1377,7 +1433,7 @@ const SectionManager = ({
               className='btn btn-sm'
               name='name'
               onClick={(e) => {
-               onChangeImg(index, e, currentContent);
+               onChangeImg(i, e, currentContent);
               }}>
               Add Content
              </button>
@@ -1393,7 +1449,7 @@ const SectionManager = ({
             placeholder='Width'
             value={row[key]}
             name={key}
-            onChange={(e) => onChangeImg(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeImg(i, e, componentName, compStyle)}
            />
           ) : (
            ""
@@ -1404,7 +1460,7 @@ const SectionManager = ({
             placeholder='Height'
             value={row[key]}
             name={key}
-            onChange={(e) => onChangeImg(index, e, componentName, compStyle)}
+            onChange={(e) => onChangeImg(i, e, componentName, compStyle)}
            />
           ) : (
            ""
@@ -1420,7 +1476,7 @@ const SectionManager = ({
      const componentName = row.componentName;
      const compStyle = row.compStyle;
      let delCheck = 1;
-     const index = vid.findIndex((x) => x.id === row.id);
+
      return (
       <div style={{ width: "200px" }} key={row.id} className='row card bg-dark'>
        <span
@@ -1430,22 +1486,22 @@ const SectionManager = ({
          if (vid.length === 1) {
           vid.splice(0, 1);
          } else {
-          vid.splice(index, 1);
+          vid.splice(i, 1);
          }
-         onChangeVid(index, e, delCheck);
+         onChangeVid(i, e, delCheck);
         }}>
         <a>X</a>
        </span>
        <h3>
         {" "}
-        {row.sectionArea ? "Main Level" : ""}{" "}
-        {row.grandParent ? "Sub Level" : ""} {row.parent ? "Body Level" : ""}{" "}
-        Video
+        {row.level === "cell" ? "Main Level" : ""}{" "}
+        {row.level === "subcell" ? "Sub Level" : ""}{" "}
+        {row.level === "bodycell" ? "Body Level" : ""} Video
        </h3>
        {Object.keys(row).map((key) => (
         <div>
          {key === "sectionArea" ? (
-          <select name='sectionArea' onChange={(e) => onChangeH(index, e)}>
+          <select name='sectionArea' onChange={(e) => onChangeVid(i, e)}>
            <option></option>
            {cellStructure.map((cell) => {
             const { name, id, children } = cell;
@@ -1475,7 +1531,7 @@ const SectionManager = ({
            <input
             type='number'
             name='sectionOrdinality'
-            onChange={(e) => onChangeVid(index, e, font, pallet)}
+            onChange={(e) => onChangeVid(i, e, font, pallet)}
             value={row[key]}
            />
           </div>
@@ -1488,7 +1544,7 @@ const SectionManager = ({
            placeholder='youtube watch key'
            value={row[key]}
            name={key}
-           onChange={(e) => onChangeVid(index, e, componentName, compStyle)}
+           onChange={(e) => onChangeVid(i, e, componentName, compStyle)}
           />
          ) : (
           ""
@@ -1500,7 +1556,7 @@ const SectionManager = ({
            placeholder='Width'
            value={row[key]}
            name={key}
-           onChange={(e) => onChangeVid(index, e, componentName, compStyle)}
+           onChange={(e) => onChangeVid(i, e, componentName, compStyle)}
           />
          ) : (
           ""
@@ -1511,7 +1567,7 @@ const SectionManager = ({
            placeholder='Height'
            value={row[key]}
            name={key}
-           onChange={(e) => onChangeVid(index, e, componentName, compStyle)}
+           onChange={(e) => onChangeVid(i, e, componentName, compStyle)}
           />
          ) : (
           ""

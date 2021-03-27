@@ -80,6 +80,7 @@ const SiteForm = () => {
   pallet,
   setGrid,
   grid,
+  clearCurrentContent,
   currentContent,
   body,
   addCell,
@@ -137,6 +138,7 @@ const SiteForm = () => {
  };
  const sectionA = {
   sectionArea: "",
+  buttonStyle: "",
   text: "",
   url: "",
   type: "a",
@@ -251,20 +253,33 @@ const SiteForm = () => {
  }, [VariableComponent]);
 
  const onChangeH = (i, e, delCheck, key) => {
-  let value;
-  let name;
-
-  if (e.currentTarget) {
-   value = e.currentTarget.value;
-   name = e.currentTarget.name;
+  const { value, name } = e.currentTarget;
+  let newResults = [...h];
+  if (typeof delCheck !== "number" && !currentContent) {
+   newResults[i] = {
+    ...newResults[i],
+    [name]: value,
+   };
   }
 
+  if (key === "font") {
+   newResults[i] = {
+    ...newResults[i],
+    ["font"]: delCheck,
+   };
+  }
+  if (typeof delCheck !== "number" && currentContent) {
+   newResults[i] = {
+    ...newResults[i],
+    [name]: currentContent.content,
+   };
+  }
   if (components.map((comp) => comp.name).includes(delCheck)) {
    const comp = component.filter((c) => c.type.name != delCheck);
 
-   const index = component.findIndex((x) => x === comp[0]);
+   const i = component.findIndex((x) => x === comp[0]);
 
-   let newResults = [...component[index].props.h];
+   let newResults = [...component[i].props.h];
 
    for (let i = 0; i < newResults.length; i++) {
     newResults[i] = {
@@ -275,28 +290,15 @@ const SiteForm = () => {
    setComponents([
     ...component,
     {
-     ...component[index],
-     props: { ...component[index].props, h: [...newResults] },
+     ...component[i],
+     props: { ...component[i].props, h: [...newResults] },
     },
    ]);
   }
-  let newResults = [...h];
-  if (typeof delCheck !== "number" && !currentContent) {
-   newResults[i] = {
-    ...newResults[i],
-    [name]: value,
-   };
-  }
-
-  if (typeof delCheck !== "number" && currentContent) {
-   newResults[i] = {
-    ...newResults[i],
-    [key]: currentContent.content,
-   };
-  }
-
   setH(newResults);
  };
+
+ console.log(h);
 
  const onChangeP = (i, e, delCheck, font, pallet) => {
   const { value, name } = e.currentTarget;
@@ -305,6 +307,13 @@ const SiteForm = () => {
    newResults[i] = {
     ...newResults[i],
     [name]: value,
+   };
+  }
+
+  if (font === "font") {
+   newResults[i] = {
+    ...newResults[i],
+    ["font"]: delCheck,
    };
   }
 
@@ -410,7 +419,7 @@ const SiteForm = () => {
   }
   setA(newResults);
  };
- const onChangeButton = (i, e, delCheck) => {
+ const onChangeButton = (i, e, delCheck, check) => {
   const { value, name } = e.currentTarget;
 
   let newResults = [...button];
@@ -419,6 +428,13 @@ const SiteForm = () => {
    newResults[i] = {
     ...newResults[i],
     [name]: value,
+   };
+  }
+
+  if (check === "font") {
+   newResults[i] = {
+    ...newResults[i],
+    ["font"]: delCheck,
    };
   }
 
@@ -573,6 +589,12 @@ const SiteForm = () => {
 
   if (delCheck && delCheck.content) {
    getContentImage(delCheck.content, i, "img");
+   newResults[i] = {
+    ...newResults[i],
+    ["name"]: delCheck.content,
+   };
+   setImg(newResults);
+   clearCurrentContent();
   }
 
   if (typeof delCheck === "number") {
@@ -663,13 +685,20 @@ const SiteForm = () => {
   setVid(newResults);
  };
 
- const onChangeLi = (i, e, delCheck) => {
+ const onChangeLi = (i, e, delCheck, key) => {
   const { value, name } = e.currentTarget;
   let newResults = [...li];
   if (!delCheck) {
    newResults[i] = {
     ...newResults[i],
     [name]: value,
+   };
+  }
+
+  if (key === "font") {
+   newResults[i] = {
+    ...newResults[i],
+    ["font"]: delCheck,
    };
   }
   if (components.map((comp) => comp.name).includes(delCheck)) {
@@ -1242,6 +1271,7 @@ const SiteForm = () => {
          onChange={(e) => setGrid(e, "row", i)}
         />
         <select name='unit' value={unit} onChange={(e) => setGrid(e, "row", i)}>
+         <option></option>
          <option value='px'>Pixels</option>
          <option value='fr'>Fractions</option>
         </select>

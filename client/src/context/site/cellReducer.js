@@ -9,6 +9,7 @@ import {
  UPDATE_SUBGRID,
  UPDATE_SUBSTRUCTURE,
  UPDATE_BODYSTRUCTURE,
+ UPDATE_CELLSTRUCTURE,
 } from "../types";
 
 export default (state, action) => {
@@ -38,6 +39,12 @@ export default (state, action) => {
    return {
     ...state,
     subGrids: action.payload,
+   };
+
+  case UPDATE_CELLSTRUCTURE:
+   return {
+    ...state,
+    cells: action.payload,
    };
   case UPDATE_BODYSTRUCTURE:
    return {

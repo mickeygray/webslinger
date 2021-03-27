@@ -79,7 +79,7 @@ const ImageState = (props) => {
    cellLevel: level,
   };
 
-  if ((type = "background")) {
+  if (type === "background") {
    image.background = true;
   }
 

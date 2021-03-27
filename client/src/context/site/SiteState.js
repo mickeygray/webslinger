@@ -53,6 +53,7 @@ import {
  UPDATE_BODYGRID,
  UPDATE_SUBSTRUCTURE,
  UPDATE_BODYSTRUCTURE,
+ UPDATE_CELLSTRUCTURE,
  DELETE_GRID,
 } from "../types";
 
@@ -103,6 +104,13 @@ const SiteState = (props) => {
   };
  }
 
+ const newTransition = {
+  property: "",
+  duration: 0,
+  timingFunciton: "",
+  cubicNs: { 0: 0, 1: 0, 2: 0, 3: 0 },
+  delay: "",
+ };
  const innerGrid = {
   parent: "",
   key: uuidV4(),
@@ -121,6 +129,7 @@ const SiteState = (props) => {
  };
  const cell = {
   top: 0,
+  level: "cell",
   id: "",
   name: "",
   subCells: [],
@@ -129,6 +138,74 @@ const SiteState = (props) => {
   height: 0,
   left: 0,
   width: 0,
+  css: {
+   marginTop: "",
+   marginLeft: "",
+   marginBottom: "",
+   marginRight: "",
+   borderLeftStyle: "",
+   borderLeftColor: "",
+   borderLeftWidth: "",
+   borderRightStyle: "",
+   borderRightColor: "",
+   borderRightWidth: "",
+   borderTopStyle: "",
+   borderTopColor: "",
+   borderTopWidth: "",
+   borderBottomStyle: "",
+   borderBottomColor: "",
+   borderBottomWidth: "",
+   borderTopLeftRadius: "0",
+   borderTopRightRadius: "0",
+   borderBottomLeftRadius: "0",
+   borderBottomRightRadius: "0",
+   boxShadowTop: "",
+   boxShadowLeft: "",
+   boxShadowBottom: "",
+   boxShadowRight: "",
+   boxShadowColor: "",
+   boxShadowInset: "",
+   fontSize: "",
+   fontWeight: "",
+   zIndex: "",
+   display: "",
+   textIndent: "",
+   transition: [],
+   transform: [],
+   transformProp: {
+    skewX: 0,
+    skewY: 0,
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    scaleY: 1,
+    scaleX: 1,
+    translateX: 0,
+    translateY: 0,
+   },
+   textAlign: "",
+   textShadowSize: "",
+   textShadowColor: "",
+   textDecorationLine: "",
+   textDecorationThickness: "",
+   textDecorationStyle: "",
+   textDecorationColor: "",
+   pos: "",
+   top: "",
+   left: "",
+   bottom: "",
+   right: "",
+   paddingTop: "",
+   paddingLeft: "",
+   paddingRight: "",
+   paddingBottom: "",
+   backgroundRepeat: "",
+   backgroundPosition: "",
+   backgroundSize: "",
+   opacity: "100%",
+   overflowX: "",
+   overflowY: "",
+  },
   background: "",
   position: "",
   code: "",
@@ -136,6 +213,7 @@ const SiteState = (props) => {
  };
  const subCell = {
   height: 0,
+  level: "subcell",
   left: 0,
   background: "",
   position: "",
@@ -152,6 +230,7 @@ const SiteState = (props) => {
  const bodyCell = {
   height: 0,
   left: 0,
+  level: "bodycell",
   width: 0,
   background: "",
   position: "",
@@ -171,6 +250,15 @@ const SiteState = (props) => {
   }),
   initialState
  );
+ const filterByCount = (array, count) => {
+  return array.filter(function (value) {
+   return (
+    array.filter(function (v) {
+     return v === value;
+    }).length === count
+   );
+  });
+ };
 
  const {
   cells,
@@ -182,7 +270,6 @@ const SiteState = (props) => {
   cellStructure,
  } = state.body;
 
- console.log(subCells);
  const addColumn = () => {
   const columns = grid.columns;
   const newResults = [...columns, { ...cellDimm, id: uuidV4() }];
@@ -511,10 +598,89 @@ const SiteState = (props) => {
   }
  };
 
- const onChangeCell = (i, e, check, index) => {
-  const { value, name } = e.currentTarget;
+ const addCellTransition = (i) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["transition"].push({ ...newTransition });
+  });
 
-  if (value === "close") {
+  dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+ };
+ const addSubCellTransition = (i) => {};
+ const addBodyCellTransition = (i) => {};
+
+ const onChangeCell = (i, e, check, slider, n) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (check === "transform") {
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["transform"].push(value);
+    draft[i]["css"]["transform"] = filterByCount(
+     draft[i]["css"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "transition") {
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["transition"][slider] = {
+     ...draft[i]["css"]["transition"][slider],
+     [name]: value,
+    };
+   });
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "cubicNs") {
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["transition"][slider]["cubicNs"][n] = e;
+   });
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "css") {
+   let newResults = [...cells];
+
+   newResults[i] = {
+    ...newResults[i],
+    css: { ...newResults[i].css, [name]: value.toString() },
+   };
+
+   const nextState = produce(state, (draft) => {
+    draft.cells = newResults;
+   });
+
+   dispatch({ type: UPDATE_CELL, payload: nextState });
+  } else if (slider === "slider") {
+   let newResults = [...cells];
+
+   newResults[i] = {
+    ...newResults[i],
+    css: { ...newResults[i].css, [check]: e },
+   };
+   const nextState = produce(state, (draft) => {
+    draft.cells = newResults;
+   });
+
+   dispatch({ type: UPDATE_CELL, payload: nextState });
+  } else if (slider === "transformProp") {
+   let newResults = [...cells];
+
+   newResults[i] = {
+    ...newResults[i],
+    css: {
+     ...newResults[i].css,
+     transformProp: { ...newResults[i].css.transformProp, [check]: e },
+    },
+   };
+   const nextState = produce(state, (draft) => {
+    draft.cells = newResults;
+   });
+
+   dispatch({ type: UPDATE_CELL, payload: nextState });
+  } else if (value === "close") {
    let newResults = [...cells];
 
    newResults[i] = {
@@ -554,6 +720,7 @@ const SiteState = (props) => {
    });
    dispatch({ type: UPDATE_CELL, payload: nextState });
   } else {
+   console.log("touch2");
    let newResults = [...cells];
 
    newResults[i] = {
@@ -567,8 +734,11 @@ const SiteState = (props) => {
 
    dispatch({ type: UPDATE_CELL, payload: nextState });
   }
+
   setCells();
  };
+
+ console.log(cells);
 
  const onChangeSubCell = (i, e, check, index) => {
   const { value, name } = e.currentTarget;
@@ -1333,6 +1503,9 @@ const SiteState = (props) => {
     setNewBodyCells,
     onChangeBodyCell,
     setCells,
+    addCellTransition,
+    addSubCellTransition,
+    addBodyCellTransition,
    }}>
    {props.children}
   </SiteContext.Provider>
