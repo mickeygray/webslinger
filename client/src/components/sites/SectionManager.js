@@ -220,7 +220,7 @@ const SectionManager = ({
              onClick={(e) => {
               const c = currentContent.content;
 
-              onChangeH(i, e, c, key);
+              onChangeH(i, e, c, key, "current");
 
               clearCurrentContent();
              }}>
@@ -299,7 +299,7 @@ const SectionManager = ({
           <select
            value={row[key]}
            name='fontStyle'
-           onChange={(e) => onChangeP(i, e, componentName, compStyle)}>
+           onChange={(e) => onChangeP(i, e)}>
            <option>Font Styling...</option>
            <option value='b'>Bold</option>
            <option value='i'>Italic</option>
@@ -314,7 +314,7 @@ const SectionManager = ({
            <input
             type='number'
             name='sectionOrdinality'
-            onChange={(e) => onChangeP(i, e, componentName, compStyle)}
+            onChange={(e) => onChangeP(i, e)}
             value={row[key]}
            />
           </div>
@@ -406,7 +406,7 @@ const SectionManager = ({
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeP(i, e, c, key);
+              onChangeP(i, e, c, key, "current");
 
               clearCurrentContent();
              }}>
@@ -825,7 +825,7 @@ const SectionManager = ({
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeButton(i, e, c, key);
+              onChangeButton(i, e, c, key, "current");
 
               clearCurrentContent();
              }}>
@@ -1051,7 +1051,7 @@ const SectionManager = ({
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeA(i, e, c, key);
+              onChangeA(i, e, c, key, "current");
 
               clearCurrentContent();
              }}>
@@ -1076,7 +1076,7 @@ const SectionManager = ({
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeA(i, e, c, key);
+              onChangeA(i, e, c, key, "current");
 
               clearCurrentContent();
              }}>
@@ -1264,7 +1264,7 @@ const SectionManager = ({
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeLi(i, e, c, key);
+              onChangeLi(i, e, c, key, "current");
 
               clearCurrentContent();
              }}>
@@ -1289,7 +1289,7 @@ const SectionManager = ({
              className='btn btn-sm'
              onClick={(e) => {
               const c = currentContent.content;
-              onChangeLi(i, e, c, key);
+              onChangeLi(i, e, c, key, "current");
 
               clearCurrentContent();
              }}>

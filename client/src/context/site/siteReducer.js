@@ -21,6 +21,8 @@ import {
  GET_BLOGSSEARCHED,
  GET_QUIZSSEARCHED,
  GET_ARTICLESSEARCHED,
+ FILTER_CSS,
+ CLEAR_FILTER,
 } from "../types";
 
 export default (state, action) => {
@@ -42,6 +44,16 @@ export default (state, action) => {
     ...state,
     sites: [action.payload, ...state.sites],
     loading: false,
+   };
+  case FILTER_CSS:
+   return {
+    ...state,
+    filtered: action.payload,
+   };
+  case CLEAR_FILTER:
+   return {
+    ...state,
+    filtered: {},
    };
   case PUT_SITE:
    return {

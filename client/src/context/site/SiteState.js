@@ -53,6 +53,8 @@ import {
  UPDATE_BODYGRID,
  UPDATE_SUBSTRUCTURE,
  UPDATE_BODYSTRUCTURE,
+ FILTER_CSS,
+ CLEAR_FILTER,
  UPDATE_CELLSTRUCTURE,
  DELETE_GRID,
 } from "../types";
@@ -68,6 +70,7 @@ const SiteState = (props) => {
    currentComponent: null,
    font: null,
    pallet: null,
+   filtered: {},
    content: [],
    cellStructure: null,
    myComponents: null,
@@ -104,10 +107,128 @@ const SiteState = (props) => {
   };
  }
 
+ const cssObj = {
+  id: "",
+  marginTop: "",
+  marginLeft: "",
+  width: "",
+  height: "",
+  marginBottom: "",
+  marginRight: "",
+  borderLeftStyle: "",
+  borderLeftColor: "",
+  borderLeftWidth: "",
+  borderRightStyle: "",
+  borderRightColor: "",
+  borderRightWidth: "",
+  borderTopStyle: "",
+  borderTopColor: "",
+  borderTopWidth: "",
+  borderBottomStyle: "",
+  borderBottomColor: "",
+  borderBottomWidth: "",
+  borderTopLeftRadius: "0",
+  borderTopRightRadius: "0",
+  borderBottomLeftRadius: "0",
+  borderBottomRightRadius: "0",
+  boxShadowHoriz: "",
+  boxShadowVert: "",
+  boxShadowBlur: "",
+  boxShadowSpread: "",
+  boxShadowColor: "",
+  boxShadowInset: "",
+  fontSize: "",
+  lineHeight: "",
+  fontWeight: "",
+  zIndex: "",
+  display: "",
+  textIndent: "",
+  transition: [],
+  transform: [],
+
+  transformProp: {
+   skewX: 0,
+   skewY: 0,
+   rotateX: 0,
+   rotateY: 0,
+   rotateZ: 0,
+   scaleY: 1,
+   scaleX: 1,
+   translateX: 0,
+   translateY: 0,
+  },
+  animation: [],
+  textAlign: "",
+  textShadowSize: "",
+  textShadowColor: "",
+  textDecorationLine: "",
+  textDecorationThickness: "",
+  textDecorationStyle: "",
+  textDecorationColor: "",
+  pos: "",
+  top: "",
+  left: "",
+  bottom: "",
+  right: "",
+  paddingTop: "",
+  paddingLeft: "",
+  paddingRight: "",
+  paddingBottom: "",
+  backgroundRepeat: "",
+  backgroundPosition: "",
+  backgroundSize: "",
+  opacity: "100%",
+  overflowX: "",
+  overflowY: "",
+ };
+
+ const newAnimation = {
+  animationName: "",
+  animationDuration: 0,
+  animationTimingFunction: "",
+  cubicNs: { 0: 0, 1: 0, 2: 0, 3: 0 },
+  steps: { n: 0, v: "" },
+  animationDelay: "",
+  animationIterationCount: "",
+  animationDirection: "",
+  animationFillMode: "",
+  animationPlayState: "",
+  keyframes: [],
+ };
+
+ const newKeyframeProperty = {
+  propName: "",
+  propValue: "",
+  shadowValues: {
+   verticalShadow: "",
+   horizontalShadow: "",
+   blurShadow: "",
+   spreadShadow: "",
+   shadowDirection: "",
+   shadowColor: "",
+  },
+  transValues: {
+   skewX: 0,
+   skewY: 0,
+   rotateX: 0,
+   rotateY: 0,
+   rotateZ: 0,
+   scaleY: 1,
+   scaleX: 1,
+   translateX: 0,
+   translateY: 0,
+  },
+ };
+
+ const newKeyframe = {
+  completionPercent: 0,
+  properties: [],
+ };
+
  const newTransition = {
   property: "",
   duration: 0,
-  timingFunciton: "",
+  timingFunction: "",
   cubicNs: { 0: 0, 1: 0, 2: 0, 3: 0 },
   delay: "",
  };
@@ -135,10 +256,12 @@ const SiteState = (props) => {
   subCells: [],
   viewToggle: "close",
   viewState: false,
-  height: 0,
+  rowSpan: 0,
   left: 0,
-  width: 0,
+  columnSpan: 0,
   css: {
+   width: "0",
+   height: "0",
    marginTop: "",
    marginLeft: "",
    marginBottom: "",
@@ -152,6 +275,7 @@ const SiteState = (props) => {
    borderTopStyle: "",
    borderTopColor: "",
    borderTopWidth: "",
+   lineHeight: "",
    borderBottomStyle: "",
    borderBottomColor: "",
    borderBottomWidth: "",
@@ -159,10 +283,10 @@ const SiteState = (props) => {
    borderTopRightRadius: "0",
    borderBottomLeftRadius: "0",
    borderBottomRightRadius: "0",
-   boxShadowTop: "",
-   boxShadowLeft: "",
-   boxShadowBottom: "",
-   boxShadowRight: "",
+   boxShadowHoriz: "",
+   boxShadowVert: "",
+   boxShadowBlur: "",
+   boxShadowSpread: "",
    boxShadowColor: "",
    boxShadowInset: "",
    fontSize: "",
@@ -172,6 +296,7 @@ const SiteState = (props) => {
    textIndent: "",
    transition: [],
    transform: [],
+
    transformProp: {
     skewX: 0,
     skewY: 0,
@@ -183,6 +308,7 @@ const SiteState = (props) => {
     translateX: 0,
     translateY: 0,
    },
+   animation: [],
    textAlign: "",
    textShadowSize: "",
    textShadowColor: "",
@@ -210,32 +336,182 @@ const SiteState = (props) => {
   position: "",
   code: "",
   content: [],
+  contentCss: [],
  };
  const subCell = {
-  height: 0,
   level: "subcell",
   left: 0,
   background: "",
   position: "",
-  width: 0,
+  columnSpan: 0,
+  rowSpan: 0,
   top: 0,
   bodyCells: [],
   id: "",
   code: "",
+  css: {
+   width: "0",
+   height: "0",
+   marginTop: "",
+   marginLeft: "",
+   marginBottom: "",
+   marginRight: "",
+   borderLeftStyle: "",
+   borderLeftColor: "",
+   borderLeftWidth: "",
+   borderRightStyle: "",
+   borderRightColor: "",
+   borderRightWidth: "",
+   borderTopStyle: "",
+   lineHeight: "",
+   borderTopColor: "",
+   borderTopWidth: "",
+   borderBottomStyle: "",
+   borderBottomColor: "",
+   borderBottomWidth: "",
+   borderTopLeftRadius: "0",
+   borderTopRightRadius: "0",
+   borderBottomLeftRadius: "0",
+   borderBottomRightRadius: "0",
+   boxShadowHoriz: "",
+   boxShadowVert: "",
+   boxShadowBlur: "",
+   boxShadowSpread: "",
+   boxShadowColor: "",
+   boxShadowInset: "",
+   fontSize: "",
+   fontWeight: "",
+   zIndex: "",
+   display: "",
+   textIndent: "",
+   transition: [],
+   transform: [],
+
+   transformProp: {
+    skewX: 0,
+    skewY: 0,
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    scaleY: 1,
+    scaleX: 1,
+    translateX: 0,
+    translateY: 0,
+   },
+   animation: [],
+   textAlign: "",
+   textShadowSize: "",
+   textShadowColor: "",
+   textDecorationLine: "",
+   textDecorationThickness: "",
+   textDecorationStyle: "",
+   textDecorationColor: "",
+   pos: "",
+   top: "",
+   left: "",
+   bottom: "",
+   right: "",
+   paddingTop: "",
+   paddingLeft: "",
+   paddingRight: "",
+   paddingBottom: "",
+   backgroundRepeat: "",
+   backgroundPosition: "",
+   backgroundSize: "",
+   opacity: "100%",
+   overflowX: "",
+   overflowY: "",
+  },
   content: [],
+  contentCss: [],
   name: "",
   viewToggle: "close",
   subViewState: false,
  };
  const bodyCell = {
-  height: 0,
+  rowSpan: 0,
   left: 0,
   level: "bodycell",
-  width: 0,
+  columnSpan: 0,
   background: "",
   position: "",
   code: "",
+  css: {
+   width: "0",
+   height: "0",
+   marginTop: "",
+   marginLeft: "",
+   marginBottom: "",
+   marginRight: "",
+   borderLeftStyle: "",
+   borderLeftColor: "",
+   lineHeight: "",
+   borderLeftWidth: "",
+   borderRightStyle: "",
+   borderRightColor: "",
+   borderRightWidth: "",
+   borderTopStyle: "",
+   borderTopColor: "",
+   borderTopWidth: "",
+   borderBottomStyle: "",
+   borderBottomColor: "",
+   borderBottomWidth: "",
+   borderTopLeftRadius: "0",
+   borderTopRightRadius: "0",
+   borderBottomLeftRadius: "0",
+   borderBottomRightRadius: "0",
+   boxShadowHoriz: "",
+   boxShadowVert: "",
+   boxShadowBlur: "",
+   boxShadowSpread: "",
+   boxShadowColor: "",
+   boxShadowInset: "",
+   fontSize: "",
+   fontWeight: "",
+   zIndex: "",
+   display: "",
+   textIndent: "",
+   transition: [],
+
+   transform: [],
+   transformProp: {
+    skewX: 0,
+    skewY: 0,
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    scaleY: 1,
+    scaleX: 1,
+    translateX: 0,
+    translateY: 0,
+   },
+
+   animation: [],
+   textAlign: "",
+   textShadowSize: "",
+   textShadowColor: "",
+   textDecorationLine: "",
+   textDecorationThickness: "",
+   textDecorationStyle: "",
+   textDecorationColor: "",
+   pos: "",
+   top: "",
+   left: "",
+   bottom: "",
+   right: "",
+   paddingTop: "",
+   paddingLeft: "",
+   paddingRight: "",
+   paddingBottom: "",
+   backgroundRepeat: "",
+   backgroundPosition: "",
+   backgroundSize: "",
+   opacity: "100%",
+   overflowX: "",
+   overflowY: "",
+  },
   content: [],
+  contentCss: [],
   top: 0,
   id: "",
   grandParent: "",
@@ -269,6 +545,43 @@ const SiteState = (props) => {
   bodyGrids,
   cellStructure,
  } = state.body;
+
+ const filterCss = (text, level, i, ind) => {
+  if (level === "cell") {
+   const matchKeys = Object.keys(cells[i]["css"]).filter((css) => {
+    const regex = new RegExp(`${text}`, "gi");
+    return css.match(regex);
+   });
+   console.log(matchKeys);
+
+   const filtered = {};
+
+   for (const key of matchKeys) {
+    filtered[key] = cells[i].css[key];
+   }
+
+   dispatch({ type: FILTER_CSS, payload: filtered });
+  } else if (level === "cellChild") {
+   const matchKeys = Object.keys(cells[i]["contentCss"][ind]).filter((css) => {
+    const regex = new RegExp(`${text}`, "gi");
+    return css.match(regex);
+   });
+   console.log(matchKeys);
+
+   const filtered = {};
+
+   for (const key of matchKeys) {
+    filtered[key] = cells[i].css[key];
+   }
+
+   dispatch({ type: FILTER_CSS, payload: filtered });
+  }
+ };
+
+ // Clear Filter
+ const clearFilter = () => {
+  dispatch({ type: CLEAR_FILTER });
+ };
 
  const addColumn = () => {
   const columns = grid.columns;
@@ -467,9 +780,20 @@ const SiteState = (props) => {
       ? piece.props.sectionArea === cell.id
       : piece.sectionArea === cell.id
     );
+
+    let blankCSS = [];
+    if (contents.length > cells[i].contentCss.length) {
+     const newObjNo = contents.length - cells[i].contentCss.length;
+
+     for (let i = 0; i < newObjNo; i++) {
+      blankCSS.push({ ...cssObj, id: uuidV4() });
+     }
+    }
+
     let obj = {
      ...cells[i],
      content: contents,
+     contentCss: [...cells[i].contentCss, ...blankCSS],
     };
 
     return obj;
@@ -605,10 +929,73 @@ const SiteState = (props) => {
 
   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
  };
+
+ const addCellChildTransition = (i, index) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+ };
+
+ const addCellAnimation = (i) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+ };
+
+ const addCellChildAnimation = (i, index) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+ };
+
+ const addCellAnimationKeyframe = (i, index) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["animation"][index]["keyframes"].push({ ...newKeyframe });
+  });
+
+  dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+ };
+
+ const addCellChildAnimationKeyframe = (i, index, ind) => {
+  console.log(ind);
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["animation"][ind]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+ };
+
+ const addCellAnimationKeyframeProperty = (i, index, ind) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["animation"][index]["keyframes"][ind]["properties"].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+ };
+
+ const addCellChildAnimationKeyframeProperty = (i, index, ind, indy) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["animation"][ind]["keyframes"][indy][
+    "properties"
+   ].push({ ...newKeyframeProperty });
+  });
+
+  dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+ };
  const addSubCellTransition = (i) => {};
  const addBodyCellTransition = (i) => {};
 
- const onChangeCell = (i, e, check, slider, n) => {
+ const onChangeCell = (i, e, check, slider, n, n1, n2, n3, n4) => {
   let value;
   let name;
 
@@ -622,6 +1009,16 @@ const SiteState = (props) => {
     draft[i]["css"]["transform"].push(value);
     draft[i]["css"]["transform"] = filterByCount(
      draft[i]["css"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "conttransform") {
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["transform"].push(value);
+    draft[i]["contentCss"][slider]["transform"] = filterByCount(
+     draft[i]["contentCss"][slider]["transform"],
      1
     );
    });
@@ -653,6 +1050,175 @@ const SiteState = (props) => {
    });
 
    dispatch({ type: UPDATE_CELL, payload: nextState });
+  } else if (check === "contcubicNs") {
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["transition"][n]["cubicNs"][n1] = e;
+   });
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "animation") {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["animation"][slider][name] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkey") {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n][name] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkeyprop" && !n2 && !n3) {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "animationkeyprop" &&
+   n2 &&
+   n2 != "font" &&
+   n2 != "boxshadow" &&
+   !n3
+  ) {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     "transValues"
+    ][n2] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkeyprop" && n2 && n2 === "font" && n3) {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     name
+    ] = n3;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkeyprop" && n2 && n2 === "boxshadow") {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     "shadowValues"
+    ][name] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "animationkeyprop" &&
+   n2 &&
+   n2 != "font" &&
+   n2 != "boxshadow" &&
+   n3
+  ) {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     "transValues"
+    ][n2] = e;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimation") {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n][name] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkey") {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkeyprop" && !n3 && !n4) {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2][name] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "contanimationkeyprop" &&
+   n3 &&
+   n3 != "font" &&
+   n3 != "boxshadow" &&
+   !n4
+  ) {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2]["transValues"][name] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkeyprop" && n3 && n3 === "font" && n4) {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2][name] = n4;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkeyprop" && n3 && n3 === "boxshadow") {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "contanimationkeyprop" &&
+   n3 &&
+   n3 != "font" &&
+   n3 != "boxshadow" &&
+   n4
+  ) {
+   console.log(cells);
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2]["transValues"][n3] = e;
+   });
+
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "contentCss") {
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider][name] = value;
+   });
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (slider === "contentslider") {
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][n][check] = e;
+   });
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (check === "conttransition") {
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][slider]["transition"][n][name] = value;
+   });
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
+  } else if (slider === "conttransformProp") {
+   const pushColumns = produce(cells, (draft) => {
+    draft[i]["contentCss"][n]["transformProp"][check] = e;
+   });
+   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (slider === "slider") {
    let newResults = [...cells];
 
@@ -720,7 +1286,6 @@ const SiteState = (props) => {
    });
    dispatch({ type: UPDATE_CELL, payload: nextState });
   } else {
-   console.log("touch2");
    let newResults = [...cells];
 
    newResults[i] = {
@@ -1424,6 +1989,7 @@ const SiteState = (props) => {
  return (
   <SiteContext.Provider
    value={{
+    filtered: state.markUp.filtered,
     cells: state.body.cells,
     bodyCells: state.body.bodyCells,
     subCells: state.body.subCells,
@@ -1503,9 +2069,18 @@ const SiteState = (props) => {
     setNewBodyCells,
     onChangeBodyCell,
     setCells,
+    filterCss,
+    clearFilter,
     addCellTransition,
+    addCellChildTransition,
     addSubCellTransition,
     addBodyCellTransition,
+    addCellAnimation,
+    addCellChildAnimation,
+    addCellAnimationKeyframe,
+    addCellChildAnimationKeyframe,
+    addCellAnimationKeyframeProperty,
+    addCellChildAnimationKeyframeProperty,
    }}>
    {props.children}
   </SiteContext.Provider>

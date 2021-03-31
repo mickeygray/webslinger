@@ -252,9 +252,17 @@ const SiteForm = () => {
   }
  }, [VariableComponent]);
 
- const onChangeH = (i, e, delCheck, key) => {
+ const onChangeH = (i, e, delCheck, key, current) => {
   const { value, name } = e.currentTarget;
   let newResults = [...h];
+
+  if (current === "current") {
+   newResults[i] = {
+    ...newResults[i],
+    [key]: delCheck,
+   };
+  }
+
   if (typeof delCheck !== "number" && !currentContent) {
    newResults[i] = {
     ...newResults[i],
@@ -268,12 +276,7 @@ const SiteForm = () => {
     ["font"]: delCheck,
    };
   }
-  if (typeof delCheck !== "number" && currentContent) {
-   newResults[i] = {
-    ...newResults[i],
-    [name]: currentContent.content,
-   };
-  }
+
   if (components.map((comp) => comp.name).includes(delCheck)) {
    const comp = component.filter((c) => c.type.name != delCheck);
 
@@ -300,7 +303,7 @@ const SiteForm = () => {
 
  console.log(h);
 
- const onChangeP = (i, e, delCheck, font, pallet) => {
+ const onChangeP = (i, e, delCheck, font, current) => {
   const { value, name } = e.currentTarget;
   let newResults = [...p];
   if (typeof delCheck !== "number" && !currentContent) {
@@ -308,22 +311,17 @@ const SiteForm = () => {
     ...newResults[i],
     [name]: value,
    };
-  }
-
-  if (font === "font") {
+  } else if (font === "font") {
    newResults[i] = {
     ...newResults[i],
     ["font"]: delCheck,
    };
-  }
-
-  if (typeof delCheck !== "number" && currentContent) {
+  } else if (current === "current") {
    newResults[i] = {
     ...newResults[i],
-    [name]: currentContent.content,
+    [font]: delCheck,
    };
-  }
-  if (components.map((comp) => comp.name).includes(delCheck)) {
+  } else if (components.map((comp) => comp.name).includes(delCheck)) {
    const comp = component.filter((c) => c.type.name != delCheck);
 
    const i = component.findIndex((x) => x === comp[0]);
@@ -343,6 +341,11 @@ const SiteForm = () => {
      props: { ...component[i].props, p: [...newResults] },
     },
    ]);
+  } else {
+   newResults[i] = {
+    ...newResults[i],
+    [name]: value,
+   };
   }
   setP(newResults);
  };
@@ -379,7 +382,7 @@ const SiteForm = () => {
   }
   setI(newResults);
  };
- const onChangeA = (i, e, delCheck) => {
+ const onChangeA = (i, e, delCheck, key, current) => {
   //STYLE AS BUTTON TOGGLE FOR EXTERNAL LINKS
   const { value, name } = e.currentTarget;
   let newResults = [...a];
@@ -387,6 +390,12 @@ const SiteForm = () => {
    newResults[i] = {
     ...newResults[i],
     [name]: value,
+   };
+  }
+  if (current === "current") {
+   newResults[i] = {
+    ...newResults[i],
+    [key]: delCheck,
    };
   }
 
@@ -419,7 +428,7 @@ const SiteForm = () => {
   }
   setA(newResults);
  };
- const onChangeButton = (i, e, delCheck, check) => {
+ const onChangeButton = (i, e, delCheck, check, current) => {
   const { value, name } = e.currentTarget;
 
   let newResults = [...button];
@@ -431,17 +440,17 @@ const SiteForm = () => {
    };
   }
 
+  if (current === "current") {
+   newResults[i] = {
+    ...newResults[i],
+    [check]: delCheck,
+   };
+  }
+
   if (check === "font") {
    newResults[i] = {
     ...newResults[i],
     ["font"]: delCheck,
-   };
-  }
-
-  if (typeof delCheck !== "number" && currentContent) {
-   newResults[i] = {
-    ...newResults[i],
-    [name]: currentContent.content,
    };
   }
 
@@ -645,7 +654,7 @@ const SiteForm = () => {
   }
  }, [contentImage, imageContext]);
 
- const onChangeVid = (i, e, delCheck) => {
+ const onChangeVid = (i, e, delCheck, key, current) => {
   const { value, name } = e.currentTarget;
   let newResults = [...vid];
   if (!delCheck) {
@@ -654,12 +663,14 @@ const SiteForm = () => {
     [name]: value,
    };
   }
-  if (typeof delCheck !== "number" && currentContent) {
+
+  if (current === "current") {
    newResults[i] = {
     ...newResults[i],
-    [name]: currentContent.content,
+    [key]: delCheck,
    };
   }
+
   if (components.map((comp) => comp.name).includes(delCheck)) {
    const comp = component.filter((c) => c.type.name != delCheck);
 
@@ -685,13 +696,20 @@ const SiteForm = () => {
   setVid(newResults);
  };
 
- const onChangeLi = (i, e, delCheck, key) => {
+ const onChangeLi = (i, e, delCheck, key, current) => {
   const { value, name } = e.currentTarget;
   let newResults = [...li];
   if (!delCheck) {
    newResults[i] = {
     ...newResults[i],
     [name]: value,
+   };
+  }
+
+  if (current === "current") {
+   newResults[i] = {
+    ...newResults[i],
+    [key]: delCheck,
    };
   }
 
@@ -1407,7 +1425,7 @@ const SiteForm = () => {
            overflowY: "scroll",
            overflowX: "scroll",
            width: "150vw",
-           height: "100%",
+           height: "110vh",
            zIndex: `${parseInt(viewIndex)}`,
            position: "absolute",
           }
@@ -1416,7 +1434,7 @@ const SiteForm = () => {
            overflowY: "scroll",
            overflowX: "scroll",
            width: "150vw",
-           height: "100%",
+           height: "110vh",
            zIndex: `${parseInt(viewIndex)}`,
            position: "absolute",
           }
