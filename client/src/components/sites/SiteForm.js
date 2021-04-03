@@ -6,18 +6,19 @@ import React, {
  useRef,
 } from "react";
 import SiteContext from "../../context/site/siteContext";
+import { useAppContext } from "../../context/site/SiteState";
 import ImageContext from "../../context/image/imageContext";
 
 import PageViewer from "./PageViewer";
 import SiteManager from "./SiteManager";
 import PageManager from "./PageManager";
-
+import ComponentList from "./ComponentList";
 import AuthContext from "../../context/auth/authContext";
 import ColorPalletPicker from "./ColorPalletPicker";
 import FontStylePicker from "./FontStylePicker";
-import { useTheme } from "../../components/component/state/useTheme";
+import { useTheme } from "../../context/site/hooks/useTheme";
 import SectionManager from "./SectionManager";
-
+import StateManager from "./StateManager";
 import ContentManager from "./ContentManager";
 import WebFont from "webfontloader";
 import { _uniq } from "lodash";
@@ -31,6 +32,7 @@ const SiteForm = () => {
  const userid = user._id;
 
  const { components } = useComponentContext();
+ const { NewComponent } = useAppContext();
 
  useEffect(() => {
   WebFont.load({
@@ -49,7 +51,6 @@ const SiteForm = () => {
   clearCurrentImage,
  } = imageContext;
 
- console.log(contentImage);
  const {
   setCurrentFont,
   setCurrentPallet,
@@ -85,17 +86,21 @@ const SiteForm = () => {
   body,
   addCell,
   addColumn,
+  getComponents,
   addRow,
   deleteColumn,
   deleteRow,
   cellStructure,
+  MyComponent,
  } = siteContext;
+
+ //console.log();
 
  useEffect(() => {
   if (userid !== null) {
    //getSites(userid);
    //getPages(userid);
-   //getComponents(userid);
+   getComponents(userid);
    getVerticals(userid);
    getBlogs(userid);
    getArticles(userid);
@@ -103,6 +108,71 @@ const SiteForm = () => {
    getReviews(userid);
    getFirms(userid);
   }
+  setPage({
+   url: "",
+   route: "",
+   pageType: "",
+   name: "",
+   firm: {},
+   verticals: [{}],
+   areas: {
+    head: {
+     metaTags: [{ tag: "", content: "" }],
+     title: "",
+    },
+    nav: {
+     logobox: {
+      sections: [],
+     },
+     nav1: {
+      sections: [],
+     },
+     nav2: {
+      sections: [],
+     },
+     siteLinks: {
+      sections: [],
+     },
+    },
+    header: {
+     heroText: {
+      sections: [],
+     },
+     heroImage: {
+      sections: [],
+     },
+     featuredContent: {
+      sections: [],
+     },
+     heroForm: {
+      sections: [],
+     },
+    },
+    main: {
+     rows: [
+      {
+       left: [],
+       center: [],
+       right: [],
+      },
+     ],
+    },
+    footer: {
+     logobox: {
+      sections: [],
+     },
+     footer1: {
+      sections: [],
+     },
+     footer2: {
+      sections: [],
+     },
+     siteLinks: {
+      sections: [],
+     },
+    },
+   },
+  });
  }, []);
 
  const sectionH = {
@@ -223,6 +293,97 @@ const SiteForm = () => {
  const [viewIndex, setViewIndex] = useState(-1);
  const [viewStyleToggle, setViewStyleToggle] = useState(true);
  const [gridViewToggle, setGridViewToggle] = useState(false);
+ const [nodeView, setNodeView] = useState(true);
+ const [newComponentName, setNewComponentName] = useState("");
+ const [newArea, setNewArea] = useState("");
+ const [saveState, setSaveModalState] = useState(false);
+ const [LoadedComponent, setLoadedComponent] = useState(null);
+ const [page, setPage] = useState({
+  url: "",
+  route: "",
+  pageType: "",
+  name: "",
+  firm: {},
+  verticals: [{}],
+  areas: {
+   head: {
+    metaTags: [{ tag: "", content: "" }],
+    title: "",
+   },
+   nav: {
+    logobox: {
+     sections: [],
+    },
+    nav1: {
+     sections: [],
+    },
+    nav2: {
+     sections: [],
+    },
+    siteLinks: {
+     sections: [],
+    },
+   },
+   header: {
+    heroText: {
+     sections: [],
+    },
+    heroImage: {
+     sections: [],
+    },
+    featuredContent: {
+     sections: [],
+    },
+    heroForm: {
+     sections: [],
+    },
+   },
+   main: {
+    rows: [
+     {
+      left: [],
+      center: [],
+      right: [],
+     },
+    ],
+   },
+   footer: {
+    logobox: {
+     sections: [],
+    },
+    footer1: {
+     sections: [],
+    },
+    footer2: {
+     sections: [],
+    },
+    siteLinks: {
+     sections: [],
+    },
+   },
+  },
+ });
+
+ const [site, setSite] = useState({
+  name: "",
+  url: "",
+  type: "",
+  staticAssets: [],
+  pages: [{ ...page }],
+  firm: "",
+  verticals: [],
+  metaTags: [{ tag: "", content: "" }],
+ });
+
+ const [currentTheme, setCurrentTheme] = useState({
+  primary: "",
+  light: "",
+  dark: "",
+  success: "",
+  danger: "",
+  font: "",
+ });
+
  const HTMLElement = (key) => {
   const newH = [...h, { ...sectionH }];
   const newP = [...p, { ...sectionP }];
@@ -243,14 +404,29 @@ const SiteForm = () => {
   key === "vid" && setVid(newVid);
  };
 
- console.log(img);
-
  useEffect(() => {
   if (VariableComponent != null) {
    setComponents((prevState) => [...prevState, VariableComponent]);
    setVariableComponent(null);
   }
  }, [VariableComponent]);
+
+ useEffect(() => {
+  if (MyComponent != null) {
+   console.log(MyComponent.h);
+
+   setH((prevState) => [...prevState, ...MyComponent.h]);
+   setP((prevState) => [...prevState, ...MyComponent.p]);
+   setI((prevState) => [...prevState, ...MyComponent.icon]);
+   setA((prevState) => [...prevState, ...MyComponent.a]);
+   setButton((prevState) => [...prevState, ...MyComponent.button]);
+   setImg((prevState) => [...prevState, ...MyComponent.img]);
+   setVid((prevState) => [...prevState, ...MyComponent.vid]);
+   setLi((prevState) => [...prevState, ...MyComponent.li]);
+  }
+ }, [MyComponent]);
+
+ console.log(h);
 
  const onChangeH = (i, e, delCheck, key, current) => {
   const { value, name } = e.currentTarget;
@@ -300,8 +476,6 @@ const SiteForm = () => {
   }
   setH(newResults);
  };
-
- console.log(h);
 
  const onChangeP = (i, e, delCheck, font, current) => {
   const { value, name } = e.currentTarget;
@@ -744,103 +918,24 @@ const SiteForm = () => {
  };
 
  const section = {
-  components: [
-   {
-    html: "",
-    javascript: "",
-    name: "",
-    sectionArea: "",
-   },
-  ],
-  staticAssets: "",
-  area: "",
+  html: NewComponent ? NewComponent.html : null,
+  user: userid,
+  content: NewComponent ? NewComponent.content : null,
+  userState: NewComponent ? NewComponent.userState : null,
+  p,
+  h,
+  icon,
+  a,
+  img,
+  vid,
+  li,
+  button,
+  component,
+  name: newComponentName,
+  area: newArea,
  };
 
- const [page, setPage] = useState({
-  url: "",
-  route: "",
-  pageType: "",
-  name: "",
-  firm: {},
-  verticals: [{}],
-  areas: {
-   head: {
-    metaTags: [{ tag: "", content: "" }],
-    title: "",
-   },
-   nav: {
-    logobox: {
-     sections: [{ ...section }],
-    },
-    nav1: {
-     sections: [{ ...section }],
-    },
-    nav2: {
-     sections: [{ ...section }],
-    },
-    siteLinks: {
-     sections: [{ ...section }],
-    },
-   },
-   header: {
-    heroText: {
-     sections: [{ ...section }],
-    },
-    heroImage: {
-     sections: [{ ...section }],
-    },
-    featuredContent: {
-     sections: [{ ...section }],
-    },
-    heroForm: {
-     sections: [{ ...section }],
-    },
-   },
-   main: {
-    rows: [
-     {
-      left: [{ ...section }],
-      center: [{ ...section }],
-      right: [{ ...section }],
-     },
-    ],
-   },
-   footer: {
-    logobox: {
-     sections: [{ ...section }],
-    },
-    footer1: {
-     sections: [{ ...section }],
-    },
-    footer2: {
-     sections: [{ ...section }],
-    },
-    siteLinks: {
-     sections: [{ ...section }],
-    },
-   },
-  },
- });
-
- const [site, setSite] = useState({
-  name: "",
-  url: "",
-  type: "",
-  staticAssets: [],
-  pages: [{ ...page }],
-  firm: "",
-  verticals: [],
-  metaTags: [{ tag: "", content: "" }],
- });
-
- const [currentTheme, setCurrentTheme] = useState({
-  primary: "",
-  light: "",
-  dark: "",
-  success: "",
-  danger: "",
-  font: "",
- });
+ console.log(section.markUp);
 
  useEffect(() => {
   if (font !== currentTheme.font) {
@@ -1095,12 +1190,23 @@ const SiteForm = () => {
     <div className='my-1'>
      {pages && <PageList changeDisplay={changeDisplay} />}
     </div>
-    <div className='my-1'>
-     {myComponents && <ComponentList changeDisplay={changeDisplay} />}
-    </div>
+
    </div>*/
 
- console.log(img, "img array");
+ /*
+
+           */
+
+ const flatAreas = Object.assign(
+  {},
+  ...(function _flatten(o) {
+   return [].concat(
+    ...Object.keys(o).map((k) =>
+     typeof o[k] === "object" ? _flatten(o[k]) : { [k]: o[k] }
+    )
+   );
+  })(page.areas)
+ );
  return (
   <div>
    <div className='bg-light'>
@@ -1174,22 +1280,56 @@ const SiteForm = () => {
         </label>
         <input
          type='checkbox'
-         name='viewStyleToggle'
+         name='gridViewToggle'
          onClick={() => setGridViewToggle((prevState) => !prevState)}
          checked={gridViewToggle === true}
         />
+        <br />
+        <label htmlFor='years' style={{ textSize: "5px" }}>
+         Node
+        </label>
+        <input
+         type='checkbox'
+         name='nodeView'
+         onClick={() => setNodeView((prevState) => !prevState)}
+         checked={nodeView === true}
+        />
        </li>
        <li className='py-1 mx'>
-        {" "}
-        <button
-         className='btn btn-dark btn-block'
-         onClick={() =>
-          (displayState === "site" && postSite(site)) ||
-          (displayState === "page" && postPage(page)) ||
-          (displayState === "component" && postComponent(section))
-         }>
-         Save
-        </button>
+        {saveState === false ? (
+         <button
+          className='btn btn-dark btn-block'
+          onClick={() => setSaveModalState((prevState) => !prevState)}>
+          Save
+         </button>
+        ) : (
+         <div className='card bg-primary lead'>
+          <span style={{ float: "right" }} className='lead bg-light' />
+          <a onClick={() => setSaveModalState((prevState) => !prevState)}>X</a>
+          <h5>Name Your Component</h5>
+          <input
+           type='text'
+           name='newComponentName'
+           value={newComponentName}
+           onChange={(e) => setNewComponentName(e.target.value)}
+          />
+          <h5>Assign Primary Area </h5>
+          <select>
+           <option></option>
+           {Object.keys(flatAreas).map((area) => (
+            <option value='area'>{area}</option>
+           ))}
+          </select>
+
+          {displayState === "component" && (
+           <button
+            className='btn btn-block btn-dark'
+            onClick={() => postComponent(section)}>
+            Save New Component
+           </button>
+          )}
+         </div>
+        )}
        </li>
        <li className='py-1 mx'>
         <button className='btn btn-sm btn-dark' onClick={() => addCell()}>
@@ -1414,6 +1554,9 @@ const SiteForm = () => {
        Add Component
       </button>
      </div>
+     <div>
+      <StateManager />
+     </div>
     </div>
     <div>
      <div
@@ -1467,6 +1610,7 @@ const SiteForm = () => {
          p={p}
          h={h}
          vid={vid}
+         nodeView={nodeView}
          img={img}
          button={button}
          font={font}
@@ -1501,6 +1645,7 @@ const SiteForm = () => {
          li={li}
          p={p}
          h={h}
+         nodeView={nodeView}
          vid={vid}
          img={img}
          button={button}
@@ -1546,6 +1691,7 @@ const SiteForm = () => {
       component={component}
      />
     </div>
+    <div className='my-1'>{myComponents && <ComponentList />}</div>
    </div>
   </div>
  );

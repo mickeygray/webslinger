@@ -15,9 +15,10 @@ import _ from "lodash";
 import Slider from "react-rangeslider";
 import "react-rangeslider/lib/index.css";
 import str from "string-template-format-tostring";
+import ReactDOMServer from "react-dom/server";
 import Pagination from "../layout/Pagination";
 import CssFilter from "./CssFilter";
-import { keyframes } from "styled-components";
+import { useAppContext } from "../../context/site/SiteState";
 const SecViewer = ({
  h,
  p,
@@ -30,7 +31,10 @@ const SecViewer = ({
  font,
  pallet,
  component,
+ nodeView,
 }) => {
+ const { setComponentString } = useAppContext();
+
  const siteContext = useContext(SiteContext);
  const imageContext = useContext(ImageContext);
  const { getContentImage, clearCurrentImage, contentImage } = imageContext;
@@ -82,7 +86,6 @@ const SecViewer = ({
   addBodyCellTransition,
   filtered,
  } = siteContext;
- console.log(filtered);
 
  const [elements, setElements] = useState([]);
  const [subGridView, toggleSubGridView] = useState(false);
@@ -91,6 +94,451 @@ const SecViewer = ({
  const [gridLevel, setGridLevelView] = useState(true);
  const [currentPage, setCurrentPage] = useState(1);
  const [postsPerPage, setPostsPerPage] = useState(1);
+
+ useEffect(() => {
+  if (document.getElementById("render").innerHTML) {
+   const mainGridStyles = Object.keys(grid)
+    .filter(
+     (k) =>
+      k.includes("String") || k.includes("Alignment") || k.includes("direction")
+    )
+    .map((k) => {
+     const gridObj = Object.assign({}, { [k]: grid[k] });
+     return gridObj;
+    });
+
+   let gridStyleObj = { display: "grid" };
+
+   for (const style of mainGridStyles) {
+    const {
+     direction,
+     rowString,
+     columnString,
+     horizontalAlignment,
+     verticalAlignment,
+    } = style;
+
+    let gridAutoFlow = direction && {
+     ["gridAutoFlow"]: Object.values(direction).toString().replaceAll(",", ""),
+    };
+    let gridTemplateRows = rowString && {
+     ["gridTemplateRows"]: Object.values(rowString)
+      .toString()
+      .replaceAll(",", ""),
+    };
+    let gridTemplateColumns = columnString && {
+     ["gridTemplateColumns"]: Object.values(columnString)
+      .toString()
+      .replaceAll(",", ""),
+    };
+    let justifyContent = horizontalAlignment && {
+     ["justifyContent"]: Object.values(horizontalAlignment)
+      .toString()
+      .replaceAll(",", ""),
+    };
+    let alignContent = verticalAlignment && {
+     ["alignContent"]: Object.values(verticalAlignment)
+      .toString()
+      .replaceAll(",", ""),
+    };
+
+    gridStyleObj = Object.assign(
+     {},
+     gridStyleObj,
+     gridAutoFlow != null && gridAutoFlow,
+     gridTemplateColumns != null && gridTemplateColumns,
+     gridTemplateRows != null && gridTemplateRows,
+     justifyContent != null && justifyContent,
+     alignContent != null && alignContent
+    );
+   }
+
+   let gridClasses = ReactDOMServer.renderToString(
+    document.getElementById("render").innerHTML
+   ).match(/(?<=class=&quot;\s*).*?(?=\s*&quot;)/gs);
+
+   const mainGridClass = {
+    [gridClasses
+     .filter((c) => c.includes(grid.key))
+     .toString()
+     .split(" ")[2]]: gridStyleObj,
+   };
+
+   const layoutStyles = [{ ...mainGridClass }];
+
+   if (subGrids.length > 0) {
+    subGrids.map(
+     (
+      {
+       direction,
+       rowString,
+       columnString,
+       horizontalAlignment,
+       verticalAlignment,
+       key,
+       parent,
+      },
+      i
+     ) => {
+      if (
+       cells[cells.findIndex((x) => x.id === parent)]["viewState"] === false
+      ) {
+       let styleObj = {};
+       let gridAutoFlow = direction && {
+        ["gridAutoFlow"]: Object.values(direction)
+         .toString()
+         .replaceAll(",", ""),
+       };
+       let gridTemplateRows = rowString && {
+        ["gridTemplateRows"]: Object.values(rowString)
+         .toString()
+         .replaceAll(",", ""),
+       };
+       let gridTemplateColumns = columnString && {
+        ["gridTemplateColumns"]: Object.values(columnString)
+         .toString()
+         .replaceAll(",", ""),
+       };
+       let justifyContent = horizontalAlignment && {
+        ["justifyContent"]: Object.values(horizontalAlignment)
+         .toString()
+         .replaceAll(",", ""),
+       };
+       let alignContent = verticalAlignment && {
+        ["alignContent"]: Object.values(verticalAlignment)
+         .toString()
+         .replaceAll(",", ""),
+       };
+
+       styleObj = Object.assign(
+        {},
+        styleObj,
+        gridAutoFlow != null && gridAutoFlow,
+        gridTemplateColumns != null && gridTemplateColumns,
+        gridTemplateRows != null && gridTemplateRows,
+        justifyContent != null && justifyContent,
+        alignContent != null && alignContent
+       );
+
+       let gridClasses = ReactDOMServer.renderToString(
+        document.getElementById("render").innerHTML
+       ).match(/(?<=class=&quot;\s*).*?(?=\s*&quot;)/gs);
+
+       for (const classn of gridClasses) {
+        if (classn.includes(key)) {
+         const gridClass = {
+          [gridClasses
+           .filter((c) => c.includes(key))
+           .toString()
+           .split(" ")[2]]: styleObj,
+         };
+
+         return layoutStyles.push(gridClass);
+        }
+       }
+      }
+     }
+    );
+   }
+
+   if (bodyGrids.length > 0) {
+    bodyGrids.map(
+     (
+      {
+       direction,
+       rowString,
+       columnString,
+       horizontalAlignment,
+       verticalAlignment,
+       key,
+       parent,
+      },
+      i
+     ) => {
+      if (
+       subCells[subCells.findIndex((x) => x.id === parent)] &&
+       subCells[subCells.findIndex((x) => x.id === parent)]["subViewState"] ===
+        false
+      ) {
+       let styleObj = {};
+       let gridAutoFlow = direction && {
+        ["gridAutoFlow"]: Object.values(direction)
+         .toString()
+         .replaceAll(",", ""),
+       };
+       let gridTemplateRows = rowString && {
+        ["gridTemplateRows"]: Object.values(rowString)
+         .toString()
+         .replaceAll(",", ""),
+       };
+       let gridTemplateColumns = columnString && {
+        ["gridTemplateColumns"]: Object.values(columnString)
+         .toString()
+         .replaceAll(",", ""),
+       };
+       let justifyContent = horizontalAlignment && {
+        ["justifyContent"]: Object.values(horizontalAlignment)
+         .toString()
+         .replaceAll(",", ""),
+       };
+       let alignContent = verticalAlignment && {
+        ["alignContent"]: Object.values(verticalAlignment)
+         .toString()
+         .replaceAll(",", ""),
+       };
+
+       styleObj = Object.assign(
+        {},
+        styleObj,
+        gridAutoFlow != null && gridAutoFlow,
+        gridTemplateColumns != null && gridTemplateColumns,
+        gridTemplateRows != null && gridTemplateRows,
+        justifyContent != null && justifyContent,
+        alignContent != null && alignContent
+       );
+
+       let gridClasses = ReactDOMServer.renderToString(
+        document.getElementById("render").innerHTML
+       ).match(/(?<=class=&quot;\s*).*?(?=\s*&quot;)/gs);
+
+       for (const classn of gridClasses) {
+        if (classn.includes(key)) {
+         const gridClass = {
+          [gridClasses
+           .filter((c) => c.includes(key))
+           .toString()
+           .split(" ")[2]]: styleObj,
+         };
+
+         return layoutStyles.push(gridClass);
+        }
+       }
+      }
+     }
+    );
+   }
+
+   if (cells.length > 0) {
+    cells.map(({ top, left, width, height, center, id }, i) => {
+     let styleObj = {};
+     let gridColumnStart = left && {
+      ["gridColumnStart"]: Object.values(left).toString().replaceAll(",", ""),
+     };
+     let gridRowStart = top && {
+      ["gridRowStart"]: Object.values(top).toString().replaceAll(",", ""),
+     };
+     let gridColumnEnd = width && {
+      ["gridColumnEnd"]: `span ${Object.values(width)
+       .toString()
+       .replaceAll(",", "")}`,
+     };
+     let gridRowEnd = height && {
+      ["gridRowEnd"]: `span ${Object.values(height)
+       .toString()
+       .replaceAll(",", "")}`,
+     };
+     let textAlign = center && {
+      ["textAlign"]: "center",
+     };
+
+     console.log(gridRowStart);
+     styleObj = {
+      gridColumnStart,
+      gridRowStart,
+      gridColumnEnd,
+      gridRowEnd,
+      textAlign,
+     };
+
+     console.log(styleObj);
+
+     let cellClasses = ReactDOMServer.renderToString(
+      document.getElementById("render").innerHTML
+     ).match(/(?<=class=&quot;\s*).*?(?=\s*&quot;)/gs);
+
+     for (const classn of cellClasses) {
+      if (classn.includes(id)) {
+       const cellClass = {
+        [cellClasses
+         .filter((c) => c.includes(id))[0]
+         .toString()
+         .split(" ")[2]]: styleObj,
+       };
+
+       console.log(cellClass);
+       return layoutStyles.push(cellClass);
+      }
+     }
+    });
+   }
+
+   if (subCells.length > 0) {
+    subCells.map(({ top, left, width, height, center, id }, i) => {
+     let styleObj = {};
+     let gridColumnStart = left && {
+      ["gridColumnStart"]: Object.values(left).toString().replaceAll(",", ""),
+     };
+     let gridRowStart = top && {
+      ["gridRowStart"]: Object.values(top).toString().replaceAll(",", ""),
+     };
+     let gridColumnEnd = width && {
+      ["gridColumnEnd"]: `span ${Object.values(width)
+       .toString()
+       .replaceAll(",", "")}`,
+     };
+     let gridRowEnd = height && {
+      ["gridRowEnd"]: `span ${Object.values(height)
+       .toString()
+       .replaceAll(",", "")}`,
+     };
+     let textAlign = center && {
+      ["textAlign"]: "center",
+     };
+
+     styleObj = {
+      gridColumnStart,
+      gridRowStart,
+      gridColumnEnd,
+      gridRowEnd,
+      textAlign,
+     };
+
+     let cellClasses = ReactDOMServer.renderToString(
+      document.getElementById("render").innerHTML
+     ).match(/(?<=class=&quot;\s*).*?(?=\s*&quot;)/gs);
+
+     for (const classn of cellClasses) {
+      if (classn.includes(id)) {
+       const cellClass = {
+        [cellClasses
+         .filter((c) => c.includes(id))[0]
+         .toString()
+         .split(" ")[2]]: styleObj,
+       };
+
+       return layoutStyles.push(cellClass);
+      }
+     }
+    });
+   }
+
+   if (bodyCells.length > 0) {
+    bodyCells.map(({ top, left, width, height, center, id }, i) => {
+     let styleObj = {};
+     let gridColumnStart = left && {
+      ["gridColumnStart"]: Object.values(left).toString().replaceAll(",", ""),
+     };
+     let gridRowStart = top && {
+      ["gridRowStart"]: Object.values(top).toString().replaceAll(",", ""),
+     };
+     let gridColumnEnd = width && {
+      ["gridColumnEnd"]: `span ${Object.values(width)
+       .toString()
+       .replaceAll(",", "")}`,
+     };
+     let gridRowEnd = height && {
+      ["gridRowEnd"]: `span ${Object.values(height)
+       .toString()
+       .replaceAll(",", "")}`,
+     };
+     let textAlign = center && {
+      ["textAlign"]: "center",
+     };
+
+     styleObj = {
+      gridColumnStart,
+      gridRowStart,
+      gridColumnEnd,
+      gridRowEnd,
+      textAlign,
+     };
+
+     let cellClasses = ReactDOMServer.renderToString(
+      document.getElementById("render").innerHTML
+     ).match(/(?<=class=&quot;\s*).*?(?=\s*&quot;)/gs);
+
+     for (const classn of cellClasses) {
+      if (classn.includes(id)) {
+       const cellClass = {
+        [cellClasses
+         .filter((c) => c.includes(id))[0]
+         .toString()
+         .split(" ")[2]]: styleObj,
+       };
+
+       return layoutStyles.push(cellClass);
+      }
+     }
+    });
+   }
+
+   setComponentString(
+    ReactDOMServer.renderToString(document.getElementById("render").innerHTML),
+    layoutStyles
+   );
+  }
+
+  /*
+
+   let gridClasses = 
+   ReactDOMServer.renderToString(
+    document.getElementById("render").innerHTML
+   ).match(/(?<=class=&quot;G\s*).*?(?=\s*&quot;)/gs);
+
+   let cellClasses = ReactDOMServer.renderToString(
+    document.getElementById("render").innerHTML
+   ).match(/(?<=class=&quot;C\s*).*?(?=\s*&quot;)/gs);
+
+   if (gridClasses) {
+    gridClasses.forEach((classn) => {
+     const grid = document.getElementsByClassName(classn);
+
+     var style = window.getComputedStyle
+      ? getComputedStyle(grid[0], null)
+      : grid[0].currentStyle;
+
+     const styleKeys = Object.keys(style).filter(
+      (k) => k.includes("grid") || k.includes("gap") || k.includes("display")
+     );
+
+     console.log(styleKeys);
+     
+  
+  display: grid;
+  grid-auto-flow: 
+  grid-auto-rows: 
+  grid-template-rows:
+  grid-template-columns: 
+  justify-content:
+  align-content
+
+  grid-gap: 
+  column-gap: 
+  row-gap:
+  areas:
+
+
+     grid-column-end: span width
+  grid-row-end: span height
+  grid-column-start: left
+  grid-row-start: top
+  text-align: center 
+
+
+       console.log(styleKeys);
+    });
+   }
+
+   if (cellClasses) {
+    cellClasses = cellClasses.map((g) => "C" + g);
+    cellClasses.forEach((classn) => {
+     console.log(document.getElementsByClassName(classn));
+    });
+   }
+
+
+*/
+ }, [grid, subGrids, bodyGrids, cells, subCells, bodyCells]);
 
  const indexOfLastPost = currentPage * postsPerPage;
  const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -119,6 +567,7 @@ const SecViewer = ({
   setNewSubCells(bodyCells, elements);
  }, [component, h, li, p, a, icon, button, img, vid]);
 
+ console.log(contentImage);
  useEffect(() => {
   if (
    contentImage !== null &&
@@ -130,6 +579,7 @@ const SecViewer = ({
     ...newResults[contentImage.imgIndex],
 
     ["code"]: contentImage.code,
+    ["alt"]: contentImage.name,
     ["level"]: "cell",
    };
 
@@ -146,6 +596,7 @@ const SecViewer = ({
 
     ["code"]: contentImage.code,
     ["level"]: "subCell",
+    ["alt"]: contentImage.name,
    };
 
    setNewSubCells(newResults);
@@ -160,6 +611,7 @@ const SecViewer = ({
     ...newResults[contentImage.imgIndex],
     ["background"]: "image",
     ["code"]: contentImage.code,
+    ["alt"]: contentImage.name,
     ["level"]: "bodyCell",
    };
 
@@ -181,14 +633,15 @@ const SecViewer = ({
  }, [contentImage, imageContext]);
 
  return (
-  <div>
+  <div id='render'>
    <Grid
     key={grid.key}
     columns={grid.columnString}
     rows={grid.rowString}
     flow={grid.direction}
     justifyContent={grid.horizontalAlignment}
-    alignContent={grid.verticalAlignment}>
+    alignContent={grid.verticalAlignment}
+    className={`G${grid.key}`}>
     {cells.map(
      (
       {
@@ -222,8 +675,10 @@ const SecViewer = ({
        indexOfFirstPost,
        indexOfLastPost
       );
+
       return (
        <Cell
+        className={`C${id}`}
         height={rowSpan}
         width={columnSpan}
         style={{}}
@@ -4508,31 +4963,35 @@ const SecViewer = ({
         ) : (
          <>
           <Fragment>
-           <div
-            style={{
-             height: "5px",
-             width: "5px",
-             float: "left",
-             padding: 0,
-             background: "#f4f4f4",
-             position: "absolute",
-             zIndex: 9999999,
-            }}>
-            {" "}
-            <select
-             name='viewToggle'
+           {nodeView === true ? (
+            <div
              style={{
               height: "5px",
               width: "5px",
-              WebkitAppearance: "none",
-              MozAppearance: "none",
+              float: "left",
+              padding: 0,
+              background: "#f4f4f4",
+              position: "absolute",
               zIndex: 9999999,
-             }}
-             onChange={(e) => onChangeCell(i, e)}>
-             <option value=''>M</option>
-             <option value='open'>Open</option>
-            </select>
-           </div>
+             }}>
+             {" "}
+             <select
+              name='viewToggle'
+              style={{
+               height: "5px",
+               width: "5px",
+               WebkitAppearance: "none",
+               MozAppearance: "none",
+               zIndex: 9999999,
+              }}
+              onChange={(e) => onChangeCell(i, e)}>
+              <option value=''>M</option>
+              <option value='open'>Open</option>
+             </select>
+            </div>
+           ) : (
+            ""
+           )}
 
            <div className={"a" + cells[i].id}>
             {content
@@ -4556,6 +5015,7 @@ const SecViewer = ({
                 background,
                 color,
                 top,
+                name,
                 left,
                 code,
                 height,
@@ -5011,6 +5471,7 @@ const SecViewer = ({
                   )}
                   {type === "img" ? (
                    <img
+                    alt={name}
                     src={code}
                     style={{
                      height: `${height}px`,
@@ -5042,1554 +5503,1561 @@ const SecViewer = ({
              )}
            </div>
           </Fragment>
-          <Grid
-           key={
-            subGrids[subGrids.findIndex((x) => x.parent === id)] &&
-            subGrids[subGrids.findIndex((x) => x.parent === id)].key
-           }
-           columns={
-            subGrids[subGrids.findIndex((x) => x.parent === id)] &&
-            subGrids[subGrids.findIndex((x) => x.parent === id)].columnString
-           }
-           rows={
-            subGrids[subGrids.findIndex((x) => x.parent === id)] &&
-            subGrids[subGrids.findIndex((x) => x.parent === id)].rowString
-           }
-           flow={
-            subGrids[subGrids.findIndex((x) => x.parent === id)] &&
-            subGrids[subGrids.findIndex((x) => x.parent === id)].direction
-           }
-           justifyContent={
-            subGrids[subGrids.findIndex((x) => x.parent === id)] &&
-            subGrids[subGrids.findIndex((x) => x.parent === id)]
-             .horizontalAlignment
-           }
-           alignContent={
-            subGrids[subGrids.findIndex((x) => x.parent === id)] &&
-            subGrids[subGrids.findIndex((x) => x.parent === id)]
-             .verticalAlignment
-           }>
-           {subCells
-            .filter((g) => g.grandParent === id)
-            .map(
-             (
-              {
-               top,
-               id,
-               left,
-               rowSpan,
-               columnSpan,
-               css,
-               contentCss,
-               grandParent,
-               subViewState,
-               content,
-              },
-              i
-             ) => {
-              const index = cells.findIndex((x) => x.id === grandParent);
-              return (
-               <Cell
-                height={rowSpan}
-                width={columnSpan}
-                style={
-                 subCells[i].background.includes("#")
-                  ? {
-                     background: `${background}`,
-                     border: "#ccc 1px dotted",
-                    }
-                  : {
-                     backgroundImage: code
-                      ? `url(${code})`
-                      : " url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVQYV2NkIAKckTrzn5GQOpAik2cmjHgVwhSBDMOpEFkRToXoirAqxKYIQyEuRSgK8SmCKySkCKyQGEUghQD+Nia8BIDCEQAAAABJRU5ErkJggg==)",
-                     backgroundSize: code ? "100%" : "20px 20px",
-                     border: "#ccc 1px dotted",
-                    }
-                }
-                top={top}
-                left={left}
-                key={id}>
-                <>
-                 {subViewState === true ? (
-                  <div>
-                   <div className='grid-2'>
-                    <div
-                     className='card'
-                     style={{ backgroundColor: "#f4f4f4" }}>
-                     {" "}
-                     <h5>Cell Settings</h5>
-                     <select
-                      name='background'
-                      onChange={(e) => {
-                       onChangeSubCell(i, e);
-                       {
-                        currentContent &&
-                         getContentImage(
-                          currentContent.content,
-                          i,
-                          "background",
-                          "subCell"
-                         );
-                       }
-                       {
-                        currentContent && clearCurrentContent();
-                       }
-                      }}>
-                      <option>Background</option>
-                      <option value={pallet && pallet.primary}>Primary</option>
-                      <option value={pallet && pallet.dark}>Dark</option>
-                      <option value={pallet && pallet.light}>Light</option>
-                      <option value={pallet && pallet.danger}>Danger</option>
-                      <option value={pallet && pallet.success}>Success</option>
-                      {currentContent && (
-                       <option value={currentContent.content}>Set Image</option>
-                      )}
-                     </select>
-                     <input
-                      placeholder='Row Span'
-                      type='text'
-                      name='rowSpan'
-                      value={rowSpan}
-                      onChange={(e) => onChangeSubCell(i, e)}
-                     />
-                     <input
-                      placeholder='columnSpan'
-                      type='text'
-                      name='columnSpan'
-                      value={columnSpan}
-                      onChange={(e) => onChangeSubCell(i, e)}
-                     />
-                     <input
-                      placeholder='top'
-                      type='text'
-                      name='top'
-                      value={top}
-                      onChange={(e) => onChangeSubCell(i, e)}
-                     />
-                     <input
-                      placeholder='left'
-                      type='text'
-                      name='left'
-                      value={left}
-                      onChange={(e) => onChangeSubCell(i, e)}
-                     />
-                    </div>
-                    {bodyGridView === false ? (
+          {subGrids.length > 0 && (
+           <Grid
+            className={
+             subGrids[subGrids.findIndex((x) => x.parent === id)] &&
+             `G${subGrids[subGrids.findIndex((x) => x.parent === id)].key}`
+            }
+            key={
+             subGrids[subGrids.findIndex((x) => x.parent === id)] &&
+             subGrids[subGrids.findIndex((x) => x.parent === id)].key
+            }
+            columns={
+             subGrids[subGrids.findIndex((x) => x.parent === id)] &&
+             subGrids[subGrids.findIndex((x) => x.parent === id)].columnString
+            }
+            rows={
+             subGrids[subGrids.findIndex((x) => x.parent === id)] &&
+             subGrids[subGrids.findIndex((x) => x.parent === id)].rowString
+            }
+            flow={
+             subGrids[subGrids.findIndex((x) => x.parent === id)] &&
+             subGrids[subGrids.findIndex((x) => x.parent === id)].direction
+            }
+            justifyContent={
+             subGrids[subGrids.findIndex((x) => x.parent === id)] &&
+             subGrids[subGrids.findIndex((x) => x.parent === id)]
+              .horizontalAlignment
+            }
+            alignContent={
+             subGrids[subGrids.findIndex((x) => x.parent === id)] &&
+             subGrids[subGrids.findIndex((x) => x.parent === id)]
+              .verticalAlignment
+            }>
+            {subCells
+             .filter((g) => g.grandParent === id)
+             .map(
+              (
+               {
+                top,
+                id,
+                left,
+                rowSpan,
+                columnSpan,
+                css,
+                contentCss,
+                grandParent,
+                subViewState,
+                content,
+               },
+               i
+              ) => {
+               const index = cells.findIndex((x) => x.id === grandParent);
+               return (
+                <Cell
+                 height={rowSpan}
+                 width={columnSpan}
+                 className={`C${id}`}
+                 top={top}
+                 left={left}
+                 key={id}>
+                 <>
+                  {subViewState === true ? (
+                   <div>
+                    <div className='grid-2'>
                      <div
                       className='card'
                       style={{ backgroundColor: "#f4f4f4" }}>
-                      <h5>BODY GRID SETTINGS</h5>
-                      <button
-                       className='btn btn-dark btn-sm'
-                       onClick={() => addBodyGrid(id)}>
-                       Add Grid
-                      </button>
-                      <button
-                       className='btn btn-dark btn-sm'
-                       onClick={() => addBodyColumn(id)}>
-                       Add Column
-                      </button>
-                      <button
-                       className='btn btn-dark btn-sm'
-                       onClick={() => addBodyRow(id)}>
-                       Add Row
-                      </button>
-                      <button
-                       className='btn btn-dark btn-sm'
-                       onClick={() =>
-                        toggleBodyGridView((prevState) => !prevState)
-                       }>
-                       View Grid
-                      </button>
+                      {" "}
+                      <h5>Cell Settings</h5>
                       <select
-                       name='verticalAlignment'
-                       onChange={(e) => onChangeSubCell(i, e)}>
-                       <option>Vertical</option>
-                       <option value='start'>Start</option>
-                       <option value='end'>End</option>
-                       <option value='center'>Center</option>
-                       <option value='space-between'>Between</option>
-                       <option value='space-around'>Around</option>
-                       <option value='space-evenly'>Evenly</option>
-                       <option value='stretch'>Stretch</option>
+                       name='background'
+                       onChange={(e) => {
+                        onChangeSubCell(i, e);
+                        {
+                         currentContent &&
+                          getContentImage(
+                           currentContent.content,
+                           i,
+                           "background",
+                           "subCell"
+                          );
+                        }
+                        {
+                         currentContent && clearCurrentContent();
+                        }
+                       }}>
+                       <option>Background</option>
+                       <option value={pallet && pallet.primary}>Primary</option>
+                       <option value={pallet && pallet.dark}>Dark</option>
+                       <option value={pallet && pallet.light}>Light</option>
+                       <option value={pallet && pallet.danger}>Danger</option>
+                       <option value={pallet && pallet.success}>Success</option>
+                       {currentContent && (
+                        <option value={currentContent.content}>
+                         Set Image
+                        </option>
+                       )}
                       </select>
-                      <select
-                       name='horitzontalAlignment'
-                       onChange={(e) => onChangeSubCell(i, e)}>
-                       <option>Horizontal</option>
-                       <option value='start'>Start</option>
-                       <option value='end'>End</option>
-                       <option value='center'>Center</option>
-                       <option value='space-between'>Between</option>
-                       <option value='space-around'>Around</option>
-                       <option value='space-evenly'>Evenly</option>
-                      </select>
-                      <select
-                       name='layout'
-                       onChange={(e) => onChangeSubCell(i, e)}>
-                       <option>Layout</option>
-                       <option value='row'>Row</option>
-                       <option value='column'>Column</option>
-                       <option value='row dense'>Row Dense</option>
-                      </select>
+                      <input
+                       placeholder='Row Span'
+                       type='text'
+                       name='rowSpan'
+                       value={rowSpan}
+                       onChange={(e) => onChangeSubCell(i, e)}
+                      />
+                      <input
+                       placeholder='columnSpan'
+                       type='text'
+                       name='columnSpan'
+                       value={columnSpan}
+                       onChange={(e) => onChangeSubCell(i, e)}
+                      />
+                      <input
+                       placeholder='top'
+                       type='text'
+                       name='top'
+                       value={top}
+                       onChange={(e) => onChangeSubCell(i, e)}
+                      />
+                      <input
+                       placeholder='left'
+                       type='text'
+                       name='left'
+                       value={left}
+                       onChange={(e) => onChangeSubCell(i, e)}
+                      />
                      </div>
-                    ) : (
-                     <div>
-                      <button
-                       className='btn btn-dark btn-sm'
-                       onClick={() =>
-                        toggleBodyGridView((prevState) => !prevState)
-                       }>
-                       Hide Grid
-                      </button>
-                      <div className='grid-2'>
-                       {bodyGrids[
-                        bodyGrids.findIndex((x) => x.parent === id)
-                       ] &&
-                        bodyGrids[
+                     {bodyGridView === false ? (
+                      <div
+                       className='card'
+                       style={{ backgroundColor: "#f4f4f4" }}>
+                       <h5>BODY GRID SETTINGS</h5>
+                       <button
+                        className='btn btn-dark btn-sm'
+                        onClick={() => addBodyGrid(id)}>
+                        Add Grid
+                       </button>
+                       <button
+                        className='btn btn-dark btn-sm'
+                        onClick={() => addBodyColumn(id)}>
+                        Add Column
+                       </button>
+                       <button
+                        className='btn btn-dark btn-sm'
+                        onClick={() => addBodyRow(id)}>
+                        Add Row
+                       </button>
+                       <button
+                        className='btn btn-dark btn-sm'
+                        onClick={() =>
+                         toggleBodyGridView((prevState) => !prevState)
+                        }>
+                        View Grid
+                       </button>
+                       <select
+                        name='verticalAlignment'
+                        onChange={(e) => onChangeSubCell(i, e)}>
+                        <option>Vertical</option>
+                        <option value='start'>Start</option>
+                        <option value='end'>End</option>
+                        <option value='center'>Center</option>
+                        <option value='space-between'>Between</option>
+                        <option value='space-around'>Around</option>
+                        <option value='space-evenly'>Evenly</option>
+                        <option value='stretch'>Stretch</option>
+                       </select>
+                       <select
+                        name='horitzontalAlignment'
+                        onChange={(e) => onChangeSubCell(i, e)}>
+                        <option>Horizontal</option>
+                        <option value='start'>Start</option>
+                        <option value='end'>End</option>
+                        <option value='center'>Center</option>
+                        <option value='space-between'>Between</option>
+                        <option value='space-around'>Around</option>
+                        <option value='space-evenly'>Evenly</option>
+                       </select>
+                       <select
+                        name='layout'
+                        onChange={(e) => onChangeSubCell(i, e)}>
+                        <option>Layout</option>
+                        <option value='row'>Row</option>
+                        <option value='column'>Column</option>
+                        <option value='row dense'>Row Dense</option>
+                       </select>
+                      </div>
+                     ) : (
+                      <div>
+                       <button
+                        className='btn btn-dark btn-sm'
+                        onClick={() =>
+                         toggleBodyGridView((prevState) => !prevState)
+                        }>
+                        Hide Grid
+                       </button>
+                       <div className='grid-2'>
+                        {bodyGrids[
                          bodyGrids.findIndex((x) => x.parent === id)
-                        ].columns.map(({ size, unit }, index) => (
-                         <div>
+                        ] &&
+                         bodyGrids[
+                          bodyGrids.findIndex((x) => x.parent === id)
+                         ].columns.map(({ size, unit }, index) => (
+                          <div>
+                           <div>
+                            <input
+                             placeholder='Column Size...'
+                             type='text'
+                             name='size'
+                             value={size}
+                             onChange={(e) => updateBodyColumn(e, id, i)}
+                            />
+                            <select
+                             name='unit'
+                             value={unit}
+                             onChange={(e) => updateBodyColumn(e, id, i)}>
+                             <option></option>
+                             <option value='px'>Pixels</option>
+                             <option value='fr'>Fractions</option>
+                             <option value='repeat(auto-fit,minmax(120px,1fr))'>
+                              Responsive
+                             </option>
+                            </select>
+                            <span
+                             style={{ float: "right" }}
+                             className='color-background lead'
+                             onClick={() => deleteBodyColumn(id, index)}>
+                             <a>X</a>
+                            </span>
+                           </div>
+                          </div>
+                         ))}
+                        {bodyGrids[
+                         bodyGrids.findIndex((x) => x.parent === id)
+                        ] &&
+                         bodyGrids[
+                          bodyGrids.findIndex((x) => x.parent === id)
+                         ].rows.map(({ size, unit }, index) => (
                           <div>
                            <input
-                            placeholder='Column Size...'
+                            placeholder='Row Size...'
                             type='text'
                             name='size'
                             value={size}
-                            onChange={(e) => updateBodyColumn(e, id, i)}
+                            onChange={(e) => updateBodyRow(e, id, i)}
                            />
                            <select
                             name='unit'
                             value={unit}
-                            onChange={(e) => updateBodyColumn(e, id, i)}>
+                            onChange={(e) => updateBodyRow(e, id, i)}>
                             <option></option>
                             <option value='px'>Pixels</option>
                             <option value='fr'>Fractions</option>
-                            <option value='repeat(auto-fit,minmax(120px,1fr))'>
-                             Responsive
-                            </option>
                            </select>
                            <span
                             style={{ float: "right" }}
                             className='color-background lead'
-                            onClick={() => deleteBodyColumn(id, index)}>
+                            onClick={() => deleteBodyRow(id, index)}>
                             <a>X</a>
                            </span>
                           </div>
-                         </div>
-                        ))}
-                       {bodyGrids[
-                        bodyGrids.findIndex((x) => x.parent === id)
-                       ] &&
-                        bodyGrids[
-                         bodyGrids.findIndex((x) => x.parent === id)
-                        ].rows.map(({ size, unit }, index) => (
-                         <div>
-                          <input
-                           placeholder='Row Size...'
-                           type='text'
-                           name='size'
-                           value={size}
-                           onChange={(e) => updateBodyRow(e, id, i)}
-                          />
-                          <select
-                           name='unit'
-                           value={unit}
-                           onChange={(e) => updateBodyRow(e, id, i)}>
-                           <option></option>
-                           <option value='px'>Pixels</option>
-                           <option value='fr'>Fractions</option>
-                          </select>
-                          <span
-                           style={{ float: "right" }}
-                           className='color-background lead'
-                           onClick={() => deleteBodyRow(id, index)}>
-                           <a>X</a>
-                          </span>
-                         </div>
-                        ))}
+                         ))}
+                       </div>
                       </div>
-                     </div>
-                    )}
-                   </div>
-
-                   <div className='grid-2'>
-                    <div>
-                     {" "}
-                     <input
-                      type='radio'
-                      name='position'
-                      value='false'
-                      checked={position === "false"}
-                      onChange={(e) => onChangeSubCell(i, e)}
-                     />
-                     Left
-                    </div>
-                    <div>
-                     {" "}
-                     <input
-                      type='radio'
-                      name='position'
-                      value='true'
-                      checked={position === "true"}
-                      id=''
-                      onChange={(e) => onChangeSubCell(i, e)}
-                     />
-                     Center{" "}
-                    </div>
-                   </div>
-                   <button
-                    className='btn btn-sm btn-dark'
-                    onClick={() => addBodyCell(id)}>
-                    Add Body Cell
-                   </button>
-                   <select
-                    name='viewToggle'
-                    style={{ height: "20px", width: "75px" }}
-                    className='btn btn-block'
-                    onChange={(e) => {
-                     onChangeSubCell(i, e);
-                    }}>
-                    <option value=''></option>
-                    <option value='delete'>Delete Cell</option>
-                    <option value='close'>Close</option>
-                   </select>
-                  </div>
-                 ) : (
-                  <>
-                   <div
-                    style={{
-                     wordWrap: "breakWord",
-                     wordBreak: "breakAll",
-                    }}
-                    className={"a" + subCells[i].id}>
-                    {content
-                     .slice()
-                     .sort(
-                      (a, b) =>
-                       parseInt(a.sectionOrdinality) -
-                       parseInt(b.sectionOrdinality)
-                     )
-                     .map(
-                      (
-                       {
-                        text,
-                        props,
-                        fontStyle,
-                        font,
-                        faIcon,
-                        faIconPosition,
-                        type,
-                        headingSize,
-                        action,
-                        code,
-                        color,
-                        top,
-                        left,
-                        background,
-                        height,
-                        width,
-                        url,
-                        autoplay,
-                       },
-                       i
-                      ) => {
-                       if (content[i].hasOwnProperty("props")) {
-                        const VariableComponent = content;
-                        return VariableComponent;
-                       } else
-                        return (
-                         <Fragment>
-                          <span>
-                           {type === "h" && headingSize === "h1" ? (
-                            <h1
-                             style={{
-                              color: `${color}`,
-                              fontFamily: `${font}`,
-                              background: `${background}`,
-                             }}>
-                             {faIconPosition === "top" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i> <br />
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                             <span>
-                              {faIconPosition === "front" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}{" "}
-                              {fontStyle
-                               ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                               : text}
-                              {faIconPosition === "back" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}
-                             </span>
-                             {faIconPosition === "bottom" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i>
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                            </h1>
-                           ) : (
-                            ""
-                           )}
-                           {type === "h" && headingSize === "h2" ? (
-                            <h2
-                             style={{
-                              color: `${color}`,
-                              fontFamily: `${font}`,
-                              background: `${background}`,
-                             }}>
-                             {faIconPosition === "top" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i> <br />
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                             <span>
-                              {faIconPosition === "front" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}{" "}
-                              {fontStyle
-                               ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                               : text}
-                              {faIconPosition === "back" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}
-                             </span>
-                             {faIconPosition === "bottom" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i>
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                            </h2>
-                           ) : (
-                            ""
-                           )}
-                           {type === "h" && headingSize === "h3" ? (
-                            <h3
-                             style={{
-                              color: `${color}`,
-                              fontFamily: `${font}`,
-                              background: `${background}`,
-                             }}>
-                             {faIconPosition === "top" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i> <br />
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                             <span>
-                              {faIconPosition === "front" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}{" "}
-                              {fontStyle
-                               ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                               : text}
-                              {faIconPosition === "back" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}
-                             </span>
-                             {faIconPosition === "bottom" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i>
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                            </h3>
-                           ) : (
-                            ""
-                           )}
-                           {type === "h" && headingSize === "h4" ? (
-                            <h4
-                             style={{
-                              color: `${color}`,
-                              fontFamily: `${font}`,
-                              background: `${background}`,
-                             }}>
-                             {faIconPosition === "top" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i> <br />
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                             <span>
-                              {faIconPosition === "front" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}{" "}
-                              {fontStyle
-                               ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                               : text}
-                              {faIconPosition === "back" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}
-                             </span>
-                             {faIconPosition === "bottom" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i>
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                            </h4>
-                           ) : (
-                            ""
-                           )}
-                           {type === "h" && headingSize === "h5" ? (
-                            <h5
-                             style={{
-                              color: `${color}`,
-                              fontFamily: `${font}`,
-                              background: `${background}`,
-                             }}>
-                             {faIconPosition === "top" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i> <br />
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                             <span>
-                              {faIconPosition === "front" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}{" "}
-                              {fontStyle
-                               ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                               : text}
-                              {faIconPosition === "back" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}
-                             </span>
-                             {faIconPosition === "bottom" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i>
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                            </h5>
-                           ) : (
-                            ""
-                           )}
-                           {type === "p" ? (
-                            <p
-                             style={{
-                              color: `${color}`,
-                              background: `${background}`,
-                              fontFamily: `${font}`,
-                             }}>
-                             {fontStyle
-                              ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                              : text}
-                            </p>
-                           ) : (
-                            ""
-                           )}
-                           {type === "li" ? (
-                            <li>
-                             {faIconPosition === "top" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i> <br />
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                             <span>
-                              {faIconPosition === "front" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}{" "}
-                              {fontStyle
-                               ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                               : text}
-                              {faIconPosition === "back" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}
-                             </span>
-
-                             {faIconPosition === "bottom" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i>
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                            </li>
-                           ) : (
-                            ""
-                           )}
-                           {type === "i" ? (
-                            <i
-                             style={{
-                              color: `${color}`,
-                             }}
-                             className={faIcon}
-                            />
-                           ) : (
-                            ""
-                           )}
-                           {type === "a" ? (
-                            <a
-                             href={url}
-                             target='_blank'
-                             rel='noopener noreferrer'>
-                             {faIconPosition === "top" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i> <br />
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                             <span>
-                              {faIconPosition === "front" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}{" "}
-                              {fontStyle
-                               ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                               : text}
-                              {faIconPosition === "back" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}
-                             </span>
-
-                             {faIconPosition === "bottom" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i>
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                            </a>
-                           ) : (
-                            ""
-                           )}
-                           {type === "button" ? (
-                            <button
-                             style={{
-                              background: `${background}`,
-                             }}
-                             onClick={action}>
-                             {faIconPosition === "top" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i> <br />
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                             <span>
-                              {faIconPosition === "front" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}{" "}
-                              {fontStyle
-                               ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                               : text}
-                              {faIconPosition === "back" ? (
-                               <i className={faIcon}></i>
-                              ) : (
-                               ""
-                              )}
-                             </span>
-
-                             {faIconPosition === "bottom" ? (
-                              <span
-                               style={{
-                                display: "block",
-                                textAlign: "center",
-                                width: "100%",
-                               }}>
-                               <i className={faIcon}></i>
-                              </span>
-                             ) : (
-                              ""
-                             )}
-                            </button>
-                           ) : (
-                            ""
-                           )}
-                           {type === "img" ? (
-                            <img
-                             src={code}
-                             style={{
-                              height: `${height}px`,
-                              width: `${width}px`,
-                             }}
-                            />
-                           ) : (
-                            ""
-                           )}
-                           {type === "vid" ? (
-                            <YouTube
-                             videoId={url}
-                             opts={{
-                              height: height,
-                              width: width,
-                              playerVars: {
-                               autoplay: autoplay,
-                              },
-                             }}
-                            />
-                           ) : (
-                            ""
-                           )}
-                          </span>
-                         </Fragment>
-                        );
-                      }
                      )}
+                    </div>
+
+                    <div className='grid-2'>
+                     <div>
+                      {" "}
+                      <input
+                       type='radio'
+                       name='position'
+                       value='false'
+                       checked={position === "false"}
+                       onChange={(e) => onChangeSubCell(i, e)}
+                      />
+                      Left
+                     </div>
+                     <div>
+                      {" "}
+                      <input
+                       type='radio'
+                       name='position'
+                       value='true'
+                       checked={position === "true"}
+                       id=''
+                       onChange={(e) => onChangeSubCell(i, e)}
+                      />
+                      Center{" "}
+                     </div>
+                    </div>
+                    <button
+                     className='btn btn-sm btn-dark'
+                     onClick={() => addBodyCell(id)}>
+                     Add Body Cell
+                    </button>
+                    <select
+                     name='viewToggle'
+                     style={{ height: "20px", width: "75px" }}
+                     className='btn btn-block'
+                     onChange={(e) => {
+                      onChangeSubCell(i, e);
+                     }}>
+                     <option value=''></option>
+                     <option value='delete'>Delete Cell</option>
+                     <option value='close'>Close</option>
+                    </select>
                    </div>
-                   <Grid
-                    key={
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)].key
-                    }
-                    columns={
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
-                      .columnString
-                    }
-                    rows={
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
-                      .rowString
-                    }
-                    flow={
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
-                      .direction
-                    }
-                    justifyContent={
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
-                      .horizontalAlignment
-                    }
-                    alignContent={
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
-                     bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
-                      .verticalAlignment
-                    }>
-                    {bodyCells
-                     .filter((g) => g.parent === id)
-                     .map(
-                      ({
-                       rowSpan,
-                       left,
-                       columnSpan,
-                       css,
-                       contentCss,
-                       top,
-                       id,
-                       content,
-                       bodyViewState,
-                      }) => (
-                       <Cell
-                        height={rowSpan}
-                        width={columnSpan}
-                        style={
-                         bodyCells[i].background.includes("#")
-                          ? {
-                             background: `${background}`,
-                             border: "#ccc 1px dotted",
-                            }
-                          : {
-                             backgroundImage: code
-                              ? `url(${code})`
-                              : " url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVQYV2NkIAKckTrzn5GQOpAik2cmjHgVwhSBDMOpEFkRToXoirAqxKYIQyEuRSgK8SmCKySkCKyQGEUghQD+Nia8BIDCEQAAAABJRU5ErkJggg==)",
-                             backgroundSize: code ? "100%" : "20px 20px",
-                             border: "#ccc 1px dotted",
-                            }
-                        }
-                        top={top}
-                        left={left}
-                        key={id}>
-                        {bodyViewState === true ? (
-                         <div
-                          className='card'
-                          style={{ backgroundColor: "#f4f4f4" }}>
-                          <div
-                           style={{
-                            height: "5px",
-                            width: "5px",
-                            zIndex: 9999999,
-                            float: "right",
-                           }}>
-                           <a>
-                            <select
-                             name='viewToggle'
+                  ) : (
+                   <>
+                    <div
+                     style={{
+                      wordWrap: "breakWord",
+                      wordBreak: "breakAll",
+                     }}
+                     className={"a" + subCells[i].id}>
+                     {content
+                      .slice()
+                      .sort(
+                       (a, b) =>
+                        parseInt(a.sectionOrdinality) -
+                        parseInt(b.sectionOrdinality)
+                      )
+                      .map(
+                       (
+                        {
+                         name,
+                         text,
+                         props,
+                         fontStyle,
+                         font,
+                         faIcon,
+                         faIconPosition,
+                         type,
+                         headingSize,
+                         action,
+                         code,
+                         color,
+                         top,
+                         left,
+                         background,
+                         height,
+                         width,
+                         url,
+                         autoplay,
+                        },
+                        i
+                       ) => {
+                        if (content[i].hasOwnProperty("props")) {
+                         const VariableComponent = content;
+                         return VariableComponent;
+                        } else
+                         return (
+                          <Fragment>
+                           <span>
+                            {type === "h" && headingSize === "h1" ? (
+                             <h1
+                              style={{
+                               color: `${color}`,
+                               fontFamily: `${font}`,
+                               background: `${background}`,
+                              }}>
+                              {faIconPosition === "top" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i> <br />
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                              <span>
+                               {faIconPosition === "front" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}{" "}
+                               {fontStyle
+                                ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                                : text}
+                               {faIconPosition === "back" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}
+                              </span>
+                              {faIconPosition === "bottom" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i>
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                             </h1>
+                            ) : (
+                             ""
+                            )}
+                            {type === "h" && headingSize === "h2" ? (
+                             <h2
+                              style={{
+                               color: `${color}`,
+                               fontFamily: `${font}`,
+                               background: `${background}`,
+                              }}>
+                              {faIconPosition === "top" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i> <br />
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                              <span>
+                               {faIconPosition === "front" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}{" "}
+                               {fontStyle
+                                ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                                : text}
+                               {faIconPosition === "back" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}
+                              </span>
+                              {faIconPosition === "bottom" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i>
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                             </h2>
+                            ) : (
+                             ""
+                            )}
+                            {type === "h" && headingSize === "h3" ? (
+                             <h3
+                              style={{
+                               color: `${color}`,
+                               fontFamily: `${font}`,
+                               background: `${background}`,
+                              }}>
+                              {faIconPosition === "top" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i> <br />
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                              <span>
+                               {faIconPosition === "front" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}{" "}
+                               {fontStyle
+                                ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                                : text}
+                               {faIconPosition === "back" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}
+                              </span>
+                              {faIconPosition === "bottom" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i>
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                             </h3>
+                            ) : (
+                             ""
+                            )}
+                            {type === "h" && headingSize === "h4" ? (
+                             <h4
+                              style={{
+                               color: `${color}`,
+                               fontFamily: `${font}`,
+                               background: `${background}`,
+                              }}>
+                              {faIconPosition === "top" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i> <br />
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                              <span>
+                               {faIconPosition === "front" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}{" "}
+                               {fontStyle
+                                ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                                : text}
+                               {faIconPosition === "back" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}
+                              </span>
+                              {faIconPosition === "bottom" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i>
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                             </h4>
+                            ) : (
+                             ""
+                            )}
+                            {type === "h" && headingSize === "h5" ? (
+                             <h5
+                              style={{
+                               color: `${color}`,
+                               fontFamily: `${font}`,
+                               background: `${background}`,
+                              }}>
+                              {faIconPosition === "top" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i> <br />
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                              <span>
+                               {faIconPosition === "front" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}{" "}
+                               {fontStyle
+                                ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                                : text}
+                               {faIconPosition === "back" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}
+                              </span>
+                              {faIconPosition === "bottom" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i>
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                             </h5>
+                            ) : (
+                             ""
+                            )}
+                            {type === "p" ? (
+                             <p
+                              style={{
+                               color: `${color}`,
+                               background: `${background}`,
+                               fontFamily: `${font}`,
+                              }}>
+                              {fontStyle
+                               ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                               : text}
+                             </p>
+                            ) : (
+                             ""
+                            )}
+                            {type === "li" ? (
+                             <li>
+                              {faIconPosition === "top" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i> <br />
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                              <span>
+                               {faIconPosition === "front" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}{" "}
+                               {fontStyle
+                                ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                                : text}
+                               {faIconPosition === "back" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}
+                              </span>
+
+                              {faIconPosition === "bottom" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i>
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                             </li>
+                            ) : (
+                             ""
+                            )}
+                            {type === "i" ? (
+                             <i
+                              style={{
+                               color: `${color}`,
+                              }}
+                              className={faIcon}
+                             />
+                            ) : (
+                             ""
+                            )}
+                            {type === "a" ? (
+                             <a
+                              href={url}
+                              target='_blank'
+                              rel='noopener noreferrer'>
+                              {faIconPosition === "top" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i> <br />
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                              <span>
+                               {faIconPosition === "front" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}{" "}
+                               {fontStyle
+                                ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                                : text}
+                               {faIconPosition === "back" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}
+                              </span>
+
+                              {faIconPosition === "bottom" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i>
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                             </a>
+                            ) : (
+                             ""
+                            )}
+                            {type === "button" ? (
+                             <button
+                              style={{
+                               background: `${background}`,
+                              }}
+                              onClick={action}>
+                              {faIconPosition === "top" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i> <br />
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                              <span>
+                               {faIconPosition === "front" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}{" "}
+                               {fontStyle
+                                ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                                : text}
+                               {faIconPosition === "back" ? (
+                                <i className={faIcon}></i>
+                               ) : (
+                                ""
+                               )}
+                              </span>
+
+                              {faIconPosition === "bottom" ? (
+                               <span
+                                style={{
+                                 display: "block",
+                                 textAlign: "center",
+                                 width: "100%",
+                                }}>
+                                <i className={faIcon}></i>
+                               </span>
+                              ) : (
+                               ""
+                              )}
+                             </button>
+                            ) : (
+                             ""
+                            )}
+                            {type === "img" ? (
+                             <img
+                              alt={name}
+                              src={code}
+                              style={{
+                               height: `${height}px`,
+                               width: `${width}px`,
+                              }}
+                             />
+                            ) : (
+                             ""
+                            )}
+                            {type === "vid" ? (
+                             <YouTube
+                              videoId={url}
+                              opts={{
+                               height: height,
+                               width: width,
+                               playerVars: {
+                                autoplay: autoplay,
+                               },
+                              }}
+                             />
+                            ) : (
+                             ""
+                            )}
+                           </span>
+                          </Fragment>
+                         );
+                       }
+                      )}
+                    </div>
+                    {bodyGrids.length > 0 && (
+                     <Grid
+                      className={
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
+                       `G${
+                        bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
+                         .key
+                       }`
+                      }
+                      key={
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
+                        .key
+                      }
+                      columns={
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
+                        .columnString
+                      }
+                      rows={
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
+                        .rowString
+                      }
+                      flow={
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
+                        .direction
+                      }
+                      justifyContent={
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
+                        .horizontalAlignment
+                      }
+                      alignContent={
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)] &&
+                       bodyGrids[bodyGrids.findIndex((x) => x.parent === id)]
+                        .verticalAlignment
+                      }>
+                      {bodyCells
+                       .filter((g) => g.parent === id)
+                       .map(
+                        ({
+                         rowSpan,
+                         left,
+                         columnSpan,
+                         css,
+                         contentCss,
+                         top,
+                         id,
+                         content,
+                         bodyViewState,
+                        }) => (
+                         <Cell
+                          height={rowSpan}
+                          width={columnSpan}
+                          className={`C${id}`}
+                          top={top}
+                          left={left}
+                          key={id}>
+                          {bodyViewState === true ? (
+                           <div
+                            className='card'
+                            style={{ backgroundColor: "#f4f4f4" }}>
+                            <div
                              style={{
                               height: "5px",
                               width: "5px",
-                              WebkitAppearance: "none",
-                              MozAppearance: "none",
                               zIndex: 9999999,
-                             }}
+                              float: "right",
+                             }}>
+                             <a>
+                              <select
+                               name='viewToggle'
+                               style={{
+                                height: "5px",
+                                width: "5px",
+                                WebkitAppearance: "none",
+                                MozAppearance: "none",
+                                zIndex: 9999999,
+                               }}
+                               onChange={(e) => {
+                                onChangeBodyCell(i, e);
+                               }}>
+                               <option value=''></option>
+                               <option value='close'>Close</option>
+                               <option value='delete'>Delete</option>
+                              </select>
+                             </a>
+                            </div>{" "}
+                            <h5>Cell Settings</h5>
+                            <select
+                             name='background'
                              onChange={(e) => {
                               onChangeBodyCell(i, e);
+                              {
+                               currentContent &&
+                                getContentImage(
+                                 currentContent.content,
+                                 i,
+                                 "background",
+                                 "bodyCell"
+                                );
+                              }
+                              {
+                               currentContent && clearCurrentContent();
+                              }
                              }}>
-                             <option value=''></option>
-                             <option value='close'>Close</option>
-                             <option value='delete'>Delete</option>
+                             <option>Background</option>
+                             <option value={pallet && pallet.primary}>
+                              Primary
+                             </option>
+                             <option value={pallet && pallet.dark}>Dark</option>
+                             <option value={pallet && pallet.light}>
+                              Light
+                             </option>
+                             <option value={pallet && pallet.danger}>
+                              Danger
+                             </option>
+                             <option value={pallet && pallet.success}>
+                              Success
+                             </option>
+                             {currentContent && (
+                              <option value={currentContent.content}>
+                               Set Image
+                              </option>
+                             )}
                             </select>
-                           </a>
-                          </div>{" "}
-                          <h5>Cell Settings</h5>
-                          <select
-                           name='background'
-                           onChange={(e) => {
-                            onChangeBodyCell(i, e);
-                            {
-                             currentContent &&
-                              getContentImage(
-                               currentContent.content,
-                               i,
-                               "background",
-                               "bodyCell"
-                              );
-                            }
-                            {
-                             currentContent && clearCurrentContent();
-                            }
-                           }}>
-                           <option>Background</option>
-                           <option value={pallet && pallet.primary}>
-                            Primary
-                           </option>
-                           <option value={pallet && pallet.dark}>Dark</option>
-                           <option value={pallet && pallet.light}>Light</option>
-                           <option value={pallet && pallet.danger}>
-                            Danger
-                           </option>
-                           <option value={pallet && pallet.success}>
-                            Success
-                           </option>
-                           {currentContent && (
-                            <option value={currentContent.content}>
-                             Set Image
-                            </option>
-                           )}
-                          </select>
-                          <input
-                           placeholder='Row Span'
-                           type='text'
-                           name='rowSpan'
-                           value={rowSpan}
-                           onChange={(e) => onChangeBodyCell(i, e)}
-                          />
-                          <input
-                           placeholder='Column Span'
-                           type='text'
-                           name='columnSpan'
-                           value={columnSpan}
-                           onChange={(e) => onChangeBodyCell(i, e)}
-                          />
-                          <input
-                           placeholder='top'
-                           type='text'
-                           name='top'
-                           value={top}
-                           onChange={(e) => onChangeBodyCell(i, e)}
-                          />
-                          <input
-                           placeholder='left'
-                           type='text'
-                           name='left'
-                           value={left}
-                           onChange={(e) => onChangeBodyCell(i, e)}
-                          />
-                         </div>
-                        ) : (
-                         ""
-                        )}
-                        <div
-                         style={{
-                          height: "5px",
-                          width: "5px",
-                          zIndex: 9999999,
-                          float: "left",
-                         }}>
-                         <a>
-                          <select
-                           name='viewToggle'
-                           style={{
-                            height: "5px",
-                            width: "5px",
-                            WebkitAppearance: "none",
-                            MozAppearance: "none",
-                            zIndex: 9999999,
-                           }}
-                           onChange={(e) => {
-                            onChangeBodyCell(i, e);
-                           }}>
-                           <option value=''>B</option>
-                           <option value='open'>Open</option>
-                          </select>
-                         </a>
-                        </div>{" "}
-                        <>
-                         <div
-                          className={"a" + bodyCells[i].id}
-                          style={{
-                           wordWrap: "breakWord",
-                           wordBreak: "breakAll",
-                          }}>
-                          {content
-                           .slice()
-                           .sort(
-                            (a, b) =>
-                             parseInt(a.sectionOrdinality) -
-                             parseInt(b.sectionOrdinality)
-                           )
-                           .map(
-                            (
-                             {
-                              text,
-                              props,
-                              font,
-                              fontStyle,
-                              faIcon,
-                              faIconPosition,
-                              type,
-                              headingSize,
-                              action,
-                              color,
-                              background,
-                              code,
-                              top,
-                              left,
-                              height,
-                              width,
-                              url,
-                              autoplay,
-                             },
-                             i
-                            ) => {
-                             if (content[i].hasOwnProperty("props")) {
-                              const VariableComponent = content;
-                              return VariableComponent;
-                             } else
-                              return (
-                               <Fragment>
-                                <span>
-                                 {type === "h" && headingSize === "h1" ? (
-                                  <h1
-                                   style={{
-                                    color: `${color}`,
-                                    fontFamily: `${font}`,
-                                    background: `${background}`,
-                                   }}>
-                                   {faIconPosition === "top" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i> <br />
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                   <span>
-                                    {faIconPosition === "front" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}{" "}
-                                    {fontStyle
-                                     ? parse(
-                                        `<${fontStyle}>${text}</${fontStyle}>`
-                                       )
-                                     : text}
-                                    {faIconPosition === "back" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}
-                                   </span>
-                                   {faIconPosition === "bottom" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i>
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                  </h1>
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "h" && headingSize === "h2" ? (
-                                  <h2
-                                   style={{
-                                    color: `${color}`,
-                                    fontFamily: `${font}`,
-                                    background: `${background}`,
-                                   }}>
-                                   {faIconPosition === "top" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i> <br />
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                   <span>
-                                    {faIconPosition === "front" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}{" "}
-                                    {fontStyle
-                                     ? parse(
-                                        `<${fontStyle}>${text}</${fontStyle}>`
-                                       )
-                                     : text}
-                                    {faIconPosition === "back" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}
-                                   </span>
-                                   {faIconPosition === "bottom" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i>
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                  </h2>
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "h" && headingSize === "h3" ? (
-                                  <h3
-                                   style={{
-                                    color: `${color}`,
-                                    fontFamily: `${font}`,
-                                    background: `${background}`,
-                                   }}>
-                                   {faIconPosition === "top" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i> <br />
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                   <span>
-                                    {faIconPosition === "front" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}{" "}
-                                    {fontStyle
-                                     ? parse(
-                                        `<${fontStyle}>${text}</${fontStyle}>`
-                                       )
-                                     : text}
-                                    {faIconPosition === "back" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}
-                                   </span>
-                                   {faIconPosition === "bottom" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i>
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                  </h3>
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "h" && headingSize === "h4" ? (
-                                  <h4
-                                   style={{
-                                    color: `${color}`,
-                                    fontFamily: `${font}`,
-                                    background: `${background}`,
-                                   }}>
-                                   {faIconPosition === "top" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i> <br />
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                   <span>
-                                    {faIconPosition === "front" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}{" "}
-                                    {fontStyle
-                                     ? parse(
-                                        `<${fontStyle}>${text}</${fontStyle}>`
-                                       )
-                                     : text}
-                                    {faIconPosition === "back" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}
-                                   </span>
-                                   {faIconPosition === "bottom" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i>
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                  </h4>
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "h" && headingSize === "h5" ? (
-                                  <h5
-                                   style={{
-                                    color: `${color}`,
-                                    fontFamily: `${font}`,
-                                    background: `${background}`,
-                                   }}>
-                                   {faIconPosition === "top" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i> <br />
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                   <span>
-                                    {faIconPosition === "front" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}{" "}
-                                    {fontStyle
-                                     ? parse(
-                                        `<${fontStyle}>${text}</${fontStyle}>`
-                                       )
-                                     : text}
-                                    {faIconPosition === "back" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}
-                                   </span>
-                                   {faIconPosition === "bottom" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i>
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                  </h5>
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "p" ? (
-                                  <p
-                                   style={{
-                                    color: `${color}`,
-                                    background: `${background}`,
-                                    fontFamily: `${font}`,
-                                   }}>
-                                   {fontStyle
-                                    ? parse(
-                                       `<${fontStyle}>${text}</${fontStyle}>`
-                                      )
-                                    : text}
-                                  </p>
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "li" ? (
-                                  <li>
-                                   {faIconPosition === "top" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i> <br />
-                                    </span>
-                                   ) : (
-                                    ""
-                                   )}
-                                   <span>
-                                    {faIconPosition === "front" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}{" "}
-                                    {fontStyle
-                                     ? parse(
-                                        `<${fontStyle}>${text}</${fontStyle}>`
-                                       )
-                                     : text}
-                                    {faIconPosition === "back" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}
-                                   </span>
+                            <input
+                             placeholder='Row Span'
+                             type='text'
+                             name='rowSpan'
+                             value={rowSpan}
+                             onChange={(e) => onChangeBodyCell(i, e)}
+                            />
+                            <input
+                             placeholder='Column Span'
+                             type='text'
+                             name='columnSpan'
+                             value={columnSpan}
+                             onChange={(e) => onChangeBodyCell(i, e)}
+                            />
+                            <input
+                             placeholder='top'
+                             type='text'
+                             name='top'
+                             value={top}
+                             onChange={(e) => onChangeBodyCell(i, e)}
+                            />
+                            <input
+                             placeholder='left'
+                             type='text'
+                             name='left'
+                             value={left}
+                             onChange={(e) => onChangeBodyCell(i, e)}
+                            />
+                           </div>
+                          ) : (
+                           ""
+                          )}
+                          {nodeView === true ? (
+                           <div
+                            style={{
+                             height: "5px",
+                             width: "5px",
+                             zIndex: 9999999,
+                             float: "left",
+                            }}>
+                            <a>
+                             <select
+                              name='viewToggle'
+                              style={{
+                               height: "5px",
+                               width: "5px",
+                               WebkitAppearance: "none",
+                               MozAppearance: "none",
+                               zIndex: 9999999,
+                              }}
+                              onChange={(e) => {
+                               onChangeBodyCell(i, e);
+                              }}>
+                              <option value=''>B</option>
+                              <option value='open'>Open</option>
+                             </select>
+                            </a>
+                           </div>
+                          ) : (
+                           ""
+                          )}
 
-                                   {faIconPosition === "bottom" ? (
-                                    <span
+                          <>
+                           <div
+                            className={"a" + bodyCells[i].id}
+                            style={{
+                             wordWrap: "breakWord",
+                             wordBreak: "breakAll",
+                            }}>
+                            {content
+                             .slice()
+                             .sort(
+                              (a, b) =>
+                               parseInt(a.sectionOrdinality) -
+                               parseInt(b.sectionOrdinality)
+                             )
+                             .map(
+                              (
+                               {
+                                text,
+                                props,
+                                font,
+                                fontStyle,
+                                faIcon,
+                                faIconPosition,
+                                name,
+                                type,
+                                headingSize,
+                                action,
+                                color,
+                                background,
+                                code,
+                                top,
+                                left,
+                                height,
+                                width,
+                                url,
+                                autoplay,
+                               },
+                               i
+                              ) => {
+                               if (content[i].hasOwnProperty("props")) {
+                                const VariableComponent = content;
+                                return VariableComponent;
+                               } else
+                                return (
+                                 <Fragment>
+                                  <span>
+                                   {type === "h" && headingSize === "h1" ? (
+                                    <h1
                                      style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
+                                      color: `${color}`,
+                                      fontFamily: `${font}`,
+                                      background: `${background}`,
                                      }}>
-                                     <i className={faIcon}></i>
-                                    </span>
+                                     {faIconPosition === "top" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i> <br />
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                     <span>
+                                      {faIconPosition === "front" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}{" "}
+                                      {fontStyle
+                                       ? parse(
+                                          `<${fontStyle}>${text}</${fontStyle}>`
+                                         )
+                                       : text}
+                                      {faIconPosition === "back" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}
+                                     </span>
+                                     {faIconPosition === "bottom" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i>
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                    </h1>
                                    ) : (
                                     ""
                                    )}
-                                  </li>
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "i" ? (
-                                  <i
-                                   style={{
-                                    color: `${color}`,
-                                   }}
-                                   className={faIcon}
-                                  />
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "a" ? (
-                                  <a
-                                   href={url}
-                                   target='_blank'
-                                   rel='noopener noreferrer'>
-                                   {faIconPosition === "top" ? (
-                                    <span
+                                   {type === "h" && headingSize === "h2" ? (
+                                    <h2
                                      style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
+                                      color: `${color}`,
+                                      fontFamily: `${font}`,
+                                      background: `${background}`,
                                      }}>
-                                     <i className={faIcon}></i> <br />
-                                    </span>
+                                     {faIconPosition === "top" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i> <br />
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                     <span>
+                                      {faIconPosition === "front" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}{" "}
+                                      {fontStyle
+                                       ? parse(
+                                          `<${fontStyle}>${text}</${fontStyle}>`
+                                         )
+                                       : text}
+                                      {faIconPosition === "back" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}
+                                     </span>
+                                     {faIconPosition === "bottom" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i>
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                    </h2>
                                    ) : (
                                     ""
                                    )}
-                                   <span>
-                                    {faIconPosition === "front" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}{" "}
-                                    {fontStyle
-                                     ? parse(
-                                        `<${fontStyle}>${text}</${fontStyle}>`
-                                       )
-                                     : text}
-                                    {faIconPosition === "back" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}
-                                   </span>
+                                   {type === "h" && headingSize === "h3" ? (
+                                    <h3
+                                     style={{
+                                      color: `${color}`,
+                                      fontFamily: `${font}`,
+                                      background: `${background}`,
+                                     }}>
+                                     {faIconPosition === "top" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i> <br />
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                     <span>
+                                      {faIconPosition === "front" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}{" "}
+                                      {fontStyle
+                                       ? parse(
+                                          `<${fontStyle}>${text}</${fontStyle}>`
+                                         )
+                                       : text}
+                                      {faIconPosition === "back" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}
+                                     </span>
+                                     {faIconPosition === "bottom" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i>
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                    </h3>
+                                   ) : (
+                                    ""
+                                   )}
+                                   {type === "h" && headingSize === "h4" ? (
+                                    <h4
+                                     style={{
+                                      color: `${color}`,
+                                      fontFamily: `${font}`,
+                                      background: `${background}`,
+                                     }}>
+                                     {faIconPosition === "top" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i> <br />
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                     <span>
+                                      {faIconPosition === "front" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}{" "}
+                                      {fontStyle
+                                       ? parse(
+                                          `<${fontStyle}>${text}</${fontStyle}>`
+                                         )
+                                       : text}
+                                      {faIconPosition === "back" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}
+                                     </span>
+                                     {faIconPosition === "bottom" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i>
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                    </h4>
+                                   ) : (
+                                    ""
+                                   )}
+                                   {type === "h" && headingSize === "h5" ? (
+                                    <h5
+                                     style={{
+                                      color: `${color}`,
+                                      fontFamily: `${font}`,
+                                      background: `${background}`,
+                                     }}>
+                                     {faIconPosition === "top" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i> <br />
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                     <span>
+                                      {faIconPosition === "front" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}{" "}
+                                      {fontStyle
+                                       ? parse(
+                                          `<${fontStyle}>${text}</${fontStyle}>`
+                                         )
+                                       : text}
+                                      {faIconPosition === "back" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}
+                                     </span>
+                                     {faIconPosition === "bottom" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i>
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                    </h5>
+                                   ) : (
+                                    ""
+                                   )}
+                                   {type === "p" ? (
+                                    <p
+                                     style={{
+                                      color: `${color}`,
+                                      background: `${background}`,
+                                      fontFamily: `${font}`,
+                                     }}>
+                                     {fontStyle
+                                      ? parse(
+                                         `<${fontStyle}>${text}</${fontStyle}>`
+                                        )
+                                      : text}
+                                    </p>
+                                   ) : (
+                                    ""
+                                   )}
+                                   {type === "li" ? (
+                                    <li>
+                                     {faIconPosition === "top" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i> <br />
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                     <span>
+                                      {faIconPosition === "front" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}{" "}
+                                      {fontStyle
+                                       ? parse(
+                                          `<${fontStyle}>${text}</${fontStyle}>`
+                                         )
+                                       : text}
+                                      {faIconPosition === "back" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}
+                                     </span>
 
-                                   {faIconPosition === "bottom" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i>
-                                    </span>
+                                     {faIconPosition === "bottom" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i>
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                    </li>
                                    ) : (
                                     ""
                                    )}
-                                  </a>
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "button" ? (
-                                  <button
-                                   style={{
-                                    background: `${background}`,
-                                   }}
-                                   onClick={action}>
-                                   {faIconPosition === "top" ? (
-                                    <span
+                                   {type === "i" ? (
+                                    <i
                                      style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i> <br />
-                                    </span>
+                                      color: `${color}`,
+                                     }}
+                                     className={faIcon}
+                                    />
                                    ) : (
                                     ""
                                    )}
-                                   <span>
-                                    {faIconPosition === "front" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}{" "}
-                                    {fontStyle
-                                     ? parse(
-                                        `<${fontStyle}>${text}</${fontStyle}>`
-                                       )
-                                     : text}
-                                    {faIconPosition === "back" ? (
-                                     <i className={faIcon}></i>
-                                    ) : (
-                                     ""
-                                    )}
-                                   </span>
+                                   {type === "a" ? (
+                                    <a
+                                     href={url}
+                                     target='_blank'
+                                     rel='noopener noreferrer'>
+                                     {faIconPosition === "top" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i> <br />
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                     <span>
+                                      {faIconPosition === "front" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}{" "}
+                                      {fontStyle
+                                       ? parse(
+                                          `<${fontStyle}>${text}</${fontStyle}>`
+                                         )
+                                       : text}
+                                      {faIconPosition === "back" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}
+                                     </span>
 
-                                   {faIconPosition === "bottom" ? (
-                                    <span
-                                     style={{
-                                      display: "block",
-                                      textAlign: "center",
-                                      width: "100%",
-                                     }}>
-                                     <i className={faIcon}></i>
-                                    </span>
+                                     {faIconPosition === "bottom" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i>
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                    </a>
                                    ) : (
                                     ""
                                    )}
-                                  </button>
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "img" ? (
-                                  <img
-                                   src={code}
-                                   style={{
-                                    height: `${height}px`,
-                                    width: `${width}px`,
-                                   }}
-                                  />
-                                 ) : (
-                                  ""
-                                 )}
-                                 {type === "vid" ? (
-                                  <YouTube
-                                   videoId={url}
-                                   opts={{
-                                    height: height,
-                                    width: width,
-                                    playerVars: {
-                                     autoplay: autoplay,
-                                    },
-                                   }}
-                                  />
-                                 ) : (
-                                  ""
-                                 )}
-                                </span>
-                               </Fragment>
-                              );
-                            }
-                           )}
-                         </div>
-                        </>
-                       </Cell>
-                      )
-                     )}
-                   </Grid>
+                                   {type === "button" ? (
+                                    <button
+                                     style={{
+                                      background: `${background}`,
+                                     }}
+                                     onClick={action}>
+                                     {faIconPosition === "top" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i> <br />
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                     <span>
+                                      {faIconPosition === "front" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}{" "}
+                                      {fontStyle
+                                       ? parse(
+                                          `<${fontStyle}>${text}</${fontStyle}>`
+                                         )
+                                       : text}
+                                      {faIconPosition === "back" ? (
+                                       <i className={faIcon}></i>
+                                      ) : (
+                                       ""
+                                      )}
+                                     </span>
 
-                   <div
-                    style={{
-                     height: "5px",
-                     width: "5px",
-                     zIndex: 9999999,
-                     float: "right",
-                    }}>
-                    <a>
-                     <select
-                      name='viewToggle'
+                                     {faIconPosition === "bottom" ? (
+                                      <span
+                                       style={{
+                                        display: "block",
+                                        textAlign: "center",
+                                        width: "100%",
+                                       }}>
+                                       <i className={faIcon}></i>
+                                      </span>
+                                     ) : (
+                                      ""
+                                     )}
+                                    </button>
+                                   ) : (
+                                    ""
+                                   )}
+                                   {type === "img" ? (
+                                    <img
+                                     alt={name}
+                                     src={code}
+                                     style={{
+                                      height: `${height}px`,
+                                      width: `${width}px`,
+                                     }}
+                                    />
+                                   ) : (
+                                    ""
+                                   )}
+                                   {type === "vid" ? (
+                                    <YouTube
+                                     videoId={url}
+                                     opts={{
+                                      height: height,
+                                      width: width,
+                                      playerVars: {
+                                       autoplay: autoplay,
+                                      },
+                                     }}
+                                    />
+                                   ) : (
+                                    ""
+                                   )}
+                                  </span>
+                                 </Fragment>
+                                );
+                              }
+                             )}
+                           </div>
+                          </>
+                         </Cell>
+                        )
+                       )}
+                     </Grid>
+                    )}
+
+                    {nodeView === true ? (
+                     <div
                       style={{
                        height: "5px",
                        width: "5px",
-                       WebkitAppearance: "none",
-                       MozAppearance: "none",
                        zIndex: 9999999,
-                      }}
-                      onChange={(e) => {
-                       onChangeSubCell(i, e);
+                       float: "right",
                       }}>
-                      <option value=''>S</option>
-                      <option value='open'>Open</option>
-                     </select>
-                    </a>
-                   </div>
-                  </>
-                 )}
-                </>
-               </Cell>
-              );
-             }
-            )}
-          </Grid>
+                      <a>
+                       <select
+                        name='viewToggle'
+                        style={{
+                         height: "5px",
+                         width: "5px",
+                         WebkitAppearance: "none",
+                         MozAppearance: "none",
+                         zIndex: 9999999,
+                        }}
+                        onChange={(e) => {
+                         onChangeSubCell(i, e);
+                        }}>
+                        <option value=''>S</option>
+                        <option value='open'>Open</option>
+                       </select>
+                      </a>
+                     </div>
+                    ) : (
+                     ""
+                    )}
+                   </>
+                  )}
+                 </>
+                </Cell>
+               );
+              }
+             )}
+           </Grid>
+          )}
          </>
         )}
        </Cell>

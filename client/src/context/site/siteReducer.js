@@ -21,8 +21,10 @@ import {
  GET_BLOGSSEARCHED,
  GET_QUIZSSEARCHED,
  GET_ARTICLESSEARCHED,
+ GET_COMPONENTS,
  FILTER_CSS,
  CLEAR_FILTER,
+ GET_COMPONENT,
 } from "../types";
 
 export default (state, action) => {
@@ -114,6 +116,18 @@ export default (state, action) => {
    return {
     ...state,
     content: [...state.content, action.payload].flat(),
+   };
+
+  case GET_COMPONENTS:
+   return {
+    ...state,
+    myComponents: action.payload,
+   };
+
+  case GET_COMPONENT:
+   return {
+    ...state,
+    MyComponent: action.payload,
    };
 
   case CLEAR_CURRENTSECTION:

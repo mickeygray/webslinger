@@ -69,10 +69,7 @@ const ImageState = (props) => {
 
   let image = {
    img: res.data,
-   name: res.headers["content-disposition"].slice(
-    res.headers["content-disposition"].indexOf("=") + 1,
-    res.headers["content-disposition"].length
-   ),
+   name: img,
    type: res.headers["content-type"],
    imgIndex: i,
    background: false,

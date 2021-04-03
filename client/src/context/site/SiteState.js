@@ -1,8 +1,9 @@
-import React, { useReducer, useEffect, useContext } from "react";
+import React, { useReducer, useEffect, createContext, useContext } from "react";
 import axios from "axios";
 import SiteContext from "./siteContext";
 import siteReducer from "./siteReducer";
 import cellReducer from "./cellReducer";
+import appReducer from "./appReducer";
 import produce from "immer";
 import { set } from "lodash";
 import { v4 as uuidV4 } from "uuid";
@@ -57,8 +58,17 @@ import {
  CLEAR_FILTER,
  UPDATE_CELLSTRUCTURE,
  DELETE_GRID,
+ ADD_CLICK,
+ ADD_IP,
+ ADD_LEAD,
+ CREATE_STATE,
+ UPDATE_STATE,
+ DELETE_STATE,
+ ADD_APPCONTENT,
+ GET_COMPONENTSTRING,
+ SET_COMPONENTSTRING,
 } from "../types";
-
+const AppContext = createContext();
 const SiteState = (props) => {
  const initialState = {
   markUp: {
@@ -74,6 +84,7 @@ const SiteState = (props) => {
    content: [],
    cellStructure: null,
    myComponents: null,
+   MyComponent: null,
    pages: null,
    sites: null,
   },
@@ -526,6 +537,9 @@ const SiteState = (props) => {
   }),
   initialState
  );
+
+ //HELPERS
+
  const filterByCount = (array, count) => {
   return array.filter(function (value) {
    return (
@@ -535,6 +549,8 @@ const SiteState = (props) => {
    );
   });
  };
+
+ //EDIT THE CSS AND CELL OBJECT ON THE NODE LEVEL
 
  const {
   cells,
@@ -1526,6 +1542,8 @@ const SiteState = (props) => {
   dispatch({ type: SET_CELLS, payload: nextState });
  };
 
+ //HTML ELEMENTS AND MY GETS AND POSTS
+
  const getSites = async (userid) => {
   const config = {
    headers: {
@@ -2005,6 +2023,7 @@ const SiteState = (props) => {
     pallet: state.markUp.pallet,
     content: state.markUp.content,
     myComponents: state.markUp.myComponents,
+    MyComponent: state.markUp.MyComponent,
     pages: state.markUp.pages,
     sites: state.markUp.sites,
     bodyGrids: state.body.bodyGrids,
@@ -2028,6 +2047,7 @@ const SiteState = (props) => {
     postSite,
     putSite,
     setCurrentContent,
+    getComponents,
     setContent,
     clearContent,
     postComponent,
@@ -2088,3 +2108,225 @@ const SiteState = (props) => {
 };
 
 export default SiteState;
+
+export function AppWrapper({ children }) {
+ const initialState = {
+  leads: [],
+  ip: [],
+  clicks: [],
+  content: [],
+  userState: null,
+  NewComponent: null,
+ };
+ const [state, dispatch] = useReducer(appReducer, initialState);
+ const addClick = (click) => {
+  if (sessionStorage.getItem("click") !== null) {
+   const existingLead = JSON.parse(sessionStorage.getItem("click"));
+   let clicks;
+   if (typeof existingLead === "object" && existingLead !== null) {
+    clicks = JSON.stringify([click, existingLead]);
+   } else {
+    clicks = JSON.stringify([click, ...existingLead]);
+   }
+   sessionStorage.setItem("click", clicks);
+  } else {
+   sessionStorage.setItem("click", JSON.stringify(click));
+  }
+  dispatch({
+   type: ADD_CLICK,
+   payload: click,
+  });
+ };
+
+ const addLead = (lead) => {
+  if (sessionStorage.getItem("lead") !== null) {
+   const existingLead = JSON.parse(sessionStorage.getItem("lead"));
+   let lead;
+   if (typeof existingLead === "object" && existingLead !== null) {
+    lead = JSON.stringify([lead, existingLead]);
+   } else {
+    lead = JSON.stringify([lead, ...existingLead]);
+   }
+   sessionStorage.setItem("lead", lead);
+  } else {
+   sessionStorage.setItem("lead", JSON.stringify(lead));
+  }
+
+  dispatch({
+   type: ADD_LEAD,
+   payload: lead,
+  });
+ };
+
+ const addIp = (ip) => {
+  sessionStorage.setItem("ip", JSON.stringify(ip));
+  dispatch({
+   type: ADD_IP,
+   payload: ip,
+  });
+ };
+
+ const createUserState = (state) => {
+  dispatch({
+   type: CREATE_STATE,
+   payload: state,
+  });
+ };
+
+ const setComponentString = (str, styles) => {
+  let rtn = str.substring(0, str.indexOf("&lt;style&gt;"));
+  let module = str
+   .substring(str.indexOf("&lt;style&gt;"), str.length)
+   .replaceAll("&lt;style&gt;", "")
+   .replaceAll("&lt;/style&gt;", "")
+   .replace("&lt;/div&gt;", "");
+
+  state.content.forEach((content) => {
+   if (content.key === "img") {
+    rtn = rtn.replace(content.content, `{${content.key}}`).replace("src=");
+   } else {
+    rtn = rtn.replace(content.content, `{${content.key}}`);
+   }
+  });
+
+  styles.forEach((style) => {
+   const st = JSON.stringify(style)
+    .replace('{"', "")
+    .replace('":', "")
+    .replaceAll('"', "")
+    .replaceAll(",", ";")
+    .replace("}}", ";}")
+    .replace(/^/, ".");
+
+   module = module + st;
+  });
+
+  module = module
+   .replace(/\n/g, "")
+   .replaceAll(";", "; \n")
+   .replace("{", " {\n")
+   .trim();
+
+  rtn =
+   rtn + "\n&lt;style&gt;\n" + module + "\n&lt;/style&gt;\n" + "&lt;/div&gt;";
+  rtn = rtn.trim();
+
+  let NewComponent = {
+   html: rtn,
+   userState: state.userState,
+   content: state.content,
+  };
+
+  dispatch({
+   type: SET_COMPONENTSTRING,
+   payload: NewComponent,
+  });
+ };
+
+ const getStateContent = (content) => {
+  let key = null;
+  let parentKey = null;
+  let typeofParent = null;
+  let stateEntry = null;
+
+  if (content.key.includes(".")) {
+   key = content.key.substring(
+    content.key.indexOf(".") + 1,
+    content.key.length
+   );
+   parentKey = content.key.substring(0, content.key.indexOf("."));
+   typeofParent = parentKey === "socialLinks" ? "object" : "array";
+  } else {
+   key = content.key;
+  }
+
+  let value;
+
+  if (typeof content["content"] === "string") {
+   value = "";
+  } else if (typeof content["content"] === "number") {
+   value = 0;
+  } else if (content[key] === "img") {
+   value = "code";
+  }
+
+  if (parentKey != null) {
+   if (state.userState && state.userState[parentKey]) {
+    stateEntry =
+     typeofParent === "object"
+      ? { [parentKey]: { ...state.userState[parentKey], [key]: value } }
+      : {
+         [parentKey]: [
+          ...state.userState[parentKey],
+          { ...state.userState[parentKey][0], [key]: value },
+         ].slice(-1),
+        };
+   } else {
+    stateEntry =
+     typeofParent === "object"
+      ? { [parentKey]: { [key]: value } }
+      : { [parentKey]: [{ [key]: value }] };
+   }
+  } else {
+   stateEntry = { [key]: value };
+  }
+
+  const newState = Object.assign({}, state.userState, stateEntry);
+
+  dispatch({
+   type: CREATE_STATE,
+   payload: newState,
+  });
+
+  dispatch({
+   type: ADD_APPCONTENT,
+   payload: content,
+  });
+ };
+
+ const readUserState = () => {};
+ const writeUserState = () => {};
+
+ const updateUserState = (state) => {
+  dispatch({
+   type: UPDATE_STATE,
+   payload: state,
+  });
+ };
+ const deleteUserState = (i) => {
+  const key = Object.keys(state.userState)[i];
+
+  delete state.userState[key];
+
+  dispatch({
+   type: DELETE_STATE,
+   payload: state.userState,
+  });
+ };
+
+ const contextProps = {
+  createUserState,
+  readUserState,
+  writeUserState,
+  updateUserState,
+  deleteUserState,
+
+  getStateContent,
+  setComponentString,
+  addIp,
+  addLead,
+  addClick,
+  clicks: state.clicks,
+  leads: state.leads,
+  NewComponent: state.NewComponent,
+  ip: state.ip,
+  userState: state.userState,
+ };
+ return (
+  <AppContext.Provider value={contextProps}>{children}</AppContext.Provider>
+ );
+}
+
+export function useAppContext() {
+ return useContext(AppContext);
+}

@@ -8,6 +8,7 @@ import React, {
 import { findIndex, camelCase } from "lodash";
 import SiteContext from "../../context/site/siteContext";
 import ImageContext from "../../context/image/imageContext";
+import { useAppContext } from "../../context/site/SiteState";
 import { v4 as uuidV4 } from "uuid";
 const SectionManager = ({
  h,
@@ -29,6 +30,7 @@ const SectionManager = ({
  contentList,
  setContentList,
 }) => {
+ const { getStateContent } = useAppContext();
  const siteContext = useContext(SiteContext);
  const {
   font,
@@ -44,6 +46,12 @@ const SectionManager = ({
   actionComponent1: "",
   actionComponent2: "",
  });
+
+ useEffect(() => {
+  if (currentContent != null) {
+   getStateContent(currentContent);
+  }
+ }, [currentContent]);
 
  return (
   <Fragment>

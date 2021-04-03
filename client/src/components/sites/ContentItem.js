@@ -46,6 +46,7 @@ const ContentItem = ({ content }) => {
   img2,
   img3,
   title,
+
   p1,
   p2,
   p3,
@@ -95,6 +96,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "verticalName",
            content: verticalName,
           });
          }}>
@@ -104,7 +106,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: summary });
+          setCurrentContent({
+           contentId: _id,
+           key: "summary",
+           content: summary,
+          });
          }}>
          Summary
         </button>
@@ -112,7 +118,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: author });
+          setCurrentContent({
+           contentId: _id,
+           key: "author",
+           content: author,
+          });
          }}>
          Author
         </button>
@@ -122,7 +132,8 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
-           content: verticalName,
+           key: "date",
+           content: date,
           });
          }}>
          Date
@@ -133,7 +144,8 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
-           content: verticalName,
+           key: "title",
+           content: title,
           });
          }}>
          Title
@@ -142,7 +154,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img1 });
+          setCurrentContent({
+           contentId: _id,
+           key: "img1",
+           content: img1,
+          });
          }}>
          Card Image
         </button>
@@ -150,7 +166,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img2 });
+          setCurrentContent({
+           contentId: _id,
+           key: "img2",
+           content: img2,
+          });
          }}>
          Primary Review Image
         </button>
@@ -165,6 +185,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "body.category",
              content: category,
             });
            }}>
@@ -174,7 +195,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: company });
+            setCurrentContent({
+             contentId: _id,
+             key: "body.company",
+             content: company,
+            });
            }}>
            Company
           </button>
@@ -182,7 +207,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: stars });
+            setCurrentContent({
+             contentId: _id,
+             key: "body.stars",
+             content: stars,
+            });
            }}>
            Stars
           </button>
@@ -190,7 +219,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: review });
+            setCurrentContent({
+             contentId: _id,
+             key: "body.review",
+             content: review,
+            });
            }}>
            Review
           </button>
@@ -206,6 +239,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "categories.categoryDescription",
              content: categoryDescription,
             });
            }}>
@@ -221,7 +255,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: logo });
+            setCurrentContent({
+             contentId: _id,
+             key: "firms.logo",
+             content: logo,
+            });
            }}>
            {company} Logo
           </button>
@@ -239,6 +277,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "verticalName",
            content: verticalName,
           });
          }}>
@@ -248,7 +287,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: author });
+          setCurrentContent({
+           contentId: _id,
+           key: "author",
+           content: author,
+          });
          }}>
          Author
         </button>
@@ -258,7 +301,8 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
-           content: verticalName,
+           key: "date",
+           content: date,
           });
          }}>
          Date
@@ -269,7 +313,8 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
-           content: verticalName,
+           key: "title",
+           content: title,
           });
          }}>
          Title
@@ -278,7 +323,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img1 });
+          setCurrentContent({
+           contentId: _id,
+           key: "img1",
+           content: img1,
+          });
          }}>
          Card Image
         </button>
@@ -286,7 +335,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img2 });
+          setCurrentContent({
+           contentId: _id,
+           key: "img2",
+           content: img2,
+          });
          }}>
          Primary Review Image
         </button>
@@ -304,6 +357,7 @@ const ContentItem = ({ content }) => {
               setViewState((prevState) => !prevState);
               setCurrentContent({
                contentId: _id,
+               key: "body.pHeading",
                content: pHeading,
               });
              }}>
@@ -313,7 +367,11 @@ const ContentItem = ({ content }) => {
              className='btn btn-dark p-1 btn-sm'
              onClick={() => {
               setViewState((prevState) => !prevState);
-              setCurrentContent({ contentId: _id, content: pBody });
+              setCurrentContent({
+               contentId: _id,
+               key: "body.pBody",
+               content: pBody,
+              });
              }}>
              Body
             </button>
@@ -321,7 +379,11 @@ const ContentItem = ({ content }) => {
              className='btn btn-dark p-1 btn-sm'
              onClick={() => {
               setViewState((prevState) => !prevState);
-              setCurrentContent({ contentId: _id, content: img });
+              setCurrentContent({
+               contentId: _id,
+               key: "body.img",
+               content: img,
+              });
              }}>
              Image
             </button>
@@ -329,7 +391,11 @@ const ContentItem = ({ content }) => {
              className='btn btn-dark p-1 btn-sm'
              onClick={() => {
               setViewState((prevState) => !prevState);
-              setCurrentContent({ contentId: _id, content: video });
+              setCurrentContent({
+               contentId: _id,
+               key: "body.video",
+               content: video,
+              });
              }}>
              Video
             </button>
@@ -339,6 +405,7 @@ const ContentItem = ({ content }) => {
               setViewState((prevState) => !prevState);
               setCurrentContent({
                contentId: _id,
+               key: "body.backlink",
                content: backlink,
               });
              }}>
@@ -350,6 +417,7 @@ const ContentItem = ({ content }) => {
               setViewState((prevState) => !prevState);
               setCurrentContent({
                contentId: _id,
+               key: "body.backlinkText",
                content: backlinkText,
               });
              }}>
@@ -369,7 +437,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: title });
+          setCurrentContent({ contentId: _id, key: "title", content: title });
          }}>
          Title
         </button>
@@ -377,7 +445,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: author });
+          setCurrentContent({ contentId: _id, key: "author", content: author });
          }}>
          Author
         </button>
@@ -385,7 +453,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: date });
+          setCurrentContent({ contentId: _id, key: "date", content: date });
          }}>
          Date
         </button>
@@ -393,7 +461,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: p1 });
+          setCurrentContent({ contentId: _id, key: "p1", content: p1 });
          }}>
          Part 1
         </button>
@@ -401,7 +469,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: p2 });
+          setCurrentContent({ contentId: _id, key: "p2", content: p2 });
          }}>
          Part 2
         </button>
@@ -409,7 +477,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: p3 });
+          setCurrentContent({ contentId: _id, key: "p3", content: p3 });
          }}>
          Part 3
         </button>
@@ -417,7 +485,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: p4 });
+          setCurrentContent({ contentId: _id, key: "p4", content: p4 });
          }}>
          Part 4
         </button>
@@ -425,7 +493,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: p5 });
+          setCurrentContent({ contentId: _id, key: "p5", content: p5 });
          }}>
          Part 5
         </button>
@@ -433,7 +501,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img1 });
+          setCurrentContent({ contentId: _id, key: "img1", content: img1 });
          }}>
          Card Image
         </button>
@@ -441,7 +509,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img2 });
+          setCurrentContent({ contentId: _id, key: "img2", content: img2 });
          }}>
          Secondary Blog Image
         </button>
@@ -449,7 +517,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img2 });
+          setCurrentContent({ contentId: _id, key: "img3", content: img3 });
          }}>
          Primary Review Image
         </button>
@@ -463,7 +531,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: title });
+          setCurrentContent({ contentId: _id, key: "title", content: title });
          }}>
          Title
         </button>
@@ -471,7 +539,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: author });
+          setCurrentContent({ contentId: _id, key: "author", content: author });
          }}>
          Author
         </button>
@@ -479,7 +547,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: date });
+          setCurrentContent({ contentId: _id, key: "date", content: date });
          }}>
          Date
         </button>
@@ -487,7 +555,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: headingCopy });
+          setCurrentContent({
+           contentId: _id,
+           key: "headingCopy",
+           content: headingCopy,
+          });
          }}>
          Heading Copy
         </button>
@@ -495,7 +567,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: footerCopy });
+          setCurrentContent({
+           contentId: _id,
+           key: "footerCopy",
+           content: footerCopy,
+          });
          }}>
          Footer Copy
         </button>
@@ -503,7 +579,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: firm });
+          setCurrentContent({ contentId: _id, key: "firm", content: firm });
          }}>
          Firm
         </button>
@@ -511,7 +587,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img1 });
+          setCurrentContent({ contentId: _id, key: "img1", content: img1 });
          }}>
          Card Image
         </button>
@@ -519,7 +595,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img2 });
+          setCurrentContent({ contentId: _id, key: "img2", content: img2 });
          }}>
          Primary Quiz Image
         </button>
@@ -553,7 +629,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: name });
+          setCurrentContent({
+           contentId: _id,
+           key: "verticalName",
+           content: name,
+          });
          }}>
          Vertical Name
         </button>
@@ -561,7 +641,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: descrip1 });
+          setCurrentContent({
+           contentId: _id,
+           key: "descrip1",
+           content: descrip1,
+          });
          }}>
          Primary Description
         </button>
@@ -569,7 +653,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: navText });
+          setCurrentContent({
+           contentId: _id,
+           key: "navText",
+           content: navText,
+          });
          }}>
          Nav Text
         </button>
@@ -577,7 +665,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: vLogTitle });
+          setCurrentContent({
+           contentId: _id,
+           key: "vLogTitle",
+           content: vLogTitle,
+          });
          }}>
          Video Log Title
         </button>
@@ -585,7 +677,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: vLogSummary });
+          setCurrentContent({
+           contentId: _id,
+           key: "vLogSummary",
+           content: vLogSummary,
+          });
          }}>
          Video Log Summary
         </button>
@@ -597,7 +693,7 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: vid });
+            setCurrentContent({ contentId: _id, key: "vid", content: vid });
            }}>
            VLog {i}
           </button>
@@ -610,7 +706,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: vid });
+            setCurrentContent({
+             contentId: _id,
+             key: "qna.question",
+             content: qa.question,
+            });
            }}>
            Question {i}
           </button>
@@ -619,7 +719,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: vid });
+            setCurrentContent({
+             contentId: _id,
+             key: "qna.answer",
+             content: qa.answer,
+            });
            }}>
            Answer {i}
           </button>
@@ -627,7 +731,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: vid });
+            setCurrentContent({
+             contentId: _id,
+             key: "qna.video",
+             content: qa.video,
+            });
            }}>
            Video {i}
           </button>
@@ -635,7 +743,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: vid });
+            setCurrentContent({
+             contentId: _id,
+             key: "qna.image",
+             content: qa.image,
+            });
            }}>
            Image {i}
           </button>
@@ -646,7 +758,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img1 });
+          setCurrentContent({ contentId: _id, key: "img1", content: img1 });
          }}>
          Card Image
         </button>
@@ -654,7 +766,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img2 });
+          setCurrentContent({ contentId: _id, key: "img2", content: img2 });
          }}>
          Primary Vertical Image
         </button>
@@ -662,7 +774,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: img3 });
+          setCurrentContent({ contentId: _id, key: "img3", content: img3 });
          }}>
          Secondary Vertical Image
         </button>
@@ -676,7 +788,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: name });
+          setCurrentContent({ contentId: _id, key: "name", content: name });
          }}>
          Name
         </button>
@@ -684,7 +796,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: email });
+          setCurrentContent({ contentId: _id, key: "email", content: email });
          }}>
          Email
         </button>
@@ -692,7 +804,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: phone });
+          setCurrentContent({ contentId: _id, key: "phone", content: phone });
          }}>
          Phone
         </button>
@@ -700,7 +812,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: website });
+          setCurrentContent({
+           contentId: _id,
+           key: "website",
+           content: website,
+          });
          }}>
          Website
         </button>
@@ -708,7 +824,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: cpa });
+          setCurrentContent({ contentId: _id, key: "cpa", content: cpa });
          }}>
          Feat Employee
         </button>
@@ -716,7 +832,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: cpapic });
+          setCurrentContent({ contentId: _id, key: "cpapic", content: cpapic });
          }}>
          Feat Employee Pic
         </button>
@@ -724,7 +840,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: cpabio });
+          setCurrentContent({ contentId: _id, key: "cpabio", content: cpabio });
          }}>
          Feat Employee Bio
         </button>
@@ -732,7 +848,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: stars });
+          setCurrentContent({ contentId: _id, key: "stars", content: stars });
          }}>
          Stars
         </button>
@@ -740,7 +856,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: fees });
+          setCurrentContent({ contentId: _id, key: "fees", content: fees });
          }}>
          Fees
         </button>
@@ -749,7 +865,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: avgsavings });
+          setCurrentContent({
+           contentId: _id,
+           key: "avgsavings",
+           content: avgsavings,
+          });
          }}>
          Average Savings
         </button>
@@ -757,7 +877,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: minimum });
+          setCurrentContent({
+           contentId: _id,
+           key: "minimum",
+           content: minimum,
+          });
          }}>
          Minimum
         </button>
@@ -765,7 +889,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: years });
+          setCurrentContent({ contentId: _id, key: "years", content: years });
          }}>
          Years
         </button>
@@ -773,7 +897,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: bbb });
+          setCurrentContent({ contentId: _id, key: "bbb", content: bbb });
          }}>
          BBB
         </button>
@@ -781,7 +905,11 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: address });
+          setCurrentContent({
+           contentId: _id,
+           key: "address",
+           content: address,
+          });
          }}>
          Address
         </button>
@@ -790,7 +918,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: cost });
+          setCurrentContent({ contentId: _id, key: "cost", content: cost });
          }}>
          Cost
         </button>
@@ -798,7 +926,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: logo });
+          setCurrentContent({ contentId: _id, key: "logo", content: logo });
          }}>
          Logo
         </button>
@@ -806,7 +934,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: city });
+          setCurrentContent({ contentId: _id, key: "city", content: city });
          }}>
          City
         </button>
@@ -814,7 +942,7 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, content: state });
+          setCurrentContent({ contentId: _id, key: "state", content: state });
          }}>
          State
         </button>
@@ -824,6 +952,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "socialLinks.facebook",
            content: socialLinks.facebook,
           });
          }}>
@@ -835,6 +964,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "linkedin",
            content: socialLinks.linkedin,
           });
          }}>
@@ -846,6 +976,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "instagram",
            content: socialLinks.instagram,
           });
          }}>
@@ -857,6 +988,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "socialLinks.twitter",
            content: socialLinks.twitter,
           });
          }}>
@@ -868,6 +1000,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "socialLinks.article1",
            content: socialLinks.article1,
           });
          }}>
@@ -879,6 +1012,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "socialLinks.article2",
            content: socialLinks.article2,
           });
          }}>
@@ -890,6 +1024,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "socialLinks.article3",
            content: socialLinks.article3,
           });
          }}>
@@ -901,6 +1036,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           key: "socialLinks.article4",
            content: socialLinks.article4,
           });
          }}>
@@ -916,7 +1052,7 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: pro });
+            setCurrentContent({ contentId: _id, key: "pro", content: pro });
            }}>
            {i}
           </button>
@@ -930,7 +1066,7 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: con });
+            setCurrentContent({ contentId: _id, key: "con", content: con });
            }}>
            {i}
           </button>
@@ -948,6 +1084,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "experiences.company",
              content: exp.company,
             });
            }}>
@@ -959,6 +1096,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "experiences.project",
              content: exp.project,
             });
            }}>
@@ -970,6 +1108,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "experiences.summary",
              content: exp.summary,
             });
            }}>
@@ -979,7 +1118,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: exp.date });
+            setCurrentContent({
+             contentId: _id,
+             key: "experiences.date",
+             content: exp.date,
+            });
            }}>
            Date
           </button>
@@ -987,7 +1130,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: exp.title });
+            setCurrentContent({
+             contentId: _id,
+             key: "experiences.title",
+             content: exp.title,
+            });
            }}>
            Title
           </button>
@@ -995,7 +1142,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: exp.img });
+            setCurrentContent({
+             contentId: _id,
+             key: "experiences.img",
+             content: exp.img,
+            });
            }}>
            Image
           </button>
@@ -1013,6 +1164,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "acknowledgements.network",
              content: ack.network,
             });
            }}>
@@ -1024,6 +1176,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "acknowledgements.company",
              content: ack.company,
             });
            }}>
@@ -1035,6 +1188,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "acknowledgements.summary",
              content: ack.summary,
             });
            }}>
@@ -1044,7 +1198,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: ack.date });
+            setCurrentContent({
+             contentId: _id,
+             key: "acknowledgements.date",
+             content: ack.date,
+            });
            }}>
            Ack {i} date
           </button>
@@ -1054,6 +1212,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "acknowledgements.orgLogo",
              content: ack.orgLogo,
             });
            }}>
@@ -1065,6 +1224,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "ack.awardLogo",
              content: ack.awardLogo,
             });
            }}>
@@ -1084,6 +1244,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "reviews.reviewer",
              content: rev.reviewer,
             });
            }}>
@@ -1095,6 +1256,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "reviews.review",
              content: rev.review,
             });
            }}>
@@ -1104,7 +1266,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: rev.date });
+            setCurrentContent({
+             contentId: _id,
+             key: "reviews.date",
+             content: rev.date,
+            });
            }}>
            Date
           </button>
@@ -1112,7 +1278,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: rev.pic });
+            setCurrentContent({
+             contentId: _id,
+             key: "reviews.pic",
+             content: rev.pic,
+            });
            }}>
            Image
           </button>
@@ -1130,6 +1300,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "services.serviceType",
              content: sev.serviceType,
             });
            }}>
@@ -1141,6 +1312,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "services.service",
              content: sev.service,
             });
            }}>
@@ -1150,7 +1322,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: sev.cost });
+            setCurrentContent({
+             contentId: _id,
+             key: "services.cost",
+             content: sev.cost,
+            });
            }}>
            Cost
           </button>
@@ -1160,6 +1336,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             key: "services.summary",
              content: sev.summary,
             });
            }}>
@@ -1169,7 +1346,11 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, content: sev.img });
+            setCurrentContent({
+             contentId: _id,
+             key: "services.img",
+             content: sev.img,
+            });
            }}>
            Image
           </button>
