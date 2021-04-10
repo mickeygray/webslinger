@@ -3,6 +3,12 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const Site = require("../models/Site");
 const Page = require("../models/Page");
+const Quiz = require("../models/Quiz");
+const Article = require("../models/Article");
+const Blog = require("../models/Blog");
+const Review = require("../models/Review");
+const Firm = require("../models/Firm");
+const Vertical = require("../models/Vertical");
 const Component = require("../models/Component");
 const { check, validationResult } = require("express-validator");
 const GridFsStorage = require("multer-gridfs-storage");
@@ -11,6 +17,7 @@ const db = config.get("mongoURI");
 const multer = require("multer");
 const crypto = require("crypto");
 const path = require("path");
+const e = require("express");
 
 const storage = new GridFsStorage({
  url: db,
@@ -50,6 +57,228 @@ router.get("/components", auth, async (req, res) => {
  try {
   const components = await Component.find({ "user": req.query.q });
   res.json(components);
+
+  console.log(components);
+ } catch (err) {
+  console.error(err.message);
+  res.status(500).send("Server Error");
+ }
+});
+
+router.get("/content", auth, async (req, res) => {
+ const stuff = JSON.parse(req.query.q);
+
+ const { content, userid } = stuff;
+ const cont = content;
+
+ console.log(stuff);
+ const contentKeys = cont
+  .map(({ contentId }) => contentId)
+  .filter((value, index, self) => self.indexOf(value) === index);
+
+ try {
+  const firms = await Firm.find({ "user": userid });
+  const blogs = await Blog.find({ "user": userid });
+  const articles = await Article.find({ "user": userid });
+  const quizs = await Quiz.find({ "user": userid });
+  const reviews = await Review.find({ "user": userid });
+  const verticals = await Vertical.find({ "user": userid });
+
+  const firmkeys = cont
+   .filter((k) => k.type === "firm")
+   .map(({ key, content }) => {
+    if (key.includes(".")) {
+     let objkey = key.substr(key.indexOf(".") + 1, key.length);
+
+     let obj = { [objkey]: content };
+
+     let arrName = key.substr(0, key.indexOf("."));
+
+     let pushedObj = [arrName, [{ ...obj }]];
+
+     return pushedObj;
+    } else {
+     let obj = [key, content];
+     return obj;
+    }
+   });
+
+  const quizkeys = cont
+   .filter((k) => k.type === "quizs")
+   .map(({ key, content }) => {
+    if (key.includes(".")) {
+     let objkey = key.substr(key.indexOf(".") + 1, key.length);
+
+     let obj = { [objkey]: content };
+
+     let arrName = key.substr(0, key.indexOf("."));
+
+     let pushedObj = [arrName, [{ ...obj }]];
+
+     return pushedObj;
+    } else {
+     let obj = [key, content];
+     return obj;
+    }
+   });
+
+  const reviewkeys = cont
+   .filter((k) => k.type === "reviews")
+   .map(({ key, content }) => {
+    if (key.includes(".")) {
+     let objkey = key.substr(key.indexOf(".") + 1, key.length);
+
+     let obj = { [objkey]: content };
+
+     let arrName = key.substr(0, key.indexOf("."));
+
+     let pushedObj = [arrName, [{ ...obj }]];
+
+     return pushedObj;
+    } else {
+     let obj = [key, content];
+     return obj;
+    }
+   });
+
+  const verticalkeys = cont
+   .filter((k) => k.contentType === "verticals")
+   .map(({ key, content }) => {
+    if (key.includes(".")) {
+     let objkey = key.substr(key.indexOf(".") + 1, key.length);
+
+     let obj = { [objkey]: content };
+
+     let arrName = key.substr(0, key.indexOf("."));
+
+     let pushedObj = [arrName, [{ ...obj }]];
+
+     return pushedObj;
+    } else {
+     let obj = [key, content];
+     return obj;
+    }
+   });
+
+  const articlekeys = cont
+   .filter((k) => k.type === "articles")
+   .map(({ key, content }) => {
+    if (key.includes(".")) {
+     let objkey = key.substr(key.indexOf(".") + 1, key.length);
+
+     let obj = { [objkey]: content };
+
+     let arrName = key.substr(0, key.indexOf("."));
+
+     let pushedObj = [arrName, [{ ...obj }]];
+
+     return pushedObj;
+    } else {
+     let obj = [key, content];
+     return obj;
+    }
+   });
+
+  const blogkeys = cont
+   .filter((k) => k.type === "blogs")
+   .map(({ key, content }) => {
+    if (key.includes(".")) {
+     let objkey = key.substr(key.indexOf(".") + 1, key.length);
+
+     let obj = { [objkey]: content };
+
+     let arrName = key.substr(0, key.indexOf("."));
+
+     let pushedObj = [arrName, [{ ...obj }]];
+
+     return pushedObj;
+    } else {
+     let obj = [key, content];
+     return obj;
+    }
+   });
+
+  const blogObj = Object.fromEntries(blogkeys);
+  const reviewObj = Object.fromEntries(reviewkeys);
+
+  const articleObj = Object.fromEntries(articlekeys);
+  const quizObj = Object.fromEntries(quizkeys);
+
+  const firmObj = Object.fromEntries(firmkeys);
+  const verticalObj = Object.fromEntries(verticalkeys);
+
+  const everyOtherBlog = blogs.map(({ _doc }) => {
+   const keys = Object.keys(_doc).filter((k) =>
+    Object.keys(blogObj).includes(k)
+   );
+
+   const entryObj = Object.fromEntries(keys.map((k) => [k, _doc[k]]));
+
+   return entryObj;
+  });
+
+  const everyOtherReview = reviews.map(({ _doc }) => {
+   const keys = Object.keys(_doc).filter((k) =>
+    Object.keys(reviewObj).includes(k)
+   );
+
+   const entryObj = Object.fromEntries(keys.map((k) => [k, _doc[k]]));
+
+   return entryObj;
+  });
+
+  const everyOtherArticle = articles.map(({ _doc }) => {
+   const keys = Object.keys(_doc).filter((k) =>
+    Object.keys(reviewObj).includes(k)
+   );
+
+   const entryObj = Object.fromEntries(keys.map((k) => [k, _doc[k]]));
+
+   return entryObj;
+  });
+
+  const everyOtherFirm = firms.map(({ _doc }) => {
+   const keys = Object.keys(_doc).filter((k) =>
+    Object.keys(firmObj).includes(k)
+   );
+
+   const entryObj = Object.fromEntries(keys.map((k) => [k, _doc[k]]));
+
+   return entryObj;
+  });
+
+  const everyOtherVertical = verticals.map(({ _doc }) => {
+   const keys = Object.keys(_doc).filter((k) =>
+    Object.keys(verticalObj).includes(k)
+   );
+
+   const entryObj = Object.fromEntries(keys.map((k) => [k, _doc[k]]));
+
+   return entryObj;
+  });
+
+  const everyOtherQuiz = quizs.map(({ _doc }) => {
+   const keys = Object.keys(_doc).filter((k) =>
+    Object.keys(reviewObj).includes(k)
+   );
+
+   const entryObj = Object.fromEntries(keys.map((k) => [k, _doc[k]]));
+
+   return entryObj;
+  });
+
+  const mappedContent = [
+   everyOtherArticle || null,
+   everyOtherBlog || null,
+   everyOtherFirm || null,
+   everyOtherQuiz || null,
+   everyOtherReview || null,
+   everyOtherVertical || null,
+  ]
+   .flat()
+   .filter((k) => Object.keys(k).length > 0);
+
+  res.json(mappedContent);
  } catch (err) {
   console.error(err.message);
   res.status(500).send("Server Error");
@@ -68,7 +297,6 @@ router.get("/pages", auth, async (req, res) => {
 
 router.get("/sites/:id", auth, async (req, res) => {
  try {
-  console.log(req.params);
   const site = await Site.findById(req.params.id);
   res.json(site);
  } catch (err) {
@@ -79,7 +307,6 @@ router.get("/sites/:id", auth, async (req, res) => {
 
 router.get("/pages/:id", auth, async (req, res) => {
  try {
-  console.log(req.params);
   const page = await Page.findById(req.params.id);
   res.json(page);
  } catch (err) {
@@ -91,6 +318,8 @@ router.get("/components/:id", auth, async (req, res) => {
  try {
   console.log(req.params);
   const component = await Component.findById(req.params.id);
+
+  console.log(component);
   res.json(component);
  } catch (err) {
   console.error(err.message);

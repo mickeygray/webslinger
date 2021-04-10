@@ -1,11 +1,15 @@
 import React, { useReducer, useEffect, createContext, useContext } from "react";
 import axios from "axios";
+
+import ReactDOMServer from "react-dom/server";
 import SiteContext from "./siteContext";
 import siteReducer from "./siteReducer";
+import pageReducer from "./pageReducer";
 import cellReducer from "./cellReducer";
 import appReducer from "./appReducer";
 import produce from "immer";
-import { set } from "lodash";
+import parse from "html-react-parser";
+import _ from "lodash";
 import { v4 as uuidV4 } from "uuid";
 
 import {
@@ -38,7 +42,6 @@ import {
  GET_FIRMSSEARCHED,
  GET_BLOGSSEARCHED,
  GET_QUIZSSEARCHED,
- CLEAR_SITELAYOUT,
  GET_ARTICLESSEARCHED,
  SET_CURRENTFONT,
  SET_CURRENTPALLET,
@@ -65,8 +68,11 @@ import {
  UPDATE_STATE,
  DELETE_STATE,
  ADD_APPCONTENT,
- GET_COMPONENTSTRING,
+ GET_COMPONENTCONTENT,
  SET_COMPONENTSTRING,
+ CLEAR_COMPONENTCONTENT,
+ SET_LOADEDCOMPONENTS,
+ ADD_COMPONENT,
 } from "../types";
 const AppContext = createContext();
 const SiteState = (props) => {
@@ -84,8 +90,7 @@ const SiteState = (props) => {
    content: [],
    cellStructure: null,
    myComponents: null,
-   MyComponent: null,
-   pages: null,
+
    sites: null,
   },
   body: {
@@ -105,6 +110,12 @@ const SiteState = (props) => {
    subCells: [],
    bodyCells: [],
    cellStructure: [],
+  },
+  page: {
+   pages: [],
+   LoadedComponents: [],
+   MyComponent: null,
+   componentContent: null,
   },
  };
 
@@ -530,10 +541,186 @@ const SiteState = (props) => {
   viewToggle: "close",
   bodyViewState: false,
  };
+
+ const page = {
+  url: "",
+  route: "",
+  layout: "",
+  pageGrid: {
+   key: uuidV4(),
+   rows: [],
+   columns: [],
+   rowString: "",
+   columnString: "",
+   direction: "row",
+   verticalAlignment: "start",
+   horizontalAlignment: "start",
+  },
+  name: "",
+  head: {
+   metaTags: [{ tag: "", content: "" }],
+   title: "",
+  },
+  nav: {
+   navSections: [],
+   navCells: [],
+   layout: "",
+   navGrid: {
+    key: uuidV4(),
+    rows: [],
+    columns: [],
+    rowString: "",
+    columnString: "",
+    direction: "row",
+    verticalAlignment: "start",
+    horizontalAlignment: "start",
+   },
+  },
+  header: {
+   headerSections: [],
+   headerCells: [],
+   layout: "",
+   navGrid: {
+    key: uuidV4(),
+    rows: [],
+    columns: [],
+    rowString: "",
+    columnString: "",
+    direction: "row",
+    verticalAlignment: "start",
+    horizontalAlignment: "start",
+   },
+   navStyles: {},
+  },
+  article: {
+   articleSections: [],
+   articleCells: [],
+   layout: "",
+   articleGrid: {
+    key: uuidV4(),
+    rows: [],
+    columns: [],
+    rowString: "",
+    columnString: "",
+    direction: "row",
+    verticalAlignment: "start",
+    horizontalAlignment: "start",
+   },
+   articleStyles: {},
+  },
+  main: {
+   mainSections: [],
+   mainCells: [],
+   layout: "",
+   mainGrid: {
+    key: uuidV4(),
+    rows: [],
+    columns: [],
+    rowString: "",
+    columnString: "",
+    direction: "row",
+    verticalAlignment: "start",
+    horizontalAlignment: "start",
+   },
+   mainStyles: {},
+  },
+  footer: {
+   foooterSections: [],
+   footerCells: [],
+   layout: "",
+   footerGrid: {
+    key: uuidV4(),
+    rows: [],
+    columns: [],
+    rowString: "",
+    columnString: "",
+    direction: "row",
+    verticalAlignment: "start",
+    horizontalAlignment: "start",
+   },
+   footerStyles: {},
+  },
+  css: {
+   width: "0",
+   height: "0",
+   marginTop: "",
+   marginLeft: "",
+   marginBottom: "",
+   marginRight: "",
+   borderLeftStyle: "",
+   borderLeftColor: "",
+   lineHeight: "",
+   borderLeftWidth: "",
+   borderRightStyle: "",
+   borderRightColor: "",
+   borderRightWidth: "",
+   borderTopStyle: "",
+   borderTopColor: "",
+   borderTopWidth: "",
+   borderBottomStyle: "",
+   borderBottomColor: "",
+   borderBottomWidth: "",
+   borderTopLeftRadius: "0",
+   borderTopRightRadius: "0",
+   borderBottomLeftRadius: "0",
+   borderBottomRightRadius: "0",
+   boxShadowHoriz: "",
+   boxShadowVert: "",
+   boxShadowBlur: "",
+   boxShadowSpread: "",
+   boxShadowColor: "",
+   boxShadowInset: "",
+   fontSize: "",
+   fontWeight: "",
+   zIndex: "",
+   display: "",
+   textIndent: "",
+   transition: [],
+
+   transform: [],
+   transformProp: {
+    skewX: 0,
+    skewY: 0,
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    scaleY: 1,
+    scaleX: 1,
+    translateX: 0,
+    translateY: 0,
+   },
+
+   animation: [],
+   textAlign: "",
+   textShadowSize: "",
+   textShadowColor: "",
+   textDecorationLine: "",
+   textDecorationThickness: "",
+   textDecorationStyle: "",
+   textDecorationColor: "",
+   pos: "",
+   top: "",
+   left: "",
+   bottom: "",
+   right: "",
+   paddingTop: "",
+   paddingLeft: "",
+   paddingRight: "",
+   paddingBottom: "",
+   backgroundRepeat: "",
+   backgroundPosition: "",
+   backgroundSize: "",
+   opacity: "100%",
+   overflowX: "",
+   overflowY: "",
+  },
+ };
+
  const [state, dispatch] = useReducer(
   combineReducers({
    body: cellReducer,
    markUp: siteReducer,
+   page: pageReducer,
   }),
   initialState
  );
@@ -550,7 +737,84 @@ const SiteState = (props) => {
   });
  };
 
- //EDIT THE CSS AND CELL OBJECT ON THE NODE LEVEL
+ //EDIT THE CSS AND CELL OBJECT ON THE PAGE LEVEL
+
+ const getComponentContent = async (MyComponent, userid) => {
+  const config = {
+   headers: {
+    "Content-Type": "application/json",
+   },
+  };
+
+  const content = MyComponent.content;
+
+  const sendObj = { content, userid };
+
+  const res = await axios.get(
+   `/api/sites/content?q=${JSON.stringify(sendObj)}`,
+   config
+  );
+  dispatch({
+   type: GET_COMPONENTCONTENT,
+   payload: res.data,
+  });
+
+  console.log(res);
+ };
+
+ const getComponent = async (_id) => {
+  const config = {
+   headers: {
+    "Content-Type": "application/json",
+   },
+  };
+
+  try {
+   const res = await axios.get(`/api/sites/components/${_id}`, config);
+
+   console.log(res.data);
+
+   dispatch({
+    type: GET_COMPONENT,
+    payload: res.data,
+   });
+  } catch (err) {
+   dispatch({
+    type: SITE_ERROR,
+    payload: err.response.data.msg,
+   });
+  }
+ };
+
+ const setLoadedComponents = (components) => {
+  dispatch({
+   type: SET_LOADEDCOMPONENTS,
+   payload: components,
+  });
+ };
+
+ const addComponent = (func) => {
+  dispatch({
+   type: ADD_COMPONENT,
+   payload: func,
+  });
+ };
+
+ const addPageCell = () => {};
+ const addAreaStyle = () => {};
+ const addPageCellStyle = () => {};
+ const setAreaLayout = () => {};
+ const setPageLayout = () => {};
+
+ //delete components
+ //gridstyles
+ //cellstyles
+ //navlinks
+ //combineComponentStates
+ //pageMapping
+ //siteMapping
+
+ //EDIT THE CSS AND CELL OBJECT ON THE COMPONENT LEVEL
 
  const {
   cells,
@@ -568,7 +832,6 @@ const SiteState = (props) => {
     const regex = new RegExp(`${text}`, "gi");
     return css.match(regex);
    });
-   console.log(matchKeys);
 
    const filtered = {};
 
@@ -582,7 +845,6 @@ const SiteState = (props) => {
     const regex = new RegExp(`${text}`, "gi");
     return css.match(regex);
    });
-   console.log(matchKeys);
 
    const filtered = {};
 
@@ -592,6 +854,12 @@ const SiteState = (props) => {
 
    dispatch({ type: FILTER_CSS, payload: filtered });
   }
+ };
+
+ const clearComponentContent = () => {
+  dispatch({
+   type: CLEAR_COMPONENTCONTENT,
+  });
  };
 
  // Clear Filter
@@ -788,11 +1056,12 @@ const SiteState = (props) => {
   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
   setCells();
  };
- const setNewCells = (cells, elements) => {
+
+ const setNewCells = async (cells, elements) => {
   const newCells = cells.map((cell, i) => {
    if (elements) {
     let contents = elements.filter((piece) =>
-     piece.props
+     piece.props && piece.source != null
       ? piece.props.sectionArea === cell.id
       : piece.sectionArea === cell.id
     );
@@ -823,6 +1092,7 @@ const SiteState = (props) => {
   dispatch({ type: UPDATE_CELL, payload: nextCellState });
   setCells();
  };
+
  const setNewSubCells = (subCells, elements) => {
   const newSubCells = subCells.map((cell, i) => {
    if (elements) {
@@ -979,7 +1249,6 @@ const SiteState = (props) => {
  };
 
  const addCellChildAnimationKeyframe = (i, index, ind) => {
-  console.log(ind);
   const pushColumns = produce(cells, (draft) => {
    draft[i]["contentCss"][index]["animation"][ind]["keyframes"].push({
     ...newKeyframe,
@@ -1072,21 +1341,18 @@ const SiteState = (props) => {
    });
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "animation") {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["css"]["animation"][slider][name] = value;
    });
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "animationkey") {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["css"]["animation"][slider]["keyframes"][n][name] = value;
    });
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "animationkeyprop" && !n2 && !n3) {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
      name
@@ -1101,7 +1367,6 @@ const SiteState = (props) => {
    n2 != "boxshadow" &&
    !n3
   ) {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
      "transValues"
@@ -1110,7 +1375,6 @@ const SiteState = (props) => {
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "animationkeyprop" && n2 && n2 === "font" && n3) {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
      name
@@ -1119,7 +1383,6 @@ const SiteState = (props) => {
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "animationkeyprop" && n2 && n2 === "boxshadow") {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
      "shadowValues"
@@ -1134,7 +1397,6 @@ const SiteState = (props) => {
    n2 != "boxshadow" &&
    n3
   ) {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
      "transValues"
@@ -1143,14 +1405,12 @@ const SiteState = (props) => {
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "contanimation") {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["contentCss"][slider]["animation"][n][name] = value;
    });
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "contanimationkey") {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
      name
@@ -1159,7 +1419,6 @@ const SiteState = (props) => {
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "contanimationkeyprop" && !n3 && !n4) {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
      "properties"
@@ -1174,7 +1433,6 @@ const SiteState = (props) => {
    n3 != "boxshadow" &&
    !n4
   ) {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
      "properties"
@@ -1183,7 +1441,6 @@ const SiteState = (props) => {
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "contanimationkeyprop" && n3 && n3 === "font" && n4) {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
      "properties"
@@ -1192,7 +1449,6 @@ const SiteState = (props) => {
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "contanimationkeyprop" && n3 && n3 === "boxshadow") {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
      "properties"
@@ -1207,7 +1463,6 @@ const SiteState = (props) => {
    n3 != "boxshadow" &&
    n4
   ) {
-   console.log(cells);
    const pushColumns = produce(cells, (draft) => {
     draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
      "properties"
@@ -1318,8 +1573,6 @@ const SiteState = (props) => {
 
   setCells();
  };
-
- console.log(cells);
 
  const onChangeSubCell = (i, e, check, index) => {
   const { value, name } = e.currentTarget;
@@ -1825,28 +2078,6 @@ const SiteState = (props) => {
   }
  };
 
- const getComponent = async (_id) => {
-  const config = {
-   headers: {
-    "Content-Type": "application/json",
-   },
-  };
-
-  try {
-   const res = await axios.get(`/api/sites/components/${_id}`, config);
-
-   dispatch({
-    type: GET_COMPONENT,
-    payload: res.data,
-   });
-  } catch (err) {
-   dispatch({
-    type: SITE_ERROR,
-    payload: err.response.data.msg,
-   });
-  }
- };
-
  const postComponent = async (component) => {
   const config = {
    headers: {
@@ -1893,17 +2124,6 @@ const SiteState = (props) => {
     payload: err.response.data.msg,
    });
   }
- };
-
- const clearSiteLayout = () => {
-  dispatch({ type: CLEAR_SITELAYOUT });
- };
-
- const setSiteLayout = (layout) => {
-  dispatch({
-   type: SET_CURRENTSITE,
-   payload: layout,
-  });
  };
 
  const setContent = (content) => {
@@ -2013,6 +2233,8 @@ const SiteState = (props) => {
     subCells: state.body.subCells,
     cellStructure: state.body.cellStructure,
     grid: state.body.grid,
+    bodyGrids: state.body.bodyGrids,
+    subGrids: state.body.subGrids,
     error: state.markUp.error,
     layout: state.markUp.layout,
     currentContent: state.markUp.currentContent,
@@ -2023,11 +2245,19 @@ const SiteState = (props) => {
     pallet: state.markUp.pallet,
     content: state.markUp.content,
     myComponents: state.markUp.myComponents,
-    MyComponent: state.markUp.MyComponent,
-    pages: state.markUp.pages,
     sites: state.markUp.sites,
-    bodyGrids: state.body.bodyGrids,
-    subGrids: state.body.subGrids,
+    pages: state.page.pages,
+    MyComponent: state.page.MyComponent,
+    componentContent: state.page.componentContent,
+    areas: state.page.areas,
+    pages: state.page.pages,
+    pageCells: state.page.pageCells,
+    componentContent: state.page.componentContent,
+    LoadedComponents: state.page.LoadedComponents,
+    areas: state.page.areas,
+    pageGrid: state.pageGrid,
+    areaGrids: state.areaGrids,
+    layouts: state.page.layouts,
     setCurrentFont,
     setCurrentPallet,
     addColumn,
@@ -2073,6 +2303,7 @@ const SiteState = (props) => {
     setGrid,
     getQuizs,
     getReviews,
+    setLoadedComponents,
     clearCurrentContent,
     addCell,
     addSubCell,
@@ -2093,6 +2324,7 @@ const SiteState = (props) => {
     clearFilter,
     addCellTransition,
     addCellChildTransition,
+    addComponent,
     addSubCellTransition,
     addBodyCellTransition,
     addCellAnimation,
@@ -2101,6 +2333,8 @@ const SiteState = (props) => {
     addCellChildAnimationKeyframe,
     addCellAnimationKeyframeProperty,
     addCellChildAnimationKeyframeProperty,
+    getComponentContent,
+    clearComponentContent,
    }}>
    {props.children}
   </SiteContext.Provider>
@@ -2174,45 +2408,46 @@ export function AppWrapper({ children }) {
  };
 
  const setComponentString = (str, styles) => {
-  let rtn = str.substring(0, str.indexOf("&lt;style&gt;"));
-  let module = str
-   .substring(str.indexOf("&lt;style&gt;"), str.length)
-   .replaceAll("&lt;style&gt;", "")
-   .replaceAll("&lt;/style&gt;", "")
-   .replace("&lt;/div&gt;", "");
-
   state.content.forEach((content) => {
-   if (content.key === "img") {
-    rtn = rtn.replace(content.content, `{${content.key}}`).replace("src=");
-   } else {
-    rtn = rtn.replace(content.content, `{${content.key}}`);
+   if (content.key.includes("img")) {
+    str = str
+     .split(" ")
+     .filter((s) => !s.includes("blob"))
+     .join(" ");
+
+    str = str.replaceAll("alt=", "src=");
    }
+
+   console.log(content.content);
+   console.log(content.key);
+   str = str.replace(content.content, `\${props.${content.key}}`);
   });
 
   styles.forEach((style) => {
    const st = JSON.stringify(style)
     .replace('{"', "")
+    .replace("{", "{\n")
     .replace('":', "")
     .replaceAll('"', "")
-    .replaceAll(",", ";")
-    .replace("}}", ";}")
-    .replace(/^/, ".");
+    .replaceAll(",", ";\n")
+    .replace("}}", ";}\n")
+    .replace(/^/, ".")
+    .replace(/(?!^)[A-Z]/g, (m) => "-" + m.toLowerCase())
+    .replace(".-g", ".G")
+    .replace(".-c", ".C");
+   String.prototype.insert = function (index, string) {
+    if (index > 0) {
+     return this.substring(0, index) + string + this.substr(index);
+    }
 
-   module = module + st;
+    return string + this;
+   };
+
+   str = str.insert(str.indexOf("</style>"), st);
   });
 
-  module = module
-   .replace(/\n/g, "")
-   .replaceAll(";", "; \n")
-   .replace("{", " {\n")
-   .trim();
-
-  rtn =
-   rtn + "\n&lt;style&gt;\n" + module + "\n&lt;/style&gt;\n" + "&lt;/div&gt;";
-  rtn = rtn.trim();
-
   let NewComponent = {
-   html: rtn,
+   html: str,
    userState: state.userState,
    content: state.content,
   };
@@ -2310,7 +2545,6 @@ export function AppWrapper({ children }) {
   writeUserState,
   updateUserState,
   deleteUserState,
-
   getStateContent,
   setComponentString,
   addIp,

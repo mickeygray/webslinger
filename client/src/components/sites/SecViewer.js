@@ -9,6 +9,7 @@ import React, {
 import parse from "html-react-parser";
 import { Grid, Cell } from "styled-css-grid";
 import ImageContext from "../../context/image/imageContext";
+import AuthContext from "../../context/auth/authContext";
 import SiteContext from "../../context/site/siteContext";
 import YouTube from "react-youtube";
 import _ from "lodash";
@@ -32,11 +33,14 @@ const SecViewer = ({
  pallet,
  component,
  nodeView,
+ setStyleTags,
 }) => {
- const { setComponentString } = useAppContext();
-
+ const authContext = useContext(AuthContext);
  const siteContext = useContext(SiteContext);
  const imageContext = useContext(ImageContext);
+ const { setComponentString } = useAppContext();
+ const { user } = authContext;
+ const { _id } = user;
  const { getContentImage, clearCurrentImage, contentImage } = imageContext;
  const {
   addCell,
@@ -94,9 +98,11 @@ const SecViewer = ({
  const [gridLevel, setGridLevelView] = useState(true);
  const [currentPage, setCurrentPage] = useState(1);
  const [postsPerPage, setPostsPerPage] = useState(1);
+ const [Component, setComponent] = useState("");
 
  useEffect(() => {
   if (document.getElementById("render").innerHTML) {
+   setComponent(document.getElementById("render").innerHTML);
    const mainGridStyles = Object.keys(grid)
     .filter(
      (k) =>
@@ -341,7 +347,6 @@ const SecViewer = ({
       ["textAlign"]: "center",
      };
 
-     console.log(gridRowStart);
      styleObj = {
       gridColumnStart,
       gridRowStart,
@@ -349,8 +354,6 @@ const SecViewer = ({
       gridRowEnd,
       textAlign,
      };
-
-     console.log(styleObj);
 
      let cellClasses = ReactDOMServer.renderToString(
       document.getElementById("render").innerHTML
@@ -365,7 +368,6 @@ const SecViewer = ({
          .split(" ")[2]]: styleObj,
        };
 
-       console.log(cellClass);
        return layoutStyles.push(cellClass);
       }
      }
@@ -472,10 +474,7 @@ const SecViewer = ({
     });
    }
 
-   setComponentString(
-    ReactDOMServer.renderToString(document.getElementById("render").innerHTML),
-    layoutStyles
-   );
+   setComponentString(Component, layoutStyles);
   }
 
   /*
@@ -567,7 +566,6 @@ const SecViewer = ({
   setNewSubCells(bodyCells, elements);
  }, [component, h, li, p, a, icon, button, img, vid]);
 
- console.log(contentImage);
  useEffect(() => {
   if (
    contentImage !== null &&

@@ -11,51 +11,51 @@ const Grid = require("gridfs-stream");
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const storage = new GridFsStorage({
-  url: db,
-  options: { useUnifiedTopology: true },
-  file: (req, file, i) => {
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-          return reject(err);
-        }
+ url: db,
+ options: { useUnifiedTopology: true },
+ file: (req, file, i) => {
+  return new Promise((resolve, reject) => {
+   crypto.randomBytes(16, (err, buf) => {
+    if (err) {
+     return reject(err);
+    }
 
-        const filename = req.files[req.files.length - 1].fieldname;
-        const fileInfo = {
-          filename: filename,
-          bucketName: "fs", //collection name
-        };
+    const filename = req.files[req.files.length - 1].fieldname;
+    const fileInfo = {
+     filename: filename,
+     bucketName: "fs", //collection name
+    };
 
-        console.log(req.files);
-        console.log(fileInfo);
+    console.log(req.files);
+    console.log(fileInfo);
 
-        resolve(fileInfo);
-      });
-    });
-  },
+    resolve(fileInfo);
+   });
+  });
+ },
 });
 
 const upload = multer({ storage });
 
 router.delete("/:id", auth, async (req, res) => {
-  try {
-    const conn = mongoose.connection;
-    const gfs = Grid(conn.db, mongoose.mongo);
-    const fileId = new mongoose.mongo.ObjectId(req.params.id);
+ try {
+  const conn = mongoose.connection;
+  const gfs = Grid(conn.db, mongoose.mongo);
+  const fileId = new mongoose.mongo.ObjectId(req.params.id);
 
-    gfs.remove({ _id: fileId }, function (err) {});
+  gfs.remove({ _id: fileId }, function (err) {});
 
-    res.json({ msg: "Image removed" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
+  res.json({ msg: "Image removed" });
+ } catch (err) {
+  console.error(err.message);
+  res.status(500).send("Server Error");
+ }
 });
 
 router.post("/", upload.any(), auth, async (req, res) => {
-  try {
-    console.log(req.body.files, "sasadsads");
-    /*
+ try {
+  console.log(req.body.files, "sasadsads");
+  /*
     const conn = mongoose.connection;
     const gfs = Grid(conn.db, mongoose.mongo);
     const fileId = new mongoose.mongo.ObjectId(req.params.id);
@@ -78,75 +78,107 @@ router.post("/", upload.any(), auth, async (req, res) => {
       console.log("saved 300px as " + file.filename);
     });
       */
-    res.send("fg!");
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
+  res.send("fg!");
+ } catch (err) {
+  console.error(err.message);
+  res.status(500).send("Server Error");
+ }
 });
 router.get("/", auth, async (req, res) => {
-  const conn = mongoose.connection;
+ const conn = mongoose.connection;
 
-  const gfs = Grid(conn.db, mongoose.mongo);
+ const gfs = Grid(conn.db, mongoose.mongo);
 
-  const data = [];
-  await gfs.files.find().toArray(async function (err, files) {
-    if (err) {
-      res.json(err);
-    }
+ const data = [];
+ await gfs.files.find().toArray(async function (err, files) {
+  if (err) {
+   res.json(err);
+  }
 
-    files.forEach(async (file) => {
-      data.push(file);
-    });
-
-    res.json(data);
+  files.forEach(async (file) => {
+   data.push(file);
   });
+
+  res.json(data);
+ });
 });
 
 router.get("/content", auth, async (req, res) => {
-  const conn = mongoose.connection;
-  const gfs = Grid(conn.db, mongoose.mongo);
+ const conn = mongoose.connection;
+ const gfs = Grid(conn.db, mongoose.mongo);
 
-  gfs.files.find({ filename: req.query.q }).toArray(function (err, files) {
-    if (err) {
-      res.json(err);
-    }
+ gfs.files.find({ filename: req.query.q }).toArray(function (err, files) {
+  if (err) {
+   res.json(err);
+  }
 
-    if (files.length > 0) {
-      var mime = files[0].contentType;
-      var filename = files[0].filename;
-      res.set("Content-Type", mime);
-      res.set("Content-Disposition", "inline; filename=" + filename);
-      var read_stream = gfs.createReadStream({ filename: filename });
-      read_stream.pipe(res);
-    } else {
-      res.json("File Not Found");
-    }
-  });
+  if (files.length > 0) {
+   var mime = files[0].contentType;
+   var filename = files[0].filename;
+   res.set("Content-Type", mime);
+   res.set("Content-Disposition", "inline; filename=" + filename);
+   var read_stream = gfs.createReadStream({ filename: filename });
+   read_stream.pipe(res);
+  } else {
+   res.json("File Not Found");
+  }
+ });
+});
+
+router.get("/component", auth, async (req, res) => {
+ const conn = mongoose.connection;
+ const gfs = Grid(conn.db, mongoose.mongo);
+
+ const content = JSON.parse(req.query.q);
+
+ console.log(content);
+ let key = Object.keys(content).filter(
+  (key) => key.includes("img") || key.includes("logo") || key.includes("pic")
+ );
+
+ console.log(key);
+
+ gfs.files.find({ filename: content[key] }).toArray(function (err, files) {
+  if (err) {
+   res.json(err);
+  }
+
+  console.log(files);
+  if (files.length > 0) {
+   var mime = files[0].contentType;
+   var filename = files[0].filename;
+   res.set("Content-Type", mime);
+   res.set("Content-Disposition", "inline; filename=" + filename);
+   var read_stream = gfs.createReadStream({ filename: filename });
+   read_stream.pipe(res);
+  } else {
+   res.json("File Not Found");
+  }
+ });
 });
 
 router.get("/:id", auth, async (req, res) => {
-  const conn = mongoose.connection;
-  const gfs = Grid(conn.db, mongoose.mongo);
+ const conn = mongoose.connection;
+ const gfs = Grid(conn.db, mongoose.mongo);
 
-  const fileId = new mongoose.mongo.ObjectId(req.params.id);
+ const fileId = new mongoose.mongo.ObjectId(req.params.id);
 
-  gfs.files.find({ _id: fileId }).toArray(function (err, files) {
-    if (err) {
-      res.json(err);
-    }
+ gfs.files.find({ _id: fileId }).toArray(function (err, files) {
+  if (err) {
+   res.json(err);
+  }
 
-    if (files.length > 0) {
-      var mime = files[0].contentType;
-      var filename = files[0].filename;
-      res.set("Content-Type", mime);
-      res.set("Content-Disposition", "inline; filename=" + filename);
-      var read_stream = gfs.createReadStream({ filename: filename });
-      read_stream.pipe(res);
-    } else {
-      res.json("File Not Found");
-    }
-  });
+  if (files.length > 0) {
+   var mime = files[0].contentType;
+   var filename = files[0].filename;
+   res.set("Content-Type", mime);
+   res.set("Content-Disposition", "inline; filename=" + filename);
+   var read_stream = gfs.createReadStream({ filename: filename });
+   read_stream.pipe(res);
+  } else {
+   res.json("File Not Found");
+  }
+ });
 });
 
 module.exports = router;

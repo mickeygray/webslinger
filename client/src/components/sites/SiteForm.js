@@ -5,14 +5,14 @@ import React, {
  useEffect,
  useRef,
 } from "react";
+import ReactDOM from "react-dom";
 import SiteContext from "../../context/site/siteContext";
 import { useAppContext } from "../../context/site/SiteState";
 import ImageContext from "../../context/image/imageContext";
-
-import PageViewer from "./PageViewer";
 import SiteManager from "./SiteManager";
 import PageManager from "./PageManager";
 import ComponentList from "./ComponentList";
+import ComponentViewer from "./ComponentViewer";
 import AuthContext from "../../context/auth/authContext";
 import ColorPalletPicker from "./ColorPalletPicker";
 import FontStylePicker from "./FontStylePicker";
@@ -21,18 +21,20 @@ import SectionManager from "./SectionManager";
 import StateManager from "./StateManager";
 import ContentManager from "./ContentManager";
 import WebFont from "webfontloader";
+import ReactDOMServer from "react-dom/server";
+import parse from "html-react-parser";
 import { _uniq } from "lodash";
 import { useComponentContext } from "../component/state/componentState";
 import { v4 as uuidV4 } from "uuid";
 import SecViewer from "./SecViewer";
-
+import _ from "lodash";
 const SiteForm = () => {
  const { themeChange, setThemeChange, getFonts } = useTheme();
  const { user } = useContext(AuthContext);
  const userid = user._id;
 
  const { components } = useComponentContext();
- const { NewComponent } = useAppContext();
+ const { NewComponent, setComponentString, userState } = useAppContext();
 
  useEffect(() => {
   WebFont.load({
@@ -49,6 +51,9 @@ const SiteForm = () => {
   image,
   contentImage,
   clearCurrentImage,
+  componentImages,
+  getComponentImage,
+  clearComponentImages,
  } = imageContext;
 
  const {
@@ -66,6 +71,8 @@ const SiteForm = () => {
   putPage,
   postComponent,
   putComponent,
+
+  clearComponentContent,
 
   myComponents,
   sites,
@@ -92,6 +99,8 @@ const SiteForm = () => {
   deleteRow,
   cellStructure,
   MyComponent,
+  getComponentContent,
+  componentContent,
  } = siteContext;
 
  //console.log();
@@ -108,71 +117,6 @@ const SiteForm = () => {
    getReviews(userid);
    getFirms(userid);
   }
-  setPage({
-   url: "",
-   route: "",
-   pageType: "",
-   name: "",
-   firm: {},
-   verticals: [{}],
-   areas: {
-    head: {
-     metaTags: [{ tag: "", content: "" }],
-     title: "",
-    },
-    nav: {
-     logobox: {
-      sections: [],
-     },
-     nav1: {
-      sections: [],
-     },
-     nav2: {
-      sections: [],
-     },
-     siteLinks: {
-      sections: [],
-     },
-    },
-    header: {
-     heroText: {
-      sections: [],
-     },
-     heroImage: {
-      sections: [],
-     },
-     featuredContent: {
-      sections: [],
-     },
-     heroForm: {
-      sections: [],
-     },
-    },
-    main: {
-     rows: [
-      {
-       left: [],
-       center: [],
-       right: [],
-      },
-     ],
-    },
-    footer: {
-     logobox: {
-      sections: [],
-     },
-     footer1: {
-      sections: [],
-     },
-     footer2: {
-      sections: [],
-     },
-     siteLinks: {
-      sections: [],
-     },
-    },
-   },
-  });
  }, []);
 
  const sectionH = {
@@ -297,79 +241,15 @@ const SiteForm = () => {
  const [newComponentName, setNewComponentName] = useState("");
  const [newArea, setNewArea] = useState("");
  const [saveState, setSaveModalState] = useState(false);
- const [LoadedComponent, setLoadedComponent] = useState(null);
- const [page, setPage] = useState({
-  url: "",
-  route: "",
-  pageType: "",
-  name: "",
-  firm: {},
-  verticals: [{}],
-  areas: {
-   head: {
-    metaTags: [{ tag: "", content: "" }],
-    title: "",
-   },
-   nav: {
-    logobox: {
-     sections: [],
-    },
-    nav1: {
-     sections: [],
-    },
-    nav2: {
-     sections: [],
-    },
-    siteLinks: {
-     sections: [],
-    },
-   },
-   header: {
-    heroText: {
-     sections: [],
-    },
-    heroImage: {
-     sections: [],
-    },
-    featuredContent: {
-     sections: [],
-    },
-    heroForm: {
-     sections: [],
-    },
-   },
-   main: {
-    rows: [
-     {
-      left: [],
-      center: [],
-      right: [],
-     },
-    ],
-   },
-   footer: {
-    logobox: {
-     sections: [],
-    },
-    footer1: {
-     sections: [],
-    },
-    footer2: {
-     sections: [],
-    },
-    siteLinks: {
-     sections: [],
-    },
-   },
-  },
- });
+ const [LoadedComponents, setLoadedComponents] = useState([]);
+ const [styleTags, setStyleTags] = useState([]);
 
  const [site, setSite] = useState({
   name: "",
   url: "",
   type: "",
   staticAssets: [],
-  pages: [{ ...page }],
+  pages: [],
   firm: "",
   verticals: [],
   metaTags: [{ tag: "", content: "" }],
@@ -410,23 +290,6 @@ const SiteForm = () => {
    setVariableComponent(null);
   }
  }, [VariableComponent]);
-
- useEffect(() => {
-  if (MyComponent != null) {
-   console.log(MyComponent.h);
-
-   setH((prevState) => [...prevState, ...MyComponent.h]);
-   setP((prevState) => [...prevState, ...MyComponent.p]);
-   setI((prevState) => [...prevState, ...MyComponent.icon]);
-   setA((prevState) => [...prevState, ...MyComponent.a]);
-   setButton((prevState) => [...prevState, ...MyComponent.button]);
-   setImg((prevState) => [...prevState, ...MyComponent.img]);
-   setVid((prevState) => [...prevState, ...MyComponent.vid]);
-   setLi((prevState) => [...prevState, ...MyComponent.li]);
-  }
- }, [MyComponent]);
-
- console.log(h);
 
  const onChangeH = (i, e, delCheck, key, current) => {
   const { value, name } = e.currentTarget;
@@ -935,8 +798,7 @@ const SiteForm = () => {
   area: newArea,
  };
 
- console.log(section.markUp);
-
+ console.log(newArea);
  useEffect(() => {
   if (font !== currentTheme.font) {
    setCurrentTheme({
@@ -1197,16 +1059,6 @@ const SiteForm = () => {
 
            */
 
- const flatAreas = Object.assign(
-  {},
-  ...(function _flatten(o) {
-   return [].concat(
-    ...Object.keys(o).map((k) =>
-     typeof o[k] === "object" ? _flatten(o[k]) : { [k]: o[k] }
-    )
-   );
-  })(page.areas)
- );
  return (
   <div>
    <div className='bg-light'>
@@ -1314,11 +1166,14 @@ const SiteForm = () => {
            onChange={(e) => setNewComponentName(e.target.value)}
           />
           <h5>Assign Primary Area </h5>
-          <select>
+          <select onChange={(e) => setNewArea(e.target.value)}>
            <option></option>
-           {Object.keys(flatAreas).map((area) => (
-            <option value='area'>{area}</option>
-           ))}
+
+           <option value='nav'>Nav</option>
+           <option value='header'>Header</option>
+           <option value='main'>Main</option>
+           <option value='footer'>Footer</option>
+           <option value='article'>Article</option>
           </select>
 
           {displayState === "component" && (
@@ -1603,20 +1458,28 @@ const SiteForm = () => {
              width: "99vw",
             }
         }>
-        <SecViewer
-         a={a}
-         icon={icon}
-         li={li}
-         p={p}
-         h={h}
-         vid={vid}
-         nodeView={nodeView}
-         img={img}
-         button={button}
-         font={font}
-         pallet={pallet}
-         component={component}
-        />
+        {displayState === "component" ? (
+         <SecViewer
+          setStyleTags={setStyleTags}
+          a={a}
+          icon={icon}
+          li={li}
+          p={p}
+          h={h}
+          nodeView={nodeView}
+          vid={vid}
+          img={img}
+          button={button}
+          font={font}
+          pallet={pallet}
+          component={component}
+         />
+        ) : (
+         <ComponentViewer
+          LoadedComponents={LoadedComponents}
+          setLoadedComponents={setLoadedComponents}
+         />
+        )}
        </div>
       ) : (
        <div
@@ -1639,20 +1502,28 @@ const SiteForm = () => {
              width: "100vw",
             }
         }>
-        <SecViewer
-         a={a}
-         icon={icon}
-         li={li}
-         p={p}
-         h={h}
-         nodeView={nodeView}
-         vid={vid}
-         img={img}
-         button={button}
-         font={font}
-         pallet={pallet}
-         component={component}
-        />
+        {displayState === "component" ? (
+         <SecViewer
+          setStyleTags={setStyleTags}
+          a={a}
+          icon={icon}
+          li={li}
+          p={p}
+          h={h}
+          nodeView={nodeView}
+          vid={vid}
+          img={img}
+          button={button}
+          font={font}
+          pallet={pallet}
+          component={component}
+         />
+        ) : (
+         <ComponentViewer
+          LoadedComponents={LoadedComponents}
+          setLoadedComponents={setLoadedComponents}
+         />
+        )}
        </div>
       )}
      </div>

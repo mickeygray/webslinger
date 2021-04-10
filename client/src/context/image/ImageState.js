@@ -11,7 +11,9 @@ import {
  SET_CURRENTIMAGE,
  CLEAR_CURRENTIMAGE,
  GET_CONTENTIMAGE,
+ GET_COMPONENTIMAGE,
  PUT_IMAGE,
+ CLEAR_COMPONENTIMAGES,
 } from "../types";
 
 const ImageState = (props) => {
@@ -21,6 +23,7 @@ const ImageState = (props) => {
   image: null,
   error: null,
   contentImage: null,
+  componentImages: [],
  };
 
  const [state, dispatch] = useReducer(imageReducer, initialState);
@@ -57,6 +60,36 @@ const ImageState = (props) => {
   });
  };
 
+ const getComponentImage = async (content) => {
+  const config = {
+   headers: {
+    "Content-Type": `image/png`,
+   },
+   responseType: "arraybuffer",
+  };
+
+  const res = await axios.get(
+   `/api/images/component?q=${JSON.stringify(content)}`,
+   config
+  );
+
+  let image = {
+   img: res.data,
+   type: res.headers["content-type"],
+   key: Object.keys(content)[0],
+   value: Object.values(content)[0],
+  };
+
+  dispatch({
+   type: GET_COMPONENTIMAGE,
+   payload: image,
+  });
+ };
+
+ const clearComponentImages = () => {
+  dispatch({ type: CLEAR_COMPONENTIMAGES });
+ };
+
  const getContentImage = async (img, i, type, level) => {
   const config = {
    headers: {
@@ -75,6 +108,8 @@ const ImageState = (props) => {
    background: false,
    cellLevel: level,
   };
+
+  console.log(image);
 
   if (type === "background") {
    image.background = true;
@@ -133,6 +168,9 @@ const ImageState = (props) => {
     image: state.image,
     error: state.error,
     contentImage: state.contentImage,
+    componentImages: state.componentImages,
+    clearComponentImages,
+    getComponentImage,
     deleteImage,
     putImage,
     getImages,

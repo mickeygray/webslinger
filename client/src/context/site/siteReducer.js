@@ -24,7 +24,6 @@ import {
  GET_COMPONENTS,
  FILTER_CSS,
  CLEAR_FILTER,
- GET_COMPONENT,
 } from "../types";
 
 export default (state, action) => {
@@ -57,6 +56,7 @@ export default (state, action) => {
     ...state,
     filtered: {},
    };
+
   case PUT_SITE:
    return {
     ...state,
@@ -89,45 +89,51 @@ export default (state, action) => {
   case GET_VERTICALSSEARCHED:
    return {
     ...state,
-    content: [...state.content, action.payload].flat(),
+    content: [...state.content, action.payload]
+     .flat()
+     .filter((v, i, a) => a.indexOf(v) === i),
    };
   case GET_REVIEWSSEARCHED:
    return {
     ...state,
-    content: [...state.content, action.payload].flat(),
+    content: [...state.content, action.payload]
+     .flat()
+     .filter((v, i, a) => a.indexOf(v) === i),
    };
   case GET_QUIZSSEARCHED:
    return {
     ...state,
-    content: [...state.content, action.payload].flat(),
+    content: [...state.content, action.payload]
+     .flat()
+     .filter((v, i, a) => a.indexOf(v) === i),
    };
   case GET_FIRMSSEARCHED:
    return {
     ...state,
-    content: [...state.content, action.payload].flat(),
+    content: [...state.content, action.payload]
+     .flat()
+     .filter((v, i, a) => a.indexOf(v) === i),
    };
   case GET_ARTICLESSEARCHED:
    return {
     ...state,
-    content: [...state.content, action.payload].flat(),
+    content: [...state.content, action.payload]
+     .flat()
+     .filter((v, i, a) => a.indexOf(v) === i),
    };
 
   case GET_BLOGSSEARCHED:
    return {
     ...state,
-    content: [...state.content, action.payload].flat(),
+    content: [...state.content, action.payload]
+     .flat()
+     .filter((v, i, a) => a.indexOf(v) === i),
    };
 
   case GET_COMPONENTS:
    return {
     ...state,
     myComponents: action.payload,
-   };
-
-  case GET_COMPONENT:
-   return {
-    ...state,
-    MyComponent: action.payload,
    };
 
   case CLEAR_CURRENTSECTION:

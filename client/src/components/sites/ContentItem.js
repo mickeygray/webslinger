@@ -96,7 +96,9 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "verticalName",
+
            content: verticalName,
           });
          }}>
@@ -108,7 +110,9 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "summary",
+
            content: summary,
           });
          }}>
@@ -120,7 +124,9 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "author",
+
            content: author,
           });
          }}>
@@ -132,7 +138,9 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "date",
+
            content: date,
           });
          }}>
@@ -144,7 +152,9 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "title",
+
            content: title,
           });
          }}>
@@ -156,7 +166,9 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "img1",
+
            content: img1,
           });
          }}>
@@ -168,7 +180,9 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "img2",
+
            content: img2,
           });
          }}>
@@ -185,7 +199,9 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "body.category",
+
              content: category,
             });
            }}>
@@ -197,7 +213,9 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "body.company",
+
              content: company,
             });
            }}>
@@ -209,7 +227,9 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "body.stars",
+
              content: stars,
             });
            }}>
@@ -221,7 +241,9 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "body.review",
+
              content: review,
             });
            }}>
@@ -239,7 +261,9 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "categories.categoryDescription",
+
              content: categoryDescription,
             });
            }}>
@@ -257,7 +281,9 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "firms.logo",
+
              content: logo,
             });
            }}>
@@ -277,6 +303,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "verticalName",
            content: verticalName,
           });
@@ -289,6 +316,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "author",
            content: author,
           });
@@ -301,6 +329,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "date",
            content: date,
           });
@@ -313,6 +342,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "title",
            content: title,
           });
@@ -325,6 +355,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "img1",
            content: img1,
           });
@@ -337,6 +368,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "img2",
            content: img2,
           });
@@ -357,6 +389,7 @@ const ContentItem = ({ content }) => {
               setViewState((prevState) => !prevState);
               setCurrentContent({
                contentId: _id,
+               type: contentType + "s",
                key: "body.pHeading",
                content: pHeading,
               });
@@ -369,6 +402,7 @@ const ContentItem = ({ content }) => {
               setViewState((prevState) => !prevState);
               setCurrentContent({
                contentId: _id,
+               type: contentType + "s",
                key: "body.pBody",
                content: pBody,
               });
@@ -381,6 +415,7 @@ const ContentItem = ({ content }) => {
               setViewState((prevState) => !prevState);
               setCurrentContent({
                contentId: _id,
+               type: contentType + "s",
                key: "body.img",
                content: img,
               });
@@ -393,6 +428,7 @@ const ContentItem = ({ content }) => {
               setViewState((prevState) => !prevState);
               setCurrentContent({
                contentId: _id,
+               type: contentType + "s",
                key: "body.video",
                content: video,
               });
@@ -405,6 +441,7 @@ const ContentItem = ({ content }) => {
               setViewState((prevState) => !prevState);
               setCurrentContent({
                contentId: _id,
+               type: contentType + "s",
                key: "body.backlink",
                content: backlink,
               });
@@ -417,6 +454,7 @@ const ContentItem = ({ content }) => {
               setViewState((prevState) => !prevState);
               setCurrentContent({
                contentId: _id,
+               type: contentType + "s",
                key: "body.backlinkText",
                content: backlinkText,
               });
@@ -437,7 +475,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "title", content: title });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "title",
+           content: title,
+          });
          }}>
          Title
         </button>
@@ -445,7 +488,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "author", content: author });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "author",
+           content: author,
+          });
          }}>
          Author
         </button>
@@ -453,7 +501,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "date", content: date });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "date",
+           content: date,
+          });
          }}>
          Date
         </button>
@@ -461,7 +514,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "p1", content: p1 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "p1",
+           content: p1,
+          });
          }}>
          Part 1
         </button>
@@ -469,7 +527,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "p2", content: p2 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "p2",
+           content: p2,
+          });
          }}>
          Part 2
         </button>
@@ -477,7 +540,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "p3", content: p3 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "p3",
+           content: p3,
+          });
          }}>
          Part 3
         </button>
@@ -485,7 +553,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "p4", content: p4 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "p4",
+           content: p4,
+          });
          }}>
          Part 4
         </button>
@@ -493,7 +566,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "p5", content: p5 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "p5",
+           content: p5,
+          });
          }}>
          Part 5
         </button>
@@ -501,7 +579,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "img1", content: img1 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "img1",
+           content: img1,
+          });
          }}>
          Card Image
         </button>
@@ -509,7 +592,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "img2", content: img2 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "img2",
+           content: img2,
+          });
          }}>
          Secondary Blog Image
         </button>
@@ -517,7 +605,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "img3", content: img3 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "img3",
+           content: img3,
+          });
          }}>
          Primary Review Image
         </button>
@@ -531,7 +624,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "title", content: title });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "title",
+           content: title,
+          });
          }}>
          Title
         </button>
@@ -539,7 +637,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "author", content: author });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "author",
+           content: author,
+          });
          }}>
          Author
         </button>
@@ -547,7 +650,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "date", content: date });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "date",
+           content: date,
+          });
          }}>
          Date
         </button>
@@ -557,6 +665,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "headingCopy",
            content: headingCopy,
           });
@@ -569,6 +678,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "footerCopy",
            content: footerCopy,
           });
@@ -579,7 +689,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "firm", content: firm });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "firm",
+           content: firm,
+          });
          }}>
          Firm
         </button>
@@ -587,7 +702,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "img1", content: img1 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "img1",
+           content: img1,
+          });
          }}>
          Card Image
         </button>
@@ -595,7 +715,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "img2", content: img2 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "img2",
+           content: img2,
+          });
          }}>
          Primary Quiz Image
         </button>
@@ -631,6 +756,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "verticalName",
            content: name,
           });
@@ -643,6 +769,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "descrip1",
            content: descrip1,
           });
@@ -655,6 +782,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "navText",
            content: navText,
           });
@@ -667,6 +795,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "vLogTitle",
            content: vLogTitle,
           });
@@ -679,6 +808,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "vLogSummary",
            content: vLogSummary,
           });
@@ -693,7 +823,12 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, key: "vid", content: vid });
+            setCurrentContent({
+             contentId: _id,
+             type: contentType + "s",
+             key: "vid",
+             content: vid,
+            });
            }}>
            VLog {i}
           </button>
@@ -708,6 +843,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "qna.question",
              content: qa.question,
             });
@@ -721,6 +857,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "qna.answer",
              content: qa.answer,
             });
@@ -733,6 +870,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "qna.video",
              content: qa.video,
             });
@@ -745,6 +883,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "qna.image",
              content: qa.image,
             });
@@ -758,7 +897,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "img1", content: img1 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "img1",
+           content: img1,
+          });
          }}>
          Card Image
         </button>
@@ -766,7 +910,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "img2", content: img2 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "img2",
+           content: img2,
+          });
          }}>
          Primary Vertical Image
         </button>
@@ -774,7 +923,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "img3", content: img3 });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "img3",
+           content: img3,
+          });
          }}>
          Secondary Vertical Image
         </button>
@@ -788,7 +942,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "name", content: name });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "name",
+           content: name,
+          });
          }}>
          Name
         </button>
@@ -796,7 +955,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "email", content: email });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "email",
+           content: email,
+          });
          }}>
          Email
         </button>
@@ -804,7 +968,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "phone", content: phone });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "phone",
+           content: phone,
+          });
          }}>
          Phone
         </button>
@@ -814,6 +983,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "website",
            content: website,
           });
@@ -824,7 +994,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "cpa", content: cpa });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "cpa",
+           content: cpa,
+          });
          }}>
          Feat Employee
         </button>
@@ -832,7 +1007,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "cpapic", content: cpapic });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "cpapic",
+           content: cpapic,
+          });
          }}>
          Feat Employee Pic
         </button>
@@ -840,7 +1020,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "cpabio", content: cpabio });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "cpabio",
+           content: cpabio,
+          });
          }}>
          Feat Employee Bio
         </button>
@@ -848,7 +1033,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "stars", content: stars });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "stars",
+           content: stars,
+          });
          }}>
          Stars
         </button>
@@ -856,7 +1046,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "fees", content: fees });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "fees",
+           content: fees,
+          });
          }}>
          Fees
         </button>
@@ -867,6 +1062,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "avgsavings",
            content: avgsavings,
           });
@@ -879,6 +1075,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "minimum",
            content: minimum,
           });
@@ -889,7 +1086,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "years", content: years });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "years",
+           content: years,
+          });
          }}>
          Years
         </button>
@@ -897,7 +1099,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "bbb", content: bbb });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "bbb",
+           content: bbb,
+          });
          }}>
          BBB
         </button>
@@ -907,6 +1114,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "address",
            content: address,
           });
@@ -918,7 +1126,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "cost", content: cost });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "cost",
+           content: cost,
+          });
          }}>
          Cost
         </button>
@@ -926,7 +1139,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "logo", content: logo });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "logo",
+           content: logo,
+          });
          }}>
          Logo
         </button>
@@ -934,7 +1152,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "city", content: city });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "city",
+           content: city,
+          });
          }}>
          City
         </button>
@@ -942,7 +1165,12 @@ const ContentItem = ({ content }) => {
          className='btn btn-dark p-1 btn-sm'
          onClick={() => {
           setViewState((prevState) => !prevState);
-          setCurrentContent({ contentId: _id, key: "state", content: state });
+          setCurrentContent({
+           contentId: _id,
+           type: contentType + "s",
+           key: "state",
+           content: state,
+          });
          }}>
          State
         </button>
@@ -952,6 +1180,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "socialLinks.facebook",
            content: socialLinks.facebook,
           });
@@ -964,6 +1193,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "linkedin",
            content: socialLinks.linkedin,
           });
@@ -976,6 +1206,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "instagram",
            content: socialLinks.instagram,
           });
@@ -988,6 +1219,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "socialLinks.twitter",
            content: socialLinks.twitter,
           });
@@ -1000,6 +1232,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "socialLinks.article1",
            content: socialLinks.article1,
           });
@@ -1012,6 +1245,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "socialLinks.article2",
            content: socialLinks.article2,
           });
@@ -1024,6 +1258,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "socialLinks.article3",
            content: socialLinks.article3,
           });
@@ -1036,6 +1271,7 @@ const ContentItem = ({ content }) => {
           setViewState((prevState) => !prevState);
           setCurrentContent({
            contentId: _id,
+           type: contentType + "s",
            key: "socialLinks.article4",
            content: socialLinks.article4,
           });
@@ -1052,7 +1288,12 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, key: "pro", content: pro });
+            setCurrentContent({
+             contentId: _id,
+             type: contentType + "s",
+             key: "pro",
+             content: pro,
+            });
            }}>
            {i}
           </button>
@@ -1066,7 +1307,12 @@ const ContentItem = ({ content }) => {
            className='btn btn-dark p-1 btn-sm'
            onClick={() => {
             setViewState((prevState) => !prevState);
-            setCurrentContent({ contentId: _id, key: "con", content: con });
+            setCurrentContent({
+             contentId: _id,
+             type: contentType + "s",
+             key: "con",
+             content: con,
+            });
            }}>
            {i}
           </button>
@@ -1084,6 +1330,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "experiences.company",
              content: exp.company,
             });
@@ -1096,6 +1343,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "experiences.project",
              content: exp.project,
             });
@@ -1108,6 +1356,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "experiences.summary",
              content: exp.summary,
             });
@@ -1120,6 +1369,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "experiences.date",
              content: exp.date,
             });
@@ -1132,6 +1382,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "experiences.title",
              content: exp.title,
             });
@@ -1144,6 +1395,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "experiences.img",
              content: exp.img,
             });
@@ -1164,6 +1416,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "acknowledgements.network",
              content: ack.network,
             });
@@ -1176,6 +1429,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "acknowledgements.company",
              content: ack.company,
             });
@@ -1188,6 +1442,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "acknowledgements.summary",
              content: ack.summary,
             });
@@ -1200,6 +1455,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "acknowledgements.date",
              content: ack.date,
             });
@@ -1212,6 +1468,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "acknowledgements.orgLogo",
              content: ack.orgLogo,
             });
@@ -1224,6 +1481,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "ack.awardLogo",
              content: ack.awardLogo,
             });
@@ -1244,6 +1502,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "reviews.reviewer",
              content: rev.reviewer,
             });
@@ -1256,6 +1515,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "reviews.review",
              content: rev.review,
             });
@@ -1268,6 +1528,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "reviews.date",
              content: rev.date,
             });
@@ -1280,6 +1541,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "reviews.pic",
              content: rev.pic,
             });
@@ -1300,6 +1562,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "services.serviceType",
              content: sev.serviceType,
             });
@@ -1312,6 +1575,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "services.service",
              content: sev.service,
             });
@@ -1324,6 +1588,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "services.cost",
              content: sev.cost,
             });
@@ -1336,6 +1601,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "services.summary",
              content: sev.summary,
             });
@@ -1348,6 +1614,7 @@ const ContentItem = ({ content }) => {
             setViewState((prevState) => !prevState);
             setCurrentContent({
              contentId: _id,
+             type: contentType + "s",
              key: "services.img",
              content: sev.img,
             });

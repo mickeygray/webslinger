@@ -5,6 +5,7 @@ import {
  GET_IMAGE,
  PUT_IMAGE,
  GET_CONTENTIMAGE,
+ GET_COMPONENTIMAGE,
  SET_CURRENTIMAGE,
  CLEAR_CURRENTIMAGE,
 } from "../types";
@@ -49,6 +50,22 @@ export default (state, action) => {
     },
 
     loading: false,
+   };
+
+  case GET_COMPONENTIMAGE:
+   return {
+    ...state,
+    componentImages: [
+     ...state.componentImages,
+     {
+      code: URL.createObjectURL(
+       new Blob([action.payload.img]),
+       `${action.payload.type}`
+      ),
+      key: action.payload.key,
+      value: action.payload.value,
+     },
+    ],
    };
   case PUT_IMAGE:
    return {

@@ -89,7 +89,6 @@ const StateManager = () => {
   }
  }, [userState, useAppContext]);
 
- console.log(content);
  return (
   <div className='card'>
    <div className='grid-2'>

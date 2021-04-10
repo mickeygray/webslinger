@@ -2,12 +2,13 @@ const mongoose = require("mongoose");
 
 const ComponentSchema = mongoose.Schema({
  name: { type: String },
- sectionArea: { type: String },
+ area: { type: String },
  html: { type: String },
  content: [
   {
    content: { type: String },
    key: { type: String },
+   type: { type: String },
    contentId: { type: String },
   },
  ],
