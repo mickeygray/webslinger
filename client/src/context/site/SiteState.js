@@ -119,16 +119,24 @@ const SiteState = (props) => {
    key: "",
    layout: {
     rows: [],
-    className: `G${uuidV4}`,
+    className: `G${uuidV4()}`,
     columns: [],
-    rowString: "",
-    columnString: "",
+    areas: [
+     "nav nav nav",
+     "header header header",
+     "main main main",
+     "article article article",
+     "footer footer footer",
+    ],
+    rowString: "45px 1fr 45px",
+    columnString: "127px  1fr  127px",
+
     direction: "row",
     verticalAlignment: "start",
     horizontalAlignment: "start",
    },
    css: {
-    className: `G${uuidV4}`,
+    className: `G${uuidV4()}`,
     backgroundColor: "",
     marginTop: "",
     marginLeft: "",
@@ -203,19 +211,21 @@ const SiteState = (props) => {
    },
    nav: {
     navGrid: {
-     className: `g${uuidV4}`,
+     className: `g${uuidV4()}`,
      area: "nav",
      rows: [],
      columns: [],
      rowString: "",
-     columnString: "",
+     areas: [],
+     areaString: "",
+     columnString: "repeat(auto-fit,minmax(120px,1fr))",
      direction: "row",
      verticalAlignment: "start",
      horizontalAlignment: "start",
     },
     navCells: [],
     navCSS: {
-     className: `nav${uuidV4}`,
+     className: `nav${uuidV4()}`,
      width: "0",
      height: "0",
      marginTop: "",
@@ -292,19 +302,21 @@ const SiteState = (props) => {
    },
    header: {
     headerGrid: {
-     className: `g${uuidV4}`,
+     className: `g${uuidV4()}`,
      rows: [],
      area: "header",
      columns: [],
+     areas: [],
+     areaString: "",
      rowString: "",
-     columnString: "",
+     columnString: "repeat(auto-fit,minmax(120px,1fr))",
      direction: "row",
      verticalAlignment: "start",
      horizontalAlignment: "start",
     },
     headerCells: [],
     headerCSS: {
-     className: `header${uuidV4}`,
+     className: `header${uuidV4()}`,
      width: "0",
      height: "0",
      marginTop: "",
@@ -381,19 +393,21 @@ const SiteState = (props) => {
    },
    main: {
     mainGrid: {
-     className: `g${uuidV4}`,
+     className: `g${uuidV4()}`,
      rows: [],
      columns: [],
+     areas: [],
+     areaString: "",
      area: "main",
      rowString: "",
-     columnString: "",
+     columnString: "repeat(auto-fit,minmax(120px,1fr))",
      direction: "row",
      verticalAlignment: "start",
      horizontalAlignment: "start",
     },
     mainCells: [],
     mainCSS: {
-     className: `main${uuidV4}`,
+     className: `main${uuidV4()}`,
      width: "0",
      height: "0",
      marginTop: "",
@@ -470,19 +484,19 @@ const SiteState = (props) => {
    },
    article: {
     articleGrid: {
-     className: `g${uuidV4}`,
+     className: `g${uuidV4()}`,
      rows: [],
      columns: [],
      rowString: "",
      area: "article",
-     columnString: "",
+     columnString: "repeat(auto-fit,minmax(120px,1fr))",
      direction: "row",
      verticalAlignment: "start",
      horizontalAlignment: "start",
     },
     articleCells: [],
     articleCSS: {
-     className: `article${uuidV4}`,
+     className: `article${uuidV4()}`,
      width: "0",
      height: "0",
      marginTop: "",
@@ -559,19 +573,21 @@ const SiteState = (props) => {
    },
    footer: {
     footerGrid: {
-     className: `g${uuidV4}`,
+     className: `g${uuidV4()}`,
      rows: [],
      columns: [],
      rowString: "",
+     areas: [],
+     areaString: "",
      area: "footer",
-     columnString: "",
+     columnString: "repeat(auto-fit,minmax(120px,1fr))",
      direction: "row",
      verticalAlignment: "start",
      horizontalAlignment: "start",
     },
     footerCells: [],
     footerCSS: {
-     className: `footer${uuidV4}`,
+     className: `footer${uuidV4()}`,
      width: "0",
      height: "0",
      marginTop: "",
@@ -1332,7 +1348,9 @@ const SiteState = (props) => {
 
   newPages[i] = {
    ...newPages[i],
-   LoadedComponents: [...newPages[i].LoadedComponents, func],
+   LoadedComponents: Array.from(
+    new Set([...newPages[i].LoadedComponents, func])
+   ),
   };
 
   dispatch({
@@ -3106,35 +3124,44 @@ const SiteState = (props) => {
 
  const addArticleCell = () => {
   const pushCell = produce(page, (draft) => {
-   draft["article"]["articleCells"].push({ ...areaCell });
+   draft["article"]["articleCells"].push({
+    ...areaCell,
+    className: `c${uuidV4()}`,
+   });
   });
 
   dispatch({ type: SET_PAGE, payload: pushCell });
  };
  const addMainCell = () => {
   const pushCell = produce(page, (draft) => {
-   draft["main"]["mainCells"].push({ ...areaCell });
+   draft["main"]["mainCells"].push({ ...areaCell, className: `c${uuidV4()}` });
   });
 
   dispatch({ type: SET_PAGE, payload: pushCell });
  };
  const addFooterCell = () => {
   const pushCell = produce(page, (draft) => {
-   draft["footer"]["footerCells"].push({ ...areaCell });
+   draft["footer"]["footerCells"].push({
+    ...areaCell,
+    className: `c${uuidV4()}`,
+   });
   });
 
   dispatch({ type: SET_PAGE, payload: pushCell });
  };
  const addNavCell = () => {
   const pushCell = produce(page, (draft) => {
-   draft["nav"]["navCells"].push({ ...areaCell });
+   draft["nav"]["navCells"].push({ ...areaCell, className: `c${uuidV4()}` });
   });
 
   dispatch({ type: SET_PAGE, payload: pushCell });
  };
  const addHeaderCell = () => {
   const pushCell = produce(page, (draft) => {
-   draft["header"]["headerCells"].push({ ...areaCell });
+   draft["header"]["headerCells"].push({
+    ...areaCell,
+    className: `c${uuidV4()}`,
+   });
   });
 
   dispatch({ type: SET_PAGE, payload: pushCell });

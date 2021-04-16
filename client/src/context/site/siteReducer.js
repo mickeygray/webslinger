@@ -59,7 +59,7 @@ export default (state, action) => {
   case SET_LOADEDCOMPONENTS:
    return {
     ...state,
-    pages: action.payload,
+    pages: Array.from(new Set(action.payload)),
    };
 
   case CLEAR_COMPONENTCONTENT:
