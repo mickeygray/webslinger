@@ -4,6 +4,7 @@ import React, {
  useContext,
  useEffect,
  useRef,
+ Fragment,
 } from "react";
 import ReactDOM from "react-dom";
 import SiteContext from "../../context/site/siteContext";
@@ -21,6 +22,7 @@ import SectionManager from "./SectionManager";
 import StateManager from "./StateManager";
 import ContentManager from "./ContentManager";
 import WebFont from "webfontloader";
+import CSSBar from "./CSSBar";
 import ReactDOMServer from "react-dom/server";
 import parse from "html-react-parser";
 import { _uniq } from "lodash";
@@ -28,6 +30,7 @@ import { useComponentContext } from "../component/state/componentState";
 import { v4 as uuidV4 } from "uuid";
 import SecViewer from "./SecViewer";
 import _ from "lodash";
+import Pagination from "../layout/Pagination";
 const SiteForm = () => {
  const { themeChange, setThemeChange, getFonts } = useTheme();
  const { user } = useContext(AuthContext);
@@ -59,24 +62,12 @@ const SiteForm = () => {
  const {
   setCurrentFont,
   setCurrentPallet,
-  clearCurrentPage,
   clearCurrentComponent,
-  clearCurrentSite,
-  currentSite,
-  currentPage,
   currentComponent,
-  postSite,
-  putSite,
-  postPage,
-  putPage,
   postComponent,
   putComponent,
-
   clearComponentContent,
-
   myComponents,
-  sites,
-  pages,
   getFirms,
   getVerticals,
   getBlogs,
@@ -98,9 +89,9 @@ const SiteForm = () => {
   deleteColumn,
   deleteRow,
   cellStructure,
-  MyComponent,
-  getComponentContent,
-  componentContent,
+  setPageId,
+
+  pages,
  } = siteContext;
 
  //console.log();
@@ -604,7 +595,7 @@ const SiteForm = () => {
     simulateFunc: setSimulateElArr(simulateElArr + 1),
    };
   }
-
+  console.log(img);
   if (components.map((comp) => comp.name).includes(delCheck)) {
    const comp = component.filter((c) => c.type.name != delCheck);
 
@@ -1045,6 +1036,10 @@ const SiteForm = () => {
   );
  };
 
+ const toggleDisplayState = useCallback((e) => {
+  setDisplayState(e.target.value);
+ }, []);
+
  /*   <div className='card bg-light'>
     <div className='my-1'>
      {sites && <SiteList changeDisplay={changeDisplay} />}
@@ -1056,12 +1051,29 @@ const SiteForm = () => {
    </div>*/
 
  /*
+   <div className='bg-light'  >
 
            */
+ const [currentPage, setCurrentPage] = useState(1);
+ const [postsPerPage, setPostsPerPage] = useState(1);
 
+ const indexOfLastPost = currentPage * postsPerPage;
+ const indexOfFirstPost = indexOfLastPost - postsPerPage;
+ const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+ const currentPagePage =
+  pages && pages.slice(indexOfFirstPost, indexOfLastPost);
+
+ const index = pages && pages.findIndex((x) => x.id === currentPagePage[0].id);
  return (
-  <div>
-   <div className='bg-light'>
+  <div style={{ minHeight: "250vh", postion: "absolute" }}>
+   <div
+    className='bg-light'
+    style={
+     displayState === "component"
+      ? { background: "#f4f4f4" }
+      : { display: "none" }
+    }>
     <div style={{ position: "relative", top: "0" }}>
      <div className='navbar'>
       <ul>
@@ -1240,9 +1252,22 @@ const SiteForm = () => {
      </div>
     </div>
    </div>
+   {displayState === "page" ? (
+    <div>
+     <CSSBar
+      toggleDisplayState={toggleDisplayState}
+      pallet={pallet}
+      pages={pages}
+      index={index}
+      font={font}
+     />
+    </div>
+   ) : (
+    ""
+   )}
    {gridViewToggle === true ? (
     <div className='grid-2 bg-secondary'>
-     <div>
+     <Fragment>
       {grid.columns.map(({ size, unit }, i) => (
        <div>
         <div style={{ display: "flex" }}>
@@ -1271,9 +1296,9 @@ const SiteForm = () => {
         </div>
        </div>
       ))}
-     </div>
+     </Fragment>
 
-     <div>
+     <Fragment>
       {grid.rows.map(({ size, unit }, i) => (
        <div style={{ display: "flex" }}>
         <input
@@ -1296,16 +1321,17 @@ const SiteForm = () => {
         </span>
        </div>
       ))}
-     </div>
+     </Fragment>
     </div>
    ) : (
     ""
    )}
-
    <div className='grid-3b'>
     <div
      style={
-      viewStyleToggle === true ? { background: "#f4f4f4" } : { display: "none" }
+      displayState === "component"
+       ? { background: "#f4f4f4" }
+       : { display: "none" }
      }>
      <ColorPalletPicker />
      <br />
@@ -1413,131 +1439,102 @@ const SiteForm = () => {
       <StateManager />
      </div>
     </div>
+
     <div>
      <div
       style={
-       viewStyleToggle === true
+       displayState === "component"
         ? {
-           marginLeft: "-75vw",
-           marginRight: "75vw",
+           marginLeft: "-250px",
+           width: "100vw",
+           minHeight: "75vh",
            overflowY: "scroll",
-           overflowX: "scroll",
-           width: "150vw",
-           height: "110vh",
            zIndex: `${parseInt(viewIndex)}`,
            position: "absolute",
           }
         : {
-           marginLeft: "-60vw",
-           overflowY: "scroll",
-           overflowX: "scroll",
-           width: "150vw",
-           height: "110vh",
-           zIndex: `${parseInt(viewIndex)}`,
+           marginLeft: "-200px",
+           width: "100vw",
+           overflow: "scroll",
+           height: "100%",
+           zIndex: `9999999999`,
            position: "absolute",
           }
       }>
-      {viewStyleToggle === false ? (
-       <div
-        style={
-         displayState === "component"
-          ? {
-             left: "74vw",
-             position: "relative",
-             zIndex: `${parseInt(viewIndex)}`,
-             border: "#ccc 5px dotted",
-             height: "55vw",
-             width: "54vw",
-            }
-          : {
-             left: "52vw",
-             position: "relative",
-             zIndex: `${parseInt(viewIndex)}`,
-             border: "#ccc 5px dotted",
-             height: "100%",
-             width: "99vw",
-            }
-        }>
-        {displayState === "component" ? (
-         <SecViewer
-          setStyleTags={setStyleTags}
-          a={a}
-          icon={icon}
-          li={li}
-          p={p}
-          h={h}
-          nodeView={nodeView}
-          vid={vid}
-          img={img}
-          button={button}
-          font={font}
-          pallet={pallet}
-          component={component}
+      <div
+       style={
+        displayState === "component"
+         ? {
+            left: "235px",
+            top: "20",
+            width: "49vw",
+            height: "100vh",
+            zIndex: `${parseInt(viewIndex)}`,
+            position: "relative",
+            border: "3px dotted #333",
+           }
+         : {
+            left: "0",
+            top: "0",
+            width: "100vw",
+            height: "100vh",
+            zIndex: "99999999999",
+            position: "relative",
+           }
+       }>
+       {displayState === "component" ? (
+        <SecViewer
+         setStyleTags={setStyleTags}
+         a={a}
+         icon={icon}
+         li={li}
+         p={p}
+         h={h}
+         nodeView={nodeView}
+         vid={vid}
+         img={img}
+         button={button}
+         font={font}
+         pallet={pallet}
+         component={component}
+        />
+       ) : (
+        <div>
+         <Pagination
+          postsPerPage={postsPerPage}
+          totalPosts={pages && pages.length}
+          paginate={paginate}
+          setPageId={setPageId}
+          pages={pages}
          />
-        ) : (
-         <ComponentViewer
-          LoadedComponents={LoadedComponents}
-          setLoadedComponents={setLoadedComponents}
-         />
-        )}
-       </div>
-      ) : (
-       <div
-        style={
-         displayState === "component"
-          ? {
-             left: "74vw",
-             position: "relative",
-             zIndex: `${parseInt(viewIndex)}`,
-             border: "#ccc 5px dotted",
-             height: "55vw",
-             width: "54vw",
-            }
-          : {
-             left: "52vw",
-             position: "relative",
-             zIndex: `${parseInt(viewIndex)}`,
-             border: "#ccc 5px dotted",
-             height: "100%",
-             width: "100vw",
-            }
-        }>
-        {displayState === "component" ? (
-         <SecViewer
-          setStyleTags={setStyleTags}
-          a={a}
-          icon={icon}
-          li={li}
-          p={p}
-          h={h}
-          nodeView={nodeView}
-          vid={vid}
-          img={img}
-          button={button}
-          font={font}
-          pallet={pallet}
-          component={component}
-         />
-        ) : (
-         <ComponentViewer
-          LoadedComponents={LoadedComponents}
-          setLoadedComponents={setLoadedComponents}
-         />
-        )}
-       </div>
-      )}
+         <div
+          style={{
+           border: "3px dotted #333",
+           width: "100vw",
+           minHeight: "100vh",
+          }}>
+          {pages &&
+           currentPagePage.map((page) => (
+            <ComponentViewer pg={page} key={page.id} />
+           ))}
+         </div>
+        </div>
+       )}
+      </div>
      </div>
     </div>
     <div
      style={
-      viewStyleToggle === true ? { background: "#f4f4f4" } : { display: "none" }
+      displayState === "component"
+       ? { background: "#f4f4f4" }
+       : { display: "none" }
      }>
      <ContentManager />
     </div>
    </div>
    <div
     style={
-     viewStyleToggle === true
+     displayState === "component"
       ? { minHeight: "150px", background: "#f4f4f4" }
       : { display: "none" }
     }>
@@ -1562,7 +1559,9 @@ const SiteForm = () => {
       component={component}
      />
     </div>
-    <div className='my-1'>{myComponents && <ComponentList />}</div>
+   </div>{" "}
+   <div style={{ position: "relative", top: "100vh" }} className='my-1'>
+    {myComponents && <ComponentList />}
    </div>
   </div>
  );

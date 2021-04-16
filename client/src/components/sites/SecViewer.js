@@ -82,12 +82,24 @@ const SecViewer = ({
   addCellChildAnimation,
   addCellAnimationKeyframe,
   addCellChildAnimationKeyframe,
-
   addCellAnimationKeyframeProperty,
-
   addCellChildAnimationKeyframeProperty,
+  addSubCellChildAnimation,
+  addSubCellChildTransition,
+  addSubCellChildAnimationKeyframe,
+  addSubCellChildAnimationKeyframeProperty,
+  addBodyCellChildAnimation,
+  addBodyCellChildTransition,
+  addBodyCellChildAnimationKeyframe,
+  addBodyCellChildAnimationKeyframeProperty,
+  addSubCellAnimation,
   addSubCellTransition,
+  addSubCellAnimationKeyframe,
+  addSubCellAnimationKeyframeProperty,
+  addBodyCellAnimation,
   addBodyCellTransition,
+  addBodyCellAnimationKeyframe,
+  addBodyCellAnimationKeyframeProperty,
   filtered,
  } = siteContext;
 
@@ -95,6 +107,8 @@ const SecViewer = ({
  const [subGridView, toggleSubGridView] = useState(false);
  const [bodyGridView, toggleBodyGridView] = useState(false);
  const [cellContentToggle, setCellContentToggle] = useState(false);
+ const [subContentToggle, setSubContentToggle] = useState(false);
+ const [bodyContentToggle, setBodyContentToggle] = useState(false);
  const [gridLevel, setGridLevelView] = useState(true);
  const [currentPage, setCurrentPage] = useState(1);
  const [postsPerPage, setPostsPerPage] = useState(1);
@@ -906,7 +920,7 @@ const SecViewer = ({
                    </div>
                   </label>
                  );
-                } else if (key === "pos") {
+                } else if (key === "posiition") {
                  return (
                   <label key={key}>
                    {key
@@ -1601,7 +1615,7 @@ const SecViewer = ({
                    </select>
                   </label>
                  );
-                } else if (key === "pos") {
+                } else if (key === "position") {
                  return (
                   <label key={key}>
                    {key
@@ -1609,7 +1623,7 @@ const SecViewer = ({
                     .replace(/^./, function (str) {
                      return str.toUpperCase();
                     })}
-                   ition
+
                    <select
                     name={key}
                     value={css[key]}
@@ -3167,7 +3181,7 @@ const SecViewer = ({
                     </select>
                    </label>
                   );
-                 } else if (key === "pos") {
+                 } else if (key === "position") {
                   return (
                    <label key={key}>
                     {key
@@ -3175,7 +3189,7 @@ const SecViewer = ({
                      .replace(/^./, function (str) {
                       return str.toUpperCase();
                      })}
-                    ition
+
                     <select
                      name={key}
                      value={css[key]}
@@ -5029,7 +5043,7 @@ const SecViewer = ({
                 return VariableComponent;
                } else
                 return (
-                 <div>
+                 <span>
                   {type === "h" && headingSize === "h1" ? (
                    <h1
                     style={{
@@ -5435,22 +5449,19 @@ const SecViewer = ({
                     ) : (
                      ""
                     )}
-                    <span>
-                     {faIconPosition === "front" ? (
-                      <i className={faIcon}></i>
-                     ) : (
-                      ""
-                     )}{" "}
-                     {fontStyle
-                      ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
-                      : text}
-                     {faIconPosition === "back" ? (
-                      <i className={faIcon}></i>
-                     ) : (
-                      ""
-                     )}
-                    </span>
-
+                    {faIconPosition === "front" ? (
+                     <i className={faIcon}></i>
+                    ) : (
+                     ""
+                    )}{" "}
+                    {fontStyle
+                     ? parse(`<${fontStyle}>${text}</${fontStyle}>`)
+                     : text}
+                    {faIconPosition === "back" ? (
+                     <i className={faIcon}></i>
+                    ) : (
+                     ""
+                    )}
                     {faIconPosition === "bottom" ? (
                      <span
                       style={{
@@ -5471,12 +5482,8 @@ const SecViewer = ({
                    <img
                     alt={name}
                     src={code}
-                    style={{
-                     height: `${height}px`,
-                     width: `${width}px`,
-                     backgroundColor: `${background}`,
-                     backgroundBlendMode: "multiply",
-                    }}
+                    height={`${height}px`}
+                    width={`${width}px`}
                    />
                   ) : (
                    ""
@@ -5495,7 +5502,7 @@ const SecViewer = ({
                   ) : (
                    ""
                   )}
-                 </div>
+                 </span>
                 );
               }
              )}
@@ -5567,242 +5574,4832 @@ const SecViewer = ({
                      <div
                       className='card'
                       style={{ backgroundColor: "#f4f4f4" }}>
-                      {" "}
-                      <h5>Cell Settings</h5>
-                      <select
-                       name='background'
-                       onChange={(e) => {
-                        onChangeSubCell(i, e);
-                        {
-                         currentContent &&
-                          getContentImage(
-                           currentContent.content,
-                           i,
-                           "background",
-                           "subCell"
-                          );
-                        }
-                        {
-                         currentContent && clearCurrentContent();
-                        }
-                       }}>
-                       <option>Background</option>
-                       <option value={pallet && pallet.primary}>Primary</option>
-                       <option value={pallet && pallet.dark}>Dark</option>
-                       <option value={pallet && pallet.light}>Light</option>
-                       <option value={pallet && pallet.danger}>Danger</option>
-                       <option value={pallet && pallet.success}>Success</option>
-                       {currentContent && (
-                        <option value={currentContent.content}>
-                         Set Image
-                        </option>
-                       )}
-                      </select>
-                      <input
-                       placeholder='Row Span'
-                       type='text'
-                       name='rowSpan'
-                       value={rowSpan}
-                       onChange={(e) => onChangeSubCell(i, e)}
-                      />
-                      <input
-                       placeholder='columnSpan'
-                       type='text'
-                       name='columnSpan'
-                       value={columnSpan}
-                       onChange={(e) => onChangeSubCell(i, e)}
-                      />
-                      <input
-                       placeholder='top'
-                       type='text'
-                       name='top'
-                       value={top}
-                       onChange={(e) => onChangeSubCell(i, e)}
-                      />
-                      <input
-                       placeholder='left'
-                       type='text'
-                       name='left'
-                       value={left}
-                       onChange={(e) => onChangeSubCell(i, e)}
-                      />
-                     </div>
-                     {bodyGridView === false ? (
-                      <div
-                       className='card'
-                       style={{ backgroundColor: "#f4f4f4" }}>
-                       <h5>BODY GRID SETTINGS</h5>
-                       <button
-                        className='btn btn-dark btn-sm'
-                        onClick={() => addBodyGrid(id)}>
-                        Add Grid
-                       </button>
-                       <button
-                        className='btn btn-dark btn-sm'
-                        onClick={() => addBodyColumn(id)}>
-                        Add Column
-                       </button>
-                       <button
-                        className='btn btn-dark btn-sm'
-                        onClick={() => addBodyRow(id)}>
-                        Add Row
-                       </button>
-                       <button
-                        className='btn btn-dark btn-sm'
-                        onClick={() =>
-                         toggleBodyGridView((prevState) => !prevState)
-                        }>
-                        View Grid
-                       </button>
-                       <select
-                        name='verticalAlignment'
-                        onChange={(e) => onChangeSubCell(i, e)}>
-                        <option>Vertical</option>
-                        <option value='start'>Start</option>
-                        <option value='end'>End</option>
-                        <option value='center'>Center</option>
-                        <option value='space-between'>Between</option>
-                        <option value='space-around'>Around</option>
-                        <option value='space-evenly'>Evenly</option>
-                        <option value='stretch'>Stretch</option>
-                       </select>
-                       <select
-                        name='horitzontalAlignment'
-                        onChange={(e) => onChangeSubCell(i, e)}>
-                        <option>Horizontal</option>
-                        <option value='start'>Start</option>
-                        <option value='end'>End</option>
-                        <option value='center'>Center</option>
-                        <option value='space-between'>Between</option>
-                        <option value='space-around'>Around</option>
-                        <option value='space-evenly'>Evenly</option>
-                       </select>
-                       <select
-                        name='layout'
-                        onChange={(e) => onChangeSubCell(i, e)}>
-                        <option>Layout</option>
-                        <option value='row'>Row</option>
-                        <option value='column'>Column</option>
-                        <option value='row dense'>Row Dense</option>
-                       </select>
-                      </div>
-                     ) : (
-                      <div>
-                       <button
-                        className='btn btn-dark btn-sm'
-                        onClick={() =>
-                         toggleBodyGridView((prevState) => !prevState)
-                        }>
-                        Hide Grid
-                       </button>
-                       <div className='grid-2'>
-                        {bodyGrids[
-                         bodyGrids.findIndex((x) => x.parent === id)
-                        ] &&
-                         bodyGrids[
-                          bodyGrids.findIndex((x) => x.parent === id)
-                         ].columns.map(({ size, unit }, index) => (
-                          <div>
-                           <div>
-                            <input
-                             placeholder='Column Size...'
-                             type='text'
-                             name='size'
-                             value={size}
-                             onChange={(e) => updateBodyColumn(e, id, i)}
-                            />
-                            <select
-                             name='unit'
-                             value={unit}
-                             onChange={(e) => updateBodyColumn(e, id, i)}>
-                             <option></option>
-                             <option value='px'>Pixels</option>
-                             <option value='fr'>Fractions</option>
-                             <option value='repeat(auto-fit,minmax(120px,1fr))'>
-                              Responsive
-                             </option>
-                            </select>
-                            <span
-                             style={{ float: "right" }}
-                             className='color-background lead'
-                             onClick={() => deleteBodyColumn(id, index)}>
-                             <a>X</a>
-                            </span>
-                           </div>
-                          </div>
-                         ))}
-                        {bodyGrids[
-                         bodyGrids.findIndex((x) => x.parent === id)
-                        ] &&
-                         bodyGrids[
-                          bodyGrids.findIndex((x) => x.parent === id)
-                         ].rows.map(({ size, unit }, index) => (
-                          <div>
-                           <input
-                            placeholder='Row Size...'
-                            type='text'
-                            name='size'
-                            value={size}
-                            onChange={(e) => updateBodyRow(e, id, i)}
-                           />
-                           <select
-                            name='unit'
-                            value={unit}
-                            onChange={(e) => updateBodyRow(e, id, i)}>
-                            <option></option>
-                            <option value='px'>Pixels</option>
-                            <option value='fr'>Fractions</option>
-                           </select>
-                           <span
-                            style={{ float: "right" }}
-                            className='color-background lead'
-                            onClick={() => deleteBodyRow(id, index)}>
-                            <a>X</a>
-                           </span>
-                          </div>
-                         ))}
+                      {subContentToggle === true ? (
+                       <div style={{ height: "500px", overflowY: "scroll" }}>
+                        <span
+                         className='lead bg-light'
+                         style={{ float: "right" }}>
+                         <a
+                          onClick={() =>
+                           setSubContentToggle((prevState) => !prevState)
+                          }>
+                          X
+                         </a>
+                        </span>
+                        <h5>{gridLevel && "Grid Level"} Styles</h5>
+                        <button
+                         className='btn btn-light btn-sm'
+                         onClick={() => setGridLevelView(true)}>
+                         View Grid Level Styles
+                        </button>
+                        {gridLevel === false ? (
+                         <h5>
+                          Each Number corresponds with the section ordinality of
+                          the content assigned to this cell
+                         </h5>
+                        ) : (
+                         ""
+                        )}
+                        <CssFilter
+                         i={i}
+                         ind={contentCss.findIndex(
+                          (x) => x.id === currentResults[0].id
+                         )}
+                         level={gridLevel === true ? "cell" : "cellChild"}
+                        />
+                        <Pagination
+                         postsPerPage={postsPerPage}
+                         totalPosts={contentCss.length}
+                         paginate={paginate}
+                         toggleGrid={toggleGrid}
+                        />
+
+                        {Object.keys(filtered).length > 0 &&
+                         Object.keys(filtered).map((key) => {
+                          if (key.includes("Color")) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option>Set Color...</option>
+                              <option value={pallet && pallet.primary}>
+                               Primary
+                              </option>
+                              <option value={pallet && pallet.dark}>
+                               Dark
+                              </option>
+                              <option value={pallet && pallet.light}>
+                               Light
+                              </option>
+                              <option value={pallet && pallet.danger}>
+                               Danger
+                              </option>
+                              <option value={pallet && pallet.success}>
+                               Success
+                              </option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "animation") {
+                           return (
+                            <label key={key}>
+                             <div className='card'>
+                              <button
+                               className='btn btn-sm btn-dark'
+                               onClick={() => addSubCellAnimation(i)}>
+                               + Animation
+                              </button>
+                              <h5>Current Animation Order</h5>
+                              <ul>
+                               {css.animation.length > 0 &&
+                                css.animation.map(
+                                 (
+                                  {
+                                   animationName,
+                                   animationDuration,
+                                   animationTimingFunction,
+                                   animationDelay,
+                                   animationIterationCount,
+                                   animationDirection,
+                                   animationFillMode,
+                                   cubicNs,
+                                   steps,
+                                   keyframes,
+                                  },
+                                  index
+                                 ) => (
+                                  <div>
+                                   <h5>Animation Name</h5>
+                                   <input
+                                    type='text'
+                                    name='animationName'
+                                    value={animationName}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }
+                                   />
+                                   <h5>Animation Duration</h5>
+                                   <input
+                                    type='text'
+                                    name='animationDuration'
+                                    value={animationDuration}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }
+                                   />
+                                   <h5>Animation Function</h5>
+                                   <select
+                                    name='animationTimingFunction'
+                                    value={animationTimingFunction}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }>
+                                    <option></option>
+                                    <option value='ease'>Ease</option>
+                                    <option value='ease-in'>Ease In</option>
+                                    <option value='ease-in-out'>
+                                     Ease In Out
+                                    </option>
+                                    <option value='step-end'>Step End</option>
+                                    <option value='step-start'>
+                                     Step Start
+                                    </option>
+                                    <option value='cubic-bezier'>
+                                     Cubic Bezier
+                                    </option>
+                                    <option value='steps'>Steps</option>
+                                    <option value='inherit'>Inherit</option>
+                                    <option value='initial'>Initial</option>
+                                   </select>
+                                   <h5>Animation Delay</h5>
+                                   <input
+                                    placeholder='enter a value in seconds'
+                                    type='text'
+                                    name='animationDelay'
+                                    value={animationDelay}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }
+                                   />
+                                   {animationTimingFunction ===
+                                    "cubic-bezier" &&
+                                    Object.keys(cubicNs).map((n) => (
+                                     <div>
+                                      <h5>Cubic Bez (n,n,n,n)</h5>
+                                      <div key={n}>
+                                       <h5>N {parseInt(n) + 1}</h5>
+                                       <Slider
+                                        axis='x'
+                                        x={
+                                         css["animation"][index]["cubicNs"][n]
+                                        }
+                                        value={parseFloat(
+                                         css["animation"][index]["cubicNs"][n]
+                                        )}
+                                        onChange={(e) =>
+                                         onChangeSubCell(
+                                          i,
+                                          e,
+                                          "cubicNs",
+                                          index,
+                                          n
+                                         )
+                                        }
+                                        orientation='horizontal'
+                                        name={n}
+                                        min={0}
+                                        max={1}
+                                        step={0.01}
+                                       />
+                                      </div>
+                                     </div>
+                                    ))}
+                                   <h5>Animation Iteration Count</h5>
+                                   <input
+                                    placeholder='Positive Integers Only'
+                                    type='text'
+                                    name='animationIterationCount'
+                                    value={animationIterationCount}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }
+                                   />
+                                   <h5>Animation Iteration Count</h5>
+                                   <input
+                                    placeholder='Positive Integers Only'
+                                    type='text'
+                                    name='animationIterationCount'
+                                    value={animationIterationCount}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }
+                                   />
+                                   <h5>Animation Direction</h5>
+                                   <select
+                                    name='animationDirection'
+                                    value={animationDirection}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }>
+                                    <option></option>
+                                    <option value='normal'>Normal</option>
+                                    <option value='reverse'>Reverse</option>
+                                    <option value='alternate'>Alternate</option>
+                                    <option value='reverse'>
+                                     Alternate Reverse
+                                    </option>
+                                    <option value='inherit'>Inherit</option>
+                                   </select>
+                                   <h5>Animation Fill Mode</h5>
+                                   <select
+                                    name='animationFillMode'
+                                    value={animationFillMode}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }>
+                                    <option></option>
+                                    <option value='none'>None</option>
+                                    <option value='forward'>Forward</option>
+                                    <option value='backward'>Backward</option>
+                                    <option value='both'>Both</option>
+                                    <option value='inherit'>Inherit</option>
+                                   </select>
+                                   <h5>Key Frames</h5>
+                                   <button
+                                    className='btn btn-sm btn-dark'
+                                    onClick={() =>
+                                     addSubCellAnimationKeyframe(i, index)
+                                    }>
+                                    + Keyframe
+                                   </button>
+                                   lineHeight:'',
+                                  </div>
+                                 )
+                                )}
+                              </ul>
+                             </div>
+                            </label>
+                           );
+                          } else if (key === "posiition") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+                             ition
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='fixed'>Fixed</option>
+                              <option value='relative'>Relative</option>
+                              <option value='absolute'>Absolute</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "backgroundRepeat") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='repeatX'>Repeat X</option>
+                              <option value='repeatY'>Repeat Y</option>
+                              <option value='repeat'>Repeat</option>
+                              <option value='space'>Space</option>
+                              <option value='round'>Round</option>
+                              <option value='noRepeat'>No Repeat</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "backgroundPosition") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='center'>Center</option>
+                              <option value='left'>Left</option>
+                              <option value='right'>Right</option>
+                              <option value='top'>Top</option>
+                              <option value='bottom'>Bottom</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "backgroundSize") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='cover'>Cover</option>
+                              <option value='contain'>Contain</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "display") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='block'>Block</option>
+                              <option value='inline'>Inline</option>
+                              <option value='inline-block'>Inline Block</option>
+                              <option value='flex'>Flex</option>
+                              <option value='none'>None</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "textDecorationLine") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='none'>None</option>
+                              <option value='underline'>Underline</option>
+                              <option value='overline'>Overline</option>
+                              <option value='line-through'>Line Through</option>
+                              <option value='blink'>Blink</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "textDecorationStyle") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='solid'>Solid</option>
+                              <option value='double'>Double</option>
+                              <option value='dotted'>Dotted</option>
+                              <option value='dashed'>Dashed</option>
+                              <option value='wavy'>Wavy</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "transition") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <button
+                              className='btn btn-sm btn-dark'
+                              onClick={() => addSubCellTransition(i)}>
+                              + Transition
+                             </button>
+                             <div
+                              className='card'
+                              style={{
+                               overflowY: "scroll",
+                               overflowX: "scroll",
+                              }}>
+                              {css.transition.map(
+                               (
+                                {
+                                 property,
+                                 duration,
+                                 timingFunction,
+                                 cubicNs,
+                                 delay,
+                                },
+                                index
+                               ) => (
+                                <div key={index} className='card'>
+                                 <h5>Transition Property</h5>
+                                 <select
+                                  onChange={(e) =>
+                                   onChangeSubCell(i, e, "transition", index)
+                                  }
+                                  value={property}
+                                  name='property'>
+                                  <option value=''></option>
+                                  {Object.keys(flatCss)
+                                   .filter(
+                                    (e) => typeof parseInt(e) === "number"
+                                   )
+                                   .map((c, i) => (
+                                    <option key={i} value={c}>
+                                     {c}
+                                    </option>
+                                   ))}
+                                  <option value='color'>Color</option>
+                                  <option value='background-color'>
+                                   Background Color
+                                  </option>
+                                 </select>
+                                 <h5>Transition Timing</h5>
+                                 <input
+                                  type='text'
+                                  name='duration'
+                                  onChange={(e) =>
+                                   onChangeSubCell(i, e, "transition", index)
+                                  }
+                                  value={duration}
+                                  placeholder='Enter A Value in seconds'
+                                 />
+                                 <h5>Transition Function</h5>
+                                 <select
+                                  name='timingFunction'
+                                  value={timingFunction}
+                                  onChange={(e) =>
+                                   onChangeSubCell(i, e, "transition", index)
+                                  }>
+                                  <option></option>
+                                  <option value='ease'>Ease</option>
+                                  <option value='ease-in'>Ease In</option>
+                                  <option value='ease-in-out'>
+                                   Ease In Out
+                                  </option>
+                                  <option value='step-end'>Step End</option>
+                                  <option value='step-start'>Step Start</option>
+                                  <option value='cubic-bezier'>
+                                   Cubic Bezier
+                                  </option>
+                                  <option value='inherit'>Inherit</option>
+                                  <option value='initial'>Initial</option>
+                                 </select>
+                                 <h5>Transition Delay</h5>
+                                 <input
+                                  type='text'
+                                  name='delay'
+                                  value={delay}
+                                  onChange={(e) =>
+                                   onChangeSubCell(i, e, "transition", index)
+                                  }
+                                  placeholder='Enter A Value in seconds'
+                                 />
+
+                                 {timingFunction === "cubic-bezier" &&
+                                  Object.keys(cubicNs).map((n) => (
+                                   <div>
+                                    <h5>Cubic Bez (n,n,n,n)</h5>
+                                    <div key={n}>
+                                     <h5>N {parseInt(n) + 1}</h5>
+                                     <Slider
+                                      axis='x'
+                                      x={css["transition"][index]["cubicNs"][n]}
+                                      value={parseFloat(
+                                       css["transition"][index]["cubicNs"][n]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeSubCell(
+                                        i,
+                                        e,
+                                        "cubicNs",
+                                        index,
+                                        n
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name={n}
+                                      min={0}
+                                      max={1}
+                                      step={0.01}
+                                     />
+                                    </div>
+                                   </div>
+                                  ))}
+                                </div>
+                               )
+                              )}
+                             </div>
+                            </label>
+                           );
+                          } else if (key === "transform") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              onChange={(e) =>
+                               onChangeSubCell(i, e, "transform")
+                              }
+                              multiple>
+                              <option></option>
+                              <option value='rotateX'>RotateX</option>
+                              <option value='rotateY'>RotateY</option>
+                              <option value='skewX'>SkewX</option>
+                              <option value='skewY'>SkewY</option>
+                              <option value='rotateZ'>RotateZ</option>
+                              <option value='scaleX'>ScaleX</option>
+                              <option value='scaleY'>ScaleY</option>
+                              <option value='translateX'>TranslateX</option>
+                              <option value='translateY'>TranslateY</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "transformProp") {
+                           return (
+                            <label key={key}>
+                             <div className='card all-center'>
+                              <h5>Current Transform Order</h5>
+                              <ul>
+                               {css.transform.map((m) => (
+                                <li key={m}>{m}</li>
+                               ))}
+                              </ul>
+                             </div>
+                             {css.transform.includes("rotateZ") && (
+                              <div>
+                               <h5>Rotate Z Deg</h5>
+                               <Slider
+                                axis='x'
+                                x={css["transformProp"]["rotateZ"]}
+                                value={parseInt(
+                                 css["transformProp"]["rotateZ"]
+                                )}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e,
+                                  "rotateZ",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='rotateZ'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("rotateX") && (
+                              <div>
+                               <h5>Rotate X Deg</h5>
+                               <Slider
+                                axis='x'
+                                x={css["transformProp"]["rotateX"]}
+                                value={parseInt(
+                                 css["transformProp"]["rotateX"]
+                                )}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e,
+                                  "rotateX",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='rotateX'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("translateX") && (
+                              <div>
+                               <h5>Translate X Px</h5>
+                               <input
+                                type='text'
+                                name='translateX'
+                                value={css["transformProp"]["translateX"]}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e.target.value,
+                                  "translateX",
+                                  "transformProp"
+                                 )
+                                }
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("translateY") && (
+                              <div>
+                               <h5>Translate Y Px</h5>
+                               <input
+                                type='text'
+                                name='translateY'
+                                value={css["transformProp"]["translateY"]}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e.target.value,
+                                  "translateY",
+                                  "transformProp"
+                                 )
+                                }
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("rotateY") && (
+                              <div>
+                               <h5>Rotate Y Deg</h5>
+                               <Slider
+                                value={parseInt(
+                                 css["transformProp"]["rotateY"]
+                                )}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e,
+                                  "rotateY",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='rotateY'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("skewX") && (
+                              <div>
+                               <h5>Skew X Deg</h5>
+                               <Slider
+                                value={parseInt(css["transformProp"]["skewX"])}
+                                onChange={(e) =>
+                                 onChangeSubCell(i, e, "skewX", "transformProp")
+                                }
+                                orientation='horizontal'
+                                name='skewX'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("skewY") && (
+                              <div>
+                               <h5>Skew Y Deg</h5>
+                               <Slider
+                                value={parseInt(css["transformProp"]["skewY"])}
+                                onChange={(e) =>
+                                 onChangeSubCell(i, e, "skewY", "transformProp")
+                                }
+                                orientation='horizontal'
+                                name='skewY'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("scaleX") && (
+                              <div>
+                               <h5>Scale X Percent</h5>
+                               <Slider
+                                value={
+                                 parseInt(css["transformProp"]["scaleX"]) * 10
+                                }
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e / 10,
+                                  "scaleX",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='scaleX'
+                                min={-100}
+                                max={200}
+                                step={1}
+                               />
+                              </div>
+                             )}{" "}
+                             {css.transform.includes("scaleY") && (
+                              <div>
+                               <h5>Scale Y Percent</h5>
+                               <Slider
+                                value={
+                                 parseInt(css["transformProp"]["scaleY"]) * 10
+                                }
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e / 10,
+                                  "scaleY",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='scaleY'
+                                min={-100}
+                                max={200}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                            </label>
+                           );
+                          } else if (key === "fontSize") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='5px'>XX Small</option>
+                              <option value='7px'>X Small</option>
+                              <option value='11px'>Small</option>
+                              <option value='16px'>Medium</option>
+                              <option value='24px'>Large</option>
+                              <option value='36px'>X Large</option>
+                              <option value='54px'>XX Large</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key.includes("Inset")) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option>Outer</option>
+                              <option value='inset'>Inset</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "fontWeight") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option value='100'>100</option>
+                              <option value='200'>200</option>
+                              <option value='300'>300</option>
+                              <option value='400'>400</option>
+                              <option value='500'>500</option>
+                              <option value='600'>600</option>
+                              <option value='700'>700</option>
+                              <option value='800'>800</option>
+                              <option value='900'>900</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "opacity") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+                             <Slider
+                              axis='x'
+                              x={css.opacity}
+                              value={parseInt(css[key])}
+                              onChange={(e) =>
+                               onChangeSubCell(i, e, "opacity", "slider")
+                              }
+                              orientation='horizontal'
+                              min={0}
+                              max={100}
+                              step={1}
+                             />
+                            </label>
+                           );
+                          } else if (key.includes("Radius")) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+                             <Slider
+                              value={parseInt(css[key])}
+                              onChange={(e) =>
+                               onChangeSubCell(i, e, key, "slider")
+                              }
+                              orientation='horizontal'
+                              min={0}
+                              max={50}
+                              step={0.5}
+                             />
+                            </label>
+                           );
+                          } else if (key === "textAlign") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+
+                              <option value='start'>Start</option>
+                              <option value='end'>End</option>
+                              <option value='left'>Left</option>
+                              <option value='right'>Right</option>
+                              <option value='center'>Center</option>
+                              <option value='justify'>Justify</option>
+                              <option value='matchParent'>Match Parent</option>
+                              <option value='justifyAll'>Justify All</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (
+                           key.includes("border") &&
+                           key.includes("Style")
+                          ) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='solid'>Solid</option>
+                              <option value='double'>Double</option>
+                              <option value='dotted'>Dotted</option>
+                              <option value='dashed'>Dashed</option>
+                              <option value='groove'>Groove</option>
+                              <option value='none'>None</option>
+                              <option value='hidden'>Hidden</option>
+                              <option value='ridge'>Ridge</option>
+                              <option value='inset'>Inset</option>
+                              <option value='outset'>Outset</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "textShadowSize") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='small'>2px</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key.includes("overflow")) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='visible'>Visible</option>
+                              <option value='hidden'>Hidden</option>
+                              <option value='clip'>Clip</option>
+                              <option value='scroll'>Scroll</option>
+                              <option value='auto'>Auto</option>
+                             </select>
+                            </label>
+                           );
+                          } else {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+                             <input
+                              type='text'
+                              placeholder='Enter A Value In Pixels'
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}
+                              name={key}
+                             />
+                            </label>
+                           );
+                          }
+                         })}
+
+                        {gridLevel &&
+                         Object.keys(filtered).length === 0 &&
+                         Object.keys(css).map((key) => {
+                          if (key.includes("Color")) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option>Set Color...</option>
+                              <option value={pallet && pallet.primary}>
+                               Primary
+                              </option>
+                              <option value={pallet && pallet.dark}>
+                               Dark
+                              </option>
+                              <option value={pallet && pallet.light}>
+                               Light
+                              </option>
+                              <option value={pallet && pallet.danger}>
+                               Danger
+                              </option>
+                              <option value={pallet && pallet.success}>
+                               Success
+                              </option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "position") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='fixed'>Fixed</option>
+                              <option value='relative'>Relative</option>
+                              <option value='absolute'>Absolute</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "backgroundRepeat") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='repeatX'>Repeat X</option>
+                              <option value='repeatY'>Repeat Y</option>
+                              <option value='repeat'>Repeat</option>
+                              <option value='space'>Space</option>
+                              <option value='round'>Round</option>
+                              <option value='noRepeat'>No Repeat</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "backgroundPosition") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='center'>Center</option>
+                              <option value='left'>Left</option>
+                              <option value='right'>Right</option>
+                              <option value='top'>Top</option>
+                              <option value='bottom'>Bottom</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "backgroundSize") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='cover'>Cover</option>
+                              <option value='contain'>Contain</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "display") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='block'>Block</option>
+                              <option value='inline'>Inline</option>
+                              <option value='inline-block'>Inline Block</option>
+                              <option value='flex'>Flex</option>
+                              <option value='none'>None</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "textDecorationLine") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='none'>None</option>
+                              <option value='underline'>Underline</option>
+                              <option value='overline'>Overline</option>
+                              <option value='line-through'>Line Through</option>
+                              <option value='blink'>Blink</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "textDecorationStyle") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='solid'>Solid</option>
+                              <option value='double'>Double</option>
+                              <option value='dotted'>Dotted</option>
+                              <option value='dashed'>Dashed</option>
+                              <option value='wavy'>Wavy</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "transition") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <button
+                              className='btn btn-sm btn-dark'
+                              onClick={() => addSubCellTransition(i)}>
+                              + Transition
+                             </button>
+                             <div
+                              className='card'
+                              style={{
+                               overflowY: "scroll",
+                               overflowX: "scroll",
+                              }}>
+                              {css.transition.map(
+                               (
+                                {
+                                 property,
+                                 duration,
+                                 timingFunction,
+                                 cubicNs,
+                                 delay,
+                                },
+                                index
+                               ) => (
+                                <div key={index} className='card'>
+                                 <h5>Transition Property</h5>
+                                 <select
+                                  name='property'
+                                  value={property}
+                                  onChange={(e) =>
+                                   onChangeSubCell(i, e, "transition", index)
+                                  }>
+                                  <option value='translate'>Translate</option>
+                                  <option value='transform'>Transform</option>
+                                  <option value='height'>Height</option>
+                                  <option value='width'>Width</option>
+                                  <option value='border-left-color'>
+                                   Border Left Color
+                                  </option>
+                                  <option value='border-left-width'>
+                                   Border Left Width
+                                  </option>
+                                  <option value='background-color'>
+                                   Background Color
+                                  </option>
+                                  <option value='background-position'>
+                                   Background Position
+                                  </option>
+                                  <option value='background-size'>
+                                   Background Size
+                                  </option>
+                                  <option value='border-bottom-color'>
+                                   Border Bottom Color
+                                  </option>
+                                  <option value='border-bottom-left-radius'>
+                                   Border Bottom Left Radius
+                                  </option>
+                                  <option value='border-bottom-right-radius'>
+                                   Border Bottom Right Radius
+                                  </option>
+                                  <option value='border-bottom-width'>
+                                   Border Bottom Width
+                                  </option>
+                                  <option value='border-radius'>
+                                   Border Radius
+                                  </option>
+                                  <option value='border-right'>
+                                   Border Right
+                                  </option>
+                                  <option value='border-right-color'>
+                                   Border Right Color
+                                  </option>
+                                  <option value='border-right-width'>
+                                   Border Right Width
+                                  </option>
+                                  <option value='border-color'>
+                                   Border Color
+                                  </option>
+                                  <option value='border-width'>
+                                   Border Width
+                                  </option>
+                                  <option value='border-top-color'>
+                                   Border Top Color
+                                  </option>
+                                  <option value='border-top-left-radius'>
+                                   Border Top Left Radius
+                                  </option>
+                                  <option value='border-top-right-radius'>
+                                   Border Top Right Radius
+                                  </option>
+                                  <option value='border-top-width'>
+                                   Border Top Width
+                                  </option>
+                                  <option value='box-shadow'>Box Shadow</option>
+                                  <option value='font'>Font</option>
+                                  <option value='font-size'>Font Size</option>
+                                  <option value='flex'>Flex</option>
+                                  <option value='font-weight'>
+                                   Font Weight
+                                  </option>
+                                  <option value='line-height'>
+                                   Line Height
+                                  </option>
+                                  <option value='margin-bottom'>
+                                   Margin Bottom
+                                  </option>
+                                  <option value='margin'>Margin</option>
+                                  <option value='margin-left'>
+                                   Margin Left
+                                  </option>
+                                  <option value='margin-top'>Margin Top</option>
+                                  <option value='margin-right'>
+                                   Margin Right
+                                  </option>
+                                  <option value='opacity'>Opacity</option>
+                                  <option value='outline'>Outline</option>
+                                  <option value='padding-left'>
+                                   Padding Left
+                                  </option>
+                                  <option value='padding-right'>
+                                   Padding Right
+                                  </option>
+                                  <option value='padding-top'>
+                                   Padding Top
+                                  </option>
+                                  <option value='z-index'>Z Index</option>
+                                  <option value='padding-bottom'>
+                                   Padding Bottom
+                                  </option>
+                                  <option value='top'>Top</option>
+                                  <option value='left'>Left</option>
+                                  <option value='right'>Right</option>
+                                  <option value='bottom'>Bottom</option>
+                                 </select>
+                                 <h5>Transition Timing</h5>
+                                 <input
+                                  type='text'
+                                  name='duration'
+                                  onChange={(e) =>
+                                   onChangeSubCell(i, e, "transition", index)
+                                  }
+                                  value={duration}
+                                  placeholder='Enter A Value in seconds'
+                                 />
+                                 <h5>Transition Function</h5>
+                                 <select
+                                  name='timingFunction'
+                                  value={timingFunction}
+                                  onChange={(e) =>
+                                   onChangeSubCell(i, e, "transition", index)
+                                  }>
+                                  <option></option>
+                                  <option value='ease'>Ease</option>
+                                  <option value='ease-in'>Ease In</option>
+                                  <option value='ease-in-out'>
+                                   Ease In Out
+                                  </option>
+                                  <option value='step-end'>Step End</option>
+                                  <option value='step-start'>Step Start</option>
+                                  <option value='cubic-bezier'>
+                                   Cubic Bezier
+                                  </option>
+                                  <option value='inherit'>Inherit</option>
+                                  <option value='initial'>Initial</option>
+                                 </select>
+                                 <h5>Transition Delay</h5>
+                                 <input
+                                  type='text'
+                                  name='delay'
+                                  value={delay}
+                                  onChange={(e) =>
+                                   onChangeSubCell(i, e, "transition", index)
+                                  }
+                                  placeholder='Enter A Value in seconds'
+                                 />
+
+                                 {timingFunction === "cubic-bezier" &&
+                                  Object.keys(cubicNs).map((n) => (
+                                   <div>
+                                    <h5>Cubic Bez (n,n,n,n)</h5>
+                                    <div key={n}>
+                                     <h5>N {parseInt(n) + 1}</h5>
+                                     <Slider
+                                      axis='x'
+                                      x={css["transition"][index]["cubicNs"][n]}
+                                      value={parseFloat(
+                                       css["transition"][index]["cubicNs"][n]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeSubCell(
+                                        i,
+                                        e,
+                                        "cubicNs",
+                                        index,
+                                        n
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name={n}
+                                      min={0}
+                                      max={1}
+                                      step={0.01}
+                                     />
+                                    </div>
+                                   </div>
+                                  ))}
+                                </div>
+                               )
+                              )}
+                             </div>
+                            </label>
+                           );
+                          } else if (key === "transform") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              onChange={(e) =>
+                               onChangeSubCell(i, e, "transform")
+                              }
+                              multiple>
+                              <option></option>
+                              <option value='rotateX'>RotateX</option>
+                              <option value='rotateY'>RotateY</option>
+                              <option value='skewX'>SkewX</option>
+                              <option value='skewY'>SkewY</option>
+                              <option value='rotateZ'>RotateZ</option>
+                              <option value='scaleX'>ScaleX</option>
+                              <option value='scaleY'>ScaleY</option>
+                              <option value='translateX'>TranslateX</option>
+                              <option value='translateY'>TranslateY</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "transformProp") {
+                           return (
+                            <label key={key}>
+                             <div className='card all-center'>
+                              <h5>Current Transform Order</h5>
+                              <ul>
+                               {css.transform.map((m) => (
+                                <li key={m}>{m}</li>
+                               ))}
+                              </ul>
+                             </div>
+                             {css.transform.includes("rotateZ") && (
+                              <div>
+                               <h5>Rotate Z Deg</h5>
+                               <Slider
+                                axis='x'
+                                x={css["transformProp"]["rotateZ"]}
+                                value={parseInt(
+                                 css["transformProp"]["rotateZ"]
+                                )}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e,
+                                  "rotateZ",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='rotateZ'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("rotateX") && (
+                              <div>
+                               <h5>Rotate X Deg</h5>
+                               <Slider
+                                axis='x'
+                                x={css["transformProp"]["rotateX"]}
+                                value={parseInt(
+                                 css["transformProp"]["rotateX"]
+                                )}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e,
+                                  "rotateX",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='rotateX'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("translateX") && (
+                              <div>
+                               <h5>Translate X Px</h5>
+                               <input
+                                type='text'
+                                name='translateX'
+                                value={css["transformProp"]["translateX"]}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e.target.value,
+                                  "translateX",
+                                  "transformProp"
+                                 )
+                                }
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("translateY") && (
+                              <div>
+                               <h5>Translate Y Px</h5>
+                               <input
+                                type='text'
+                                name='translateY'
+                                value={css["transformProp"]["translateY"]}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e.target.value,
+                                  "translateY",
+                                  "transformProp"
+                                 )
+                                }
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("rotateY") && (
+                              <div>
+                               <h5>Rotate Y Deg</h5>
+                               <Slider
+                                value={parseInt(
+                                 css["transformProp"]["rotateY"]
+                                )}
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e,
+                                  "rotateY",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='rotateY'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("skewX") && (
+                              <div>
+                               <h5>Skew X Deg</h5>
+                               <Slider
+                                value={parseInt(css["transformProp"]["skewX"])}
+                                onChange={(e) =>
+                                 onChangeSubCell(i, e, "skewX", "transformProp")
+                                }
+                                orientation='horizontal'
+                                name='skewX'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("skewY") && (
+                              <div>
+                               <h5>Skew Y Deg</h5>
+                               <Slider
+                                value={parseInt(css["transformProp"]["skewY"])}
+                                onChange={(e) =>
+                                 onChangeSubCell(i, e, "skewY", "transformProp")
+                                }
+                                orientation='horizontal'
+                                name='skewY'
+                                min={0}
+                                max={360}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                             {css.transform.includes("scaleX") && (
+                              <div>
+                               <h5>Scale X Percent</h5>
+                               <Slider
+                                value={
+                                 parseInt(css["transformProp"]["scaleX"]) * 10
+                                }
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e / 10,
+                                  "scaleX",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='scaleX'
+                                min={-100}
+                                max={200}
+                                step={1}
+                               />
+                              </div>
+                             )}{" "}
+                             {css.transform.includes("scaleY") && (
+                              <div>
+                               <h5>Scale Y Percent</h5>
+                               <Slider
+                                value={
+                                 parseInt(css["transformProp"]["scaleY"]) * 10
+                                }
+                                onChange={(e) =>
+                                 onChangeSubCell(
+                                  i,
+                                  e / 10,
+                                  "scaleY",
+                                  "transformProp"
+                                 )
+                                }
+                                orientation='horizontal'
+                                name='scaleY'
+                                min={-100}
+                                max={200}
+                                step={1}
+                               />
+                              </div>
+                             )}
+                            </label>
+                           );
+                          } else if (key === "animation") {
+                           return (
+                            <label key={key}>
+                             <div className='card'>
+                              <button
+                               className='btn btn-sm btn-dark'
+                               onClick={() => addSubCellAnimation(i)}>
+                               + Animation
+                              </button>
+                              <h5>Current Animation Order</h5>
+                              <ul>
+                               {css.animation.length > 0 &&
+                                css.animation.map(
+                                 (
+                                  {
+                                   animationName,
+                                   animationDuration,
+                                   animationTimingFunction,
+                                   animationDelay,
+                                   animationIterationCount,
+                                   animationDirection,
+                                   animationFillMode,
+                                   cubicNs,
+                                   keyframes,
+                                  },
+                                  index
+                                 ) => (
+                                  <div>
+                                   <h5>Animation Name</h5>
+                                   <input
+                                    type='text'
+                                    name='animationName'
+                                    value={animationName}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }
+                                   />
+                                   <h5>Animation Duration</h5>
+                                   <input
+                                    type='text'
+                                    name='animationDuration'
+                                    value={animationDuration}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }
+                                   />
+                                   <h5>Animation Function</h5>
+                                   <select
+                                    name='animationTimingFunction'
+                                    value={animationTimingFunction}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }>
+                                    <option></option>
+                                    <option value='ease'>Ease</option>
+                                    <option value='ease-in'>Ease In</option>
+                                    <option value='ease-in-out'>
+                                     Ease In Out
+                                    </option>
+                                    <option value='step-end'>Step End</option>
+                                    <option value='step-start'>
+                                     Step Start
+                                    </option>
+                                    <option value='cubic-bezier'>
+                                     Cubic Bezier
+                                    </option>
+                                    <option value='steps'>Steps</option>
+                                    <option value='inherit'>Inherit</option>
+                                    <option value='initial'>Initial</option>
+                                   </select>
+
+                                   {animationTimingFunction ===
+                                    "cubic-bezier" &&
+                                    Object.keys(cubicNs).map((n) => (
+                                     <div>
+                                      <h5>Cubic Bez (n,n,n,n)</h5>
+                                      <div key={n}>
+                                       <h5>N {parseInt(n) + 1}</h5>
+                                       <Slider
+                                        axis='x'
+                                        x={
+                                         css["animation"][index]["cubicNs"][n]
+                                        }
+                                        value={parseFloat(
+                                         css["animation"][index]["cubicNs"][n]
+                                        )}
+                                        onChange={(e) =>
+                                         onChangeSubCell(
+                                          i,
+                                          e,
+                                          "cubicNs",
+                                          index,
+                                          n,
+                                          "animation"
+                                         )
+                                        }
+                                        orientation='horizontal'
+                                        name={n}
+                                        min={0}
+                                        max={1}
+                                        step={0.01}
+                                       />
+                                      </div>
+                                     </div>
+                                    ))}
+                                   <h5>Animation Delay</h5>
+                                   <input
+                                    placeholder='enter a value in seconds'
+                                    type='text'
+                                    name='animationDelay'
+                                    value={animationDelay}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }
+                                   />
+                                   <h5>Animation Iteration Count</h5>
+
+                                   <i style={{ fontSize: "8px" }}>
+                                    Typing the value "infinite" will do what you
+                                    imagine it does.
+                                   </i>
+                                   <input
+                                    placeholder='Positive Integers Only'
+                                    type='text'
+                                    name='animationIterationCount'
+                                    value={animationIterationCount}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }
+                                   />
+
+                                   <h5>Animation Direction</h5>
+                                   <select
+                                    name='animationDirection'
+                                    value={animationDirection}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }>
+                                    <option></option>
+                                    <option value='normal'>Normal</option>
+                                    <option value='reverse'>Reverse</option>
+                                    <option value='alternate'>Alternate</option>
+                                    <option value='reverse'>
+                                     Alternate Reverse
+                                    </option>
+                                    <option value='inherit'>Inherit</option>
+                                   </select>
+                                   <h5>Animation Fill Mode</h5>
+                                   <select
+                                    name='animationFillMode'
+                                    value={animationFillMode}
+                                    onChange={(e) =>
+                                     onChangeSubCell(i, e, "animation", index)
+                                    }>
+                                    <option></option>
+                                    <option value='none'>None</option>
+                                    <option value='forward'>Forward</option>
+                                    <option value='backward'>Backward</option>
+                                    <option value='both'>Both</option>
+                                    <option value='inherit'>Inherit</option>
+                                   </select>
+
+                                   <h5>Key Frames</h5>
+                                   <button
+                                    className='btn btn-sm btn-dark'
+                                    onClick={() =>
+                                     addSubCellAnimationKeyframe(i, index)
+                                    }>
+                                    + Keyframe
+                                   </button>
+
+                                   {keyframes.map(
+                                    (
+                                     { completionPercent, properties },
+                                     ind
+                                    ) => (
+                                     <div>
+                                      <h5>Completion Percentage </h5>
+                                      <i style={{ fontSize: "8px" }}>
+                                       (all animations require a 0 and 100)
+                                      </i>
+                                      <input
+                                       placeholder='enter a value from 0 to 100'
+                                       type='text'
+                                       name='completionPercent'
+                                       value={completionPercent}
+                                       onChange={(e) =>
+                                        onChangeSubCell(
+                                         i,
+                                         e,
+                                         "animationkey",
+                                         index,
+                                         ind
+                                        )
+                                       }
+                                      />
+                                      <button
+                                       className='btn btn-sm btn-dark'
+                                       onClick={() =>
+                                        addSubCellAnimationKeyframeProperty(
+                                         i,
+                                         index,
+                                         ind
+                                        )
+                                       }>
+                                       + Property
+                                      </button>
+
+                                      {properties.map(
+                                       (
+                                        {
+                                         propName,
+                                         propValue,
+                                         shadowValues,
+                                         transValues,
+                                        },
+                                        indy
+                                       ) => (
+                                        <div>
+                                         <select
+                                          name='propName'
+                                          value={propName}
+                                          onChange={(e) =>
+                                           onChangeSubCell(
+                                            i,
+                                            e,
+                                            "animationkeyprop",
+                                            index,
+                                            ind,
+                                            indy
+                                           )
+                                          }>
+                                          <option value='transform'>
+                                           Transform
+                                          </option>
+                                          <option value='height'>Height</option>
+                                          <option value='width'>Width</option>
+                                          <option value='border-left-color'>
+                                           Border Left Color
+                                          </option>
+                                          <option value='border-left-width'>
+                                           Border Left Width
+                                          </option>
+                                          <option value='background-color'>
+                                           Background Color
+                                          </option>
+                                          <option value='background-position'>
+                                           Background Position
+                                          </option>
+                                          <option value='background-size'>
+                                           Background Size
+                                          </option>
+                                          <option value='border-bottom-color'>
+                                           Border Bottom Color
+                                          </option>
+                                          <option value='border-bottom-left-radius'>
+                                           Border Bottom Left Radius
+                                          </option>
+                                          <option value='border-bottom-right-radius'>
+                                           Border Bottom Right Radius
+                                          </option>
+                                          <option value='border-bottom-width'>
+                                           Border Bottom Width
+                                          </option>
+                                          <option value='border-radius'>
+                                           Border Radius
+                                          </option>
+                                          <option value='border-right'>
+                                           Border Right
+                                          </option>
+                                          <option value='border-right-color'>
+                                           Border Right Color
+                                          </option>
+                                          <option value='border-right-width'>
+                                           Border Right Width
+                                          </option>
+                                          <option value='border-color'>
+                                           Border Color
+                                          </option>
+                                          <option value='border-width'>
+                                           Border Width
+                                          </option>
+                                          <option value='border-top-color'>
+                                           Border Top Color
+                                          </option>
+                                          <option value='border-top-left-radius'>
+                                           Border Top Left Radius
+                                          </option>
+                                          <option value='border-top-right-radius'>
+                                           Border Top Right Radius
+                                          </option>
+                                          <option value='border-top-width'>
+                                           Border Top Width
+                                          </option>
+                                          <option value='box-shadow'>
+                                           Box Shadow
+                                          </option>
+                                          <option value='font'>Font</option>
+                                          <option value='font-size'>
+                                           Font Size
+                                          </option>
+
+                                          <option value='font-weight'>
+                                           Font Weight
+                                          </option>
+                                          <option value='line-height'>
+                                           Line Height
+                                          </option>
+                                          <option value='margin-bottom'>
+                                           Margin Bottom
+                                          </option>
+                                          <option value='margin'>Margin</option>
+                                          <option value='margin-left'>
+                                           Margin Left
+                                          </option>
+                                          <option value='margin-top'>
+                                           Margin Top
+                                          </option>
+                                          <option value='margin-right'>
+                                           Margin Right
+                                          </option>
+                                          <option value='opacity'>
+                                           Opacity
+                                          </option>
+
+                                          <option value='padding-left'>
+                                           Padding Left
+                                          </option>
+                                          <option value='padding-right'>
+                                           Padding Right
+                                          </option>
+                                          <option value='padding-top'>
+                                           Padding Top
+                                          </option>
+                                          <option value='z-index'>
+                                           Z Index
+                                          </option>
+                                          <option value='padding-bottom'>
+                                           Padding Bottom
+                                          </option>
+                                          <option value='top'>Top</option>
+                                          <option value='left'>Left</option>
+                                          <option value='right'>Right</option>
+                                          <option value='bottom'>Bottom</option>
+                                         </select>
+                                         {propName.includes("width") ||
+                                         propName.includes("height") ||
+                                         propName.includes("size") ||
+                                         propName.includes("weight") ||
+                                         propName.includes("margin") ||
+                                         propName.includes("padding") ||
+                                         propName === "top" ||
+                                         propName === "bottom" ||
+                                         propName === "left" ||
+                                         propName === "right" ? (
+                                          <input
+                                           placeholder='enter a value in pixels'
+                                           type='text'
+                                           name='propValue'
+                                           value={propValue}
+                                           onChange={(e) =>
+                                            onChangeSubCell(
+                                             i,
+                                             e,
+                                             "animationkeyprop",
+                                             index,
+                                             ind,
+                                             indy
+                                            )
+                                           }
+                                          />
+                                         ) : (
+                                          ""
+                                         )}
+
+                                         {propName === "transform" ? (
+                                          <div>
+                                           <h5>Rotate Z Deg</h5>
+                                           <Slider
+                                            axis='x'
+                                            x={parseInt(transValues.rotateZ)}
+                                            name='rotateZ'
+                                            value={parseInt(
+                                             transValues.rotateZ
+                                            )}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "rotateZ",
+                                              "slider"
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            min={0}
+                                            max={360}
+                                            step={1}
+                                           />
+
+                                           <h5>Rotate X Deg</h5>
+                                           <Slider
+                                            axis='x'
+                                            x={parseInt(transValues.rotateX)}
+                                            name='rotateX'
+                                            value={parseInt(
+                                             transValues.rotateX
+                                            )}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "rotateX",
+                                              "slider"
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            min={0}
+                                            max={360}
+                                            step={1}
+                                           />
+
+                                           <h5>Translate X Px</h5>
+                                           <input
+                                            type='text'
+                                            name='translateX'
+                                            value={transValues.translateX}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "translateX"
+                                             )
+                                            }
+                                           />
+
+                                           <h5>Translate Y Px</h5>
+                                           <input
+                                            type='text'
+                                            name='translateY'
+                                            value={transValues.translateY}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "translateY"
+                                             )
+                                            }
+                                           />
+
+                                           <h5>Rotate Y Deg</h5>
+                                           <Slider
+                                            x={parseInt(transValues.rotateY)}
+                                            name='rotateY'
+                                            value={parseInt(
+                                             transValues.rotateY
+                                            )}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "rotateY",
+                                              "slider"
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            min={0}
+                                            max={360}
+                                            step={1}
+                                           />
+
+                                           <h5>Skew X Deg</h5>
+                                           <Slider
+                                            x={parseInt(transValues.skewX)}
+                                            name='skewX'
+                                            value={parseInt(transValues.skewX)}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "skewX",
+                                              "slider"
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            name='skewX'
+                                            min={0}
+                                            max={360}
+                                            step={1}
+                                           />
+
+                                           <h5>Skew Y Deg</h5>
+                                           <Slider
+                                            x={parseInt(transValues.skewY)}
+                                            name='skewY'
+                                            value={transValues.skewY}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "skewY",
+                                              "slider"
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            min={0}
+                                            max={360}
+                                            step={1}
+                                           />
+
+                                           <h5>Scale X Percent</h5>
+                                           <Slider
+                                            x={parseFloat(transValues.scaleX)}
+                                            name='scaleX'
+                                            value={transValues.scaleX}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "scaleX",
+                                              "slider"
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            min={-1}
+                                            max={2}
+                                            step={0.01}
+                                           />
+
+                                           <h5>Scale Y Percent</h5>
+                                           <Slider
+                                            x={parseFloat(transValues.scaleY)}
+                                            name='scaleY'
+                                            value={transValues.scaleY}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "scaleY",
+                                              "slider"
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            name='scaleY'
+                                            min={-1}
+                                            max={2}
+                                            step={0.01}
+                                           />
+                                          </div>
+                                         ) : (
+                                          ""
+                                         )}
+
+                                         {propName === "background-position" ? (
+                                          <select
+                                           name='propValue'
+                                           value={propValue}
+                                           onChange={(e) =>
+                                            onChangeSubCell(
+                                             i,
+                                             e,
+                                             "animationkeyprop",
+                                             index,
+                                             ind,
+                                             indy
+                                            )
+                                           }>
+                                           <option></option>
+                                           <option value='center'>
+                                            Center
+                                           </option>
+                                           <option value='left'>Left</option>
+                                           <option value='right'>Right</option>
+                                           <option value='top'>Top</option>
+                                           <option value='bottom'>
+                                            Bottom
+                                           </option>
+                                          </select>
+                                         ) : (
+                                          ""
+                                         )}
+
+                                         {propName.includes("shadow") ? (
+                                          <div>
+                                           <h5>Horizontal Shadow</h5>
+                                           <input
+                                            placeholder='enter a value in pixels'
+                                            type='text'
+                                            name='horizontalShadow'
+                                            value={
+                                             shadowValues.horizontalShadow
+                                            }
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "boxshadow"
+                                             )
+                                            }
+                                           />
+                                           <h5>Vertical Shadow</h5>
+                                           <input
+                                            placeholder='enter a value in pixels'
+                                            type='text'
+                                            name='verticalShadow'
+                                            value={shadowValues.verticalShadow}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "boxshadow"
+                                             )
+                                            }
+                                           />
+                                           <h5>Shadow Blur</h5>
+                                           <input
+                                            placeholder='enter a value in pixels'
+                                            type='text'
+                                            name='blurShadow'
+                                            value={shadowValues.blurShadow}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "boxshadow"
+                                             )
+                                            }
+                                           />
+                                           <h5>Shadow Spread</h5>
+                                           <input
+                                            placeholder='enter a value in pixels'
+                                            type='text'
+                                            name='spreadShadow'
+                                            value={shadowValues.spreadShadow}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "boxshadow"
+                                             )
+                                            }
+                                           />
+                                           <h5>Shadow Direction</h5>
+                                           <select
+                                            name='shadowDirection'
+                                            value={shadowValues.shadowDirection}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "boxshadow"
+                                             )
+                                            }>
+                                            <option></option>
+                                            <option value='cover'>Inset</option>
+                                            <option value='contain'>
+                                             Outset
+                                            </option>
+                                           </select>
+                                           <h5>Shadow Color</h5>
+                                           <select
+                                            name='shadowColor'
+                                            value={shadowValues.shadowColor}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "boxshadow"
+                                             )
+                                            }>
+                                            <option>Set Color...</option>
+                                            <option
+                                             value={pallet && pallet.primary}>
+                                             Primary
+                                            </option>
+                                            <option
+                                             value={pallet && pallet.dark}>
+                                             Dark
+                                            </option>
+                                            <option
+                                             value={pallet && pallet.light}>
+                                             Light
+                                            </option>
+                                            <option
+                                             value={pallet && pallet.danger}>
+                                             Danger
+                                            </option>
+                                            <option
+                                             value={pallet && pallet.success}>
+                                             Success
+                                            </option>
+                                           </select>
+                                          </div>
+                                         ) : (
+                                          ""
+                                         )}
+
+                                         {propName === "background-size" ? (
+                                          <select
+                                           name='propValue'
+                                           value={propValue}
+                                           onChange={(e) =>
+                                            onChangeSubCell(
+                                             i,
+                                             e,
+                                             "animationkeyprop",
+                                             index,
+                                             ind,
+                                             indy
+                                            )
+                                           }>
+                                           <option></option>
+                                           <option value='cover'>Cover</option>
+                                           <option value='contain'>
+                                            Contain
+                                           </option>
+                                          </select>
+                                         ) : (
+                                          ""
+                                         )}
+
+                                         {propName === "font" ? (
+                                          <div>
+                                           <h5>Current Font</h5>
+                                           <input
+                                            type='text'
+                                            value={propValue}
+                                           />
+                                           <button
+                                            className='btn btn-dark btn-sm'
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              "font",
+                                              font
+                                             )
+                                            }>
+                                            Set Font
+                                           </button>
+                                          </div>
+                                         ) : (
+                                          ""
+                                         )}
+
+                                         {propName.includes("opacity") ||
+                                         propName.includes("radius") ? (
+                                          <Slider
+                                           axis='x'
+                                           x={css["animation"][index]}
+                                           value={parseFloat(
+                                            css["animation"][index]
+                                           )}
+                                           onChange={(e) =>
+                                            onChangeSubCell(
+                                             i,
+                                             e,
+                                             "animationkeyprop",
+                                             index,
+                                             ind,
+                                             indy
+                                            )
+                                           }
+                                           orientation='horizontal'
+                                           name='n'
+                                           min={0}
+                                           max={1}
+                                           step={0.01}
+                                          />
+                                         ) : (
+                                          ""
+                                         )}
+
+                                         {propName.includes("color") && (
+                                          <select
+                                           name='propValue'
+                                           value={propValue}
+                                           onChange={(e) =>
+                                            onChangeSubCell(
+                                             i,
+                                             e,
+                                             "animationkeyprop",
+                                             index,
+                                             ind,
+                                             indy
+                                            )
+                                           }>
+                                           <option>Set Color...</option>
+                                           <option
+                                            value={pallet && pallet.primary}>
+                                            Primary
+                                           </option>
+                                           <option
+                                            value={pallet && pallet.dark}>
+                                            Dark
+                                           </option>
+                                           <option
+                                            value={pallet && pallet.light}>
+                                            Light
+                                           </option>
+                                           <option
+                                            value={pallet && pallet.danger}>
+                                            Danger
+                                           </option>
+                                           <option
+                                            value={pallet && pallet.success}>
+                                            Success
+                                           </option>
+                                          </select>
+                                         )}
+                                        </div>
+                                       )
+                                      )}
+                                     </div>
+                                    )
+                                   )}
+                                  </div>
+                                 )
+                                )}
+                              </ul>
+                             </div>
+                            </label>
+                           );
+                          } else if (key === "fontSize") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='5px'>XX Small</option>
+                              <option value='7px'>X Small</option>
+                              <option value='11px'>Small</option>
+                              <option value='16px'>Medium</option>
+                              <option value='24px'>Large</option>
+                              <option value='36px'>X Large</option>
+                              <option value='54px'>XX Large</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key.includes("Inset")) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option>Outer</option>
+                              <option value='inset'>Inset</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "fontWeight") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option value='100'>100</option>
+                              <option value='200'>200</option>
+                              <option value='300'>300</option>
+                              <option value='400'>400</option>
+                              <option value='500'>500</option>
+                              <option value='600'>600</option>
+                              <option value='700'>700</option>
+                              <option value='800'>800</option>
+                              <option value='900'>900</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "opacity") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+                             <Slider
+                              axis='x'
+                              x={css.opacity}
+                              value={parseInt(css[key])}
+                              onChange={(e) =>
+                               onChangeSubCell(i, e, "opacity", "slider")
+                              }
+                              orientation='horizontal'
+                              min={0}
+                              max={100}
+                              step={1}
+                             />
+                            </label>
+                           );
+                          } else if (key.includes("Radius")) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+                             <Slider
+                              value={parseInt(css[key])}
+                              onChange={(e) =>
+                               onChangeSubCell(i, e, key, "slider")
+                              }
+                              orientation='horizontal'
+                              min={0}
+                              max={50}
+                              step={0.5}
+                             />
+                            </label>
+                           );
+                          } else if (key === "textAlign") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+
+                              <option value='start'>Start</option>
+                              <option value='end'>End</option>
+                              <option value='left'>Left</option>
+                              <option value='right'>Right</option>
+                              <option value='center'>Center</option>
+                              <option value='justify'>Justify</option>
+                              <option value='matchParent'>Match Parent</option>
+                              <option value='justifyAll'>Justify All</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (
+                           key.includes("border") &&
+                           key.includes("Style")
+                          ) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='solid'>Solid</option>
+                              <option value='double'>Double</option>
+                              <option value='dotted'>Dotted</option>
+                              <option value='dashed'>Dashed</option>
+                              <option value='groove'>Groove</option>
+                              <option value='none'>None</option>
+                              <option value='hidden'>Hidden</option>
+                              <option value='ridge'>Ridge</option>
+                              <option value='inset'>Inset</option>
+                              <option value='outset'>Outset</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key === "textShadowSize") {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='small'>2px</option>
+                             </select>
+                            </label>
+                           );
+                          } else if (key.includes("overflow")) {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+
+                             <select
+                              name={key}
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}>
+                              <option></option>
+                              <option value='visible'>Visible</option>
+                              <option value='hidden'>Hidden</option>
+                              <option value='clip'>Clip</option>
+                              <option value='scroll'>Scroll</option>
+                              <option value='auto'>Auto</option>
+                             </select>
+                            </label>
+                           );
+                          } else {
+                           return (
+                            <label key={key}>
+                             {key
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, function (str) {
+                               return str.toUpperCase();
+                              })}
+                             <input
+                              type='text'
+                              placeholder='Enter A Value In Pixels'
+                              value={css[key]}
+                              onChange={(e) => onChangeSubCell(i, e, "css")}
+                              name={key}
+                             />
+                            </label>
+                           );
+                          }
+                         })}
+                        {!gridLevel &&
+                         Object.keys(filtered).length === 0 &&
+                         currentResults.map((css) =>
+                          Object.keys(css).map((key) => {
+                           const index = contentCss.findIndex(
+                            (x) => x.id === css.id
+                           );
+                           if (key.includes("Color")) {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option>Set Color...</option>
+                               <option value={pallet && pallet.primary}>
+                                Primary
+                               </option>
+                               <option value={pallet && pallet.dark}>
+                                Dark
+                               </option>
+                               <option value={pallet && pallet.light}>
+                                Light
+                               </option>
+                               <option value={pallet && pallet.danger}>
+                                Danger
+                               </option>
+                               <option value={pallet && pallet.success}>
+                                Success
+                               </option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "position") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='fixed'>Fixed</option>
+                               <option value='relative'>Relative</option>
+                               <option value='absolute'>Absolute</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "backgroundRepeat") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='repeatX'>Repeat X</option>
+                               <option value='repeatY'>Repeat Y</option>
+                               <option value='repeat'>Repeat</option>
+                               <option value='space'>Space</option>
+                               <option value='round'>Round</option>
+                               <option value='noRepeat'>No Repeat</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "backgroundPosition") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='center'>Center</option>
+                               <option value='left'>Left</option>
+                               <option value='right'>Right</option>
+                               <option value='top'>Top</option>
+                               <option value='bottom'>Bottom</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "backgroundSize") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='cover'>Cover</option>
+                               <option value='contain'>Contain</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "display") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='block'>Block</option>
+                               <option value='inline'>Inline</option>
+                               <option value='inline-block'>
+                                Inline Block
+                               </option>
+                               <option value='flex'>Flex</option>
+                               <option value='none'>None</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "textDecorationLine") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='none'>None</option>
+                               <option value='underline'>Underline</option>
+                               <option value='overline'>Overline</option>
+                               <option value='line-through'>
+                                Line Through
+                               </option>
+                               <option value='blink'>Blink</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "textDecorationStyle") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='solid'>Solid</option>
+                               <option value='double'>Double</option>
+                               <option value='dotted'>Dotted</option>
+                               <option value='dashed'>Dashed</option>
+                               <option value='wavy'>Wavy</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "transition") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <button
+                               className='btn btn-sm btn-dark'
+                               onClick={() =>
+                                addSubCellChildTransition(i, index)
+                               }>
+                               + Transition
+                              </button>
+                              <div
+                               className='card'
+                               style={{
+                                overflowY: "scroll",
+                                overflowX: "scroll",
+                               }}>
+                               {css.transition.map(
+                                (
+                                 {
+                                  property,
+                                  duration,
+                                  timingFunction,
+                                  cubicNs,
+                                  delay,
+                                 },
+                                 ind
+                                ) => (
+                                 <div key={index} className='card'>
+                                  <h5>Transition Property</h5>
+                                  <select
+                                   onChange={(e) =>
+                                    onChangeSubCell(
+                                     i,
+                                     e,
+                                     "conttransition",
+                                     index,
+                                     ind
+                                    )
+                                   }
+                                   value={property}
+                                   name='property'>
+                                   <option value=''></option>
+                                   {Object.keys(flatCss)
+                                    .filter(
+                                     (e) => typeof parseInt(e) === "number"
+                                    )
+                                    .map((c, i) => (
+                                     <option key={i} value={c}>
+                                      {c}
+                                     </option>
+                                    ))}
+                                   <option value='color'>Color</option>
+                                   <option value='background-color'>
+                                    Background Color
+                                   </option>
+                                  </select>
+                                  <h5>Transition Timing</h5>
+                                  <input
+                                   type='text'
+                                   name='duration'
+                                   onChange={(e) =>
+                                    onChangeSubCell(
+                                     i,
+                                     e,
+                                     "conttransition",
+                                     index,
+                                     ind
+                                    )
+                                   }
+                                   value={duration}
+                                   placeholder='Enter A Value in seconds'
+                                  />
+                                  <h5>Transition Function</h5>
+                                  <select
+                                   name='timingFunction'
+                                   value={timingFunction}
+                                   onChange={(e) =>
+                                    onChangeSubCell(
+                                     i,
+                                     e,
+                                     "conttransition",
+                                     index,
+                                     ind
+                                    )
+                                   }>
+                                   <option></option>
+                                   <option value='ease'>Ease</option>
+                                   <option value='ease-in'>Ease In</option>
+                                   <option value='ease-in-out'>
+                                    Ease In Out
+                                   </option>
+                                   <option value='step-end'>Step End</option>
+                                   <option value='step-start'>
+                                    Step Start
+                                   </option>
+                                   <option value='cubic-bezier'>
+                                    Cubic Bezier
+                                   </option>
+                                   <option value='inherit'>Inherit</option>
+                                   <option value='initial'>Initial</option>
+                                  </select>
+                                  <h5>Transition Delay</h5>
+                                  <input
+                                   type='text'
+                                   name='delay'
+                                   value={delay}
+                                   onChange={(e) =>
+                                    onChangeSubCell(
+                                     i,
+                                     e,
+                                     "conttransition",
+                                     index,
+                                     ind
+                                    )
+                                   }
+                                   placeholder='Enter A Value in seconds'
+                                  />
+
+                                  {timingFunction === "cubic-bezier" &&
+                                   Object.keys(cubicNs).map((n) => (
+                                    <div>
+                                     <h5>Cubic Bez (n,n,n,n)</h5>
+                                     <div key={n}>
+                                      <h5>N {parseInt(n) + 1}</h5>
+                                      <Slider
+                                       axis='x'
+                                       x={css["transition"][ind]["cubicNs"][n]}
+                                       value={parseFloat(
+                                        css["transition"][ind]["cubicNs"][n]
+                                       )}
+                                       onChange={(e) =>
+                                        onChangeSubCell(
+                                         i,
+                                         e,
+                                         "contcubicNs",
+                                         index,
+                                         ind,
+                                         n
+                                        )
+                                       }
+                                       orientation='horizontal'
+                                       name={n}
+                                       min={0}
+                                       max={1}
+                                       step={0.01}
+                                      />
+                                     </div>
+                                    </div>
+                                   ))}
+                                 </div>
+                                )
+                               )}
+                              </div>
+                             </label>
+                            );
+                           } else if (key === "transform") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "conttransform", index)
+                               }
+                               multiple>
+                               <option></option>
+                               <option value='rotateX'>RotateX</option>
+                               <option value='rotateY'>RotateY</option>
+                               <option value='skewX'>SkewX</option>
+                               <option value='skewY'>SkewY</option>
+                               <option value='rotateZ'>RotateZ</option>
+                               <option value='scaleX'>ScaleX</option>
+                               <option value='scaleY'>ScaleY</option>
+                               <option value='translateX'>TranslateX</option>
+                               <option value='translateY'>TranslateY</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "transformProp") {
+                            return (
+                             <label key={key}>
+                              <div className='card all-center'>
+                               <h5>Current Transform Order</h5>
+                               <ul>
+                                {css.transform.map((m) => (
+                                 <li key={m}>{m}</li>
+                                ))}
+                               </ul>
+                              </div>
+                              {css.transform.includes("rotateZ") && (
+                               <div>
+                                <h5>Rotate Z Deg</h5>
+                                <Slider
+                                 axis='x'
+                                 x={css["transformProp"]["rotateZ"]}
+                                 value={parseInt(
+                                  css["transformProp"]["rotateZ"]
+                                 )}
+                                 onChange={(e) =>
+                                  onChangeSubCell(
+                                   i,
+                                   e,
+                                   "rotateZ",
+                                   "conttransformProp",
+                                   index
+                                  )
+                                 }
+                                 orientation='horizontal'
+                                 name='rotateZ'
+                                 min={0}
+                                 max={360}
+                                 step={1}
+                                />
+                               </div>
+                              )}
+                              {css.transform.includes("rotateX") && (
+                               <div>
+                                <h5>Rotate X Deg</h5>
+                                <Slider
+                                 axis='x'
+                                 x={css["transformProp"]["rotateX"]}
+                                 value={parseInt(
+                                  css["transformProp"]["rotateX"]
+                                 )}
+                                 onChange={(e) =>
+                                  onChangeSubCell(
+                                   i,
+                                   e,
+                                   "rotateX",
+                                   "conttransformProp",
+                                   index
+                                  )
+                                 }
+                                 orientation='horizontal'
+                                 name='rotateX'
+                                 min={0}
+                                 max={360}
+                                 step={1}
+                                />
+                               </div>
+                              )}
+                              {css.transform.includes("translateX") && (
+                               <div>
+                                <h5>Translate X Px</h5>
+                                <input
+                                 type='text'
+                                 name='translateX'
+                                 value={css["transformProp"]["translateX"]}
+                                 onChange={(e) =>
+                                  onChangeSubCell(
+                                   i,
+                                   e.target.value,
+                                   "translateX",
+                                   "conttransformProp",
+                                   index
+                                  )
+                                 }
+                                />
+                               </div>
+                              )}
+                              {css.transform.includes("translateY") && (
+                               <div>
+                                <h5>Translate Y Px</h5>
+                                <input
+                                 type='text'
+                                 name='translateY'
+                                 value={css["transformProp"]["translateY"]}
+                                 onChange={(e) =>
+                                  onChangeSubCell(
+                                   i,
+                                   e.target.value,
+                                   "translateY",
+                                   "conttransformProp",
+                                   index
+                                  )
+                                 }
+                                />
+                               </div>
+                              )}
+                              {css.transform.includes("rotateY") && (
+                               <div>
+                                <h5>Rotate Y Deg</h5>
+                                <Slider
+                                 value={parseInt(
+                                  css["transformProp"]["rotateY"]
+                                 )}
+                                 onChange={(e) =>
+                                  onChangeSubCell(
+                                   i,
+                                   e,
+                                   "rotateY",
+                                   "conttransformProp",
+                                   index
+                                  )
+                                 }
+                                 orientation='horizontal'
+                                 name='rotateY'
+                                 min={0}
+                                 max={360}
+                                 step={1}
+                                />
+                               </div>
+                              )}
+                              {css.transform.includes("skewX") && (
+                               <div>
+                                <h5>Skew X Deg</h5>
+                                <Slider
+                                 value={parseInt(css["transformProp"]["skewX"])}
+                                 onChange={(e) =>
+                                  onChangeSubCell(
+                                   i,
+                                   e,
+                                   "skewX",
+                                   "conttransformProp",
+                                   index
+                                  )
+                                 }
+                                 orientation='horizontal'
+                                 name='skewX'
+                                 min={0}
+                                 max={360}
+                                 step={1}
+                                />
+                               </div>
+                              )}
+                              {css.transform.includes("skewY") && (
+                               <div>
+                                <h5>Skew Y Deg</h5>
+                                <Slider
+                                 value={parseInt(css["transformProp"]["skewY"])}
+                                 onChange={(e) =>
+                                  onChangeSubCell(
+                                   i,
+                                   e,
+                                   "skewY",
+                                   "conttransformProp",
+                                   index
+                                  )
+                                 }
+                                 orientation='horizontal'
+                                 name='skewY'
+                                 min={0}
+                                 max={360}
+                                 step={1}
+                                />
+                               </div>
+                              )}
+                              {css.transform.includes("scaleX") && (
+                               <div>
+                                <h5>Scale X Percent</h5>
+                                <Slider
+                                 value={
+                                  parseInt(css["transformProp"]["scaleX"]) * 10
+                                 }
+                                 onChange={(e) =>
+                                  onChangeSubCell(
+                                   i,
+                                   e / 10,
+                                   "scaleX",
+                                   "conttransformProp",
+                                   index
+                                  )
+                                 }
+                                 orientation='horizontal'
+                                 name='scaleX'
+                                 min={-100}
+                                 max={200}
+                                 step={1}
+                                />
+                               </div>
+                              )}{" "}
+                              {css.transform.includes("scaleY") && (
+                               <div>
+                                <h5>Scale Y Percent</h5>
+                                <Slider
+                                 value={
+                                  parseInt(css["transformProp"]["scaleY"]) * 10
+                                 }
+                                 onChange={(e) =>
+                                  onChangeSubCell(
+                                   i,
+                                   e / 10,
+                                   "scaleY",
+                                   "conttransformProp",
+                                   index
+                                  )
+                                 }
+                                 orientation='horizontal'
+                                 name='scaleY'
+                                 min={-100}
+                                 max={200}
+                                 step={1}
+                                />
+                               </div>
+                              )}
+                             </label>
+                            );
+                           } else if (key === "animation") {
+                            return (
+                             <label key={key}>
+                              <div className='card'>
+                               <button
+                                className='btn btn-sm btn-dark'
+                                onClick={() =>
+                                 addSubCellChildAnimation(i, index)
+                                }>
+                                + Animation
+                               </button>
+                               <h5>Current Animation Order</h5>
+                               <ul>
+                                {css.animation.length > 0 &&
+                                 css.animation.map(
+                                  (
+                                   {
+                                    animationName,
+                                    animationDuration,
+                                    animationTimingFunction,
+                                    animationDelay,
+                                    cubicNs,
+                                    steps,
+                                    animationIterationCount,
+                                    animationDirection,
+                                    animationFillMode,
+                                    keyframes,
+                                   },
+                                   ind
+                                  ) => (
+                                   <div key={ind}>
+                                    <h5>Animation Name</h5>
+                                    <input
+                                     type='text'
+                                     name='animationName'
+                                     value={animationName}
+                                     onChange={(e) =>
+                                      onChangeSubCell(
+                                       i,
+                                       e,
+                                       "contanimation",
+                                       index,
+                                       ind
+                                      )
+                                     }
+                                    />
+                                    <h5>Animation Duration</h5>
+                                    <input
+                                     type='text'
+                                     name='animationDuration'
+                                     value={animationDuration}
+                                     onChange={(e) =>
+                                      onChangeSubCell(
+                                       i,
+                                       e,
+                                       "contanimation",
+                                       index,
+                                       ind
+                                      )
+                                     }
+                                    />
+                                    <h5>Animation Function</h5>
+                                    <select
+                                     name='animationTimingFunction'
+                                     value={animationTimingFunction}
+                                     onChange={(e) =>
+                                      onChangeSubCell(
+                                       i,
+                                       e,
+                                       "contanimation",
+                                       index,
+                                       ind
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='ease'>Ease</option>
+                                     <option value='ease-in'>Ease In</option>
+                                     <option value='ease-in-out'>
+                                      Ease In Out
+                                     </option>
+                                     <option value='step-end'>Step End</option>
+                                     <option value='step-start'>
+                                      Step Start
+                                     </option>
+                                     <option value='cubic-bezier'>
+                                      Cubic Bezier
+                                     </option>
+                                     <option value='steps'>Steps</option>
+                                     <option value='inherit'>Inherit</option>
+                                     <option value='initial'>Initial</option>
+                                    </select>
+                                    <h5>Animation Delay</h5>
+                                    <input
+                                     placeholder='enter a value in seconds'
+                                     type='text'
+                                     name='animationDelay'
+                                     value={animationDelay}
+                                     onChange={(e) =>
+                                      onChangeSubCell(
+                                       i,
+                                       e,
+                                       "contanimation",
+                                       index,
+                                       ind
+                                      )
+                                     }
+                                    />
+                                    <h5>Animation Iteration Count</h5>
+                                    <input
+                                     placeholder='Positive Integers Only'
+                                     type='text'
+                                     name='animationIterationCount'
+                                     value={animationIterationCount}
+                                     onChange={(e) =>
+                                      onChangeSubCell(
+                                       i,
+                                       e,
+                                       "contanimation",
+                                       index,
+                                       ind
+                                      )
+                                     }
+                                    />
+
+                                    <h5>Animation Direction</h5>
+                                    <select
+                                     name='animationDirection'
+                                     value={animationDirection}
+                                     onChange={(e) =>
+                                      onChangeSubCell(
+                                       i,
+                                       e,
+                                       "contanimation",
+                                       index,
+                                       ind
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='normal'>Normal</option>
+                                     <option value='reverse'>Reverse</option>
+                                     <option value='alternate'>
+                                      Alternate
+                                     </option>
+                                     <option value='reverse'>
+                                      Alternate Reverse
+                                     </option>
+                                     <option value='inherit'>Inherit</option>
+                                    </select>
+                                    <h5>Animation Fill Mode</h5>
+                                    <select
+                                     name='animationFillMode'
+                                     value={animationFillMode}
+                                     onChange={(e) =>
+                                      onChangeSubCell(
+                                       i,
+                                       e,
+                                       "contanimation",
+                                       index,
+                                       ind
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='none'>None</option>
+                                     <option value='forward'>Forward</option>
+                                     <option value='backward'>Backward</option>
+                                     <option value='both'>Both</option>
+                                     <option value='inherit'>Inherit</option>
+                                    </select>
+
+                                    <h5>Key Frames</h5>
+                                    <button
+                                     className='btn btn-sm btn-dark'
+                                     onClick={() =>
+                                      addSubCellChildAnimationKeyframe(
+                                       i,
+                                       index,
+                                       ind
+                                      )
+                                     }>
+                                     + Keyframe
+                                    </button>
+
+                                    {animationTimingFunction ===
+                                     "cubic-bezier" &&
+                                     Object.keys(cubicNs).map((n) => (
+                                      <div>
+                                       <h5>Cubic Bez (n,n,n,n)</h5>
+                                       <div key={n}>
+                                        <h5>N {parseInt(n) + 1}</h5>
+                                        <Slider
+                                         axis='x'
+                                         x={
+                                          css["animation"][index]["cubicNs"][n]
+                                         }
+                                         value={parseFloat(
+                                          css["animation"][index]["cubicNs"][n]
+                                         )}
+                                         onChange={(e) =>
+                                          onChangeSubCell(
+                                           i,
+                                           e,
+                                           "cubicNs",
+                                           index,
+                                           n
+                                          )
+                                         }
+                                         orientation='horizontal'
+                                         name={n}
+                                         min={0}
+                                         max={1}
+                                         step={0.01}
+                                        />
+                                       </div>
+                                      </div>
+                                     ))}
+
+                                    {keyframes.map(
+                                     (
+                                      { completionPercent, properties },
+                                      indy
+                                     ) => (
+                                      <div>
+                                       <h5>Completion Percentage </h5>
+                                       <i style={{ fontSize: "8px" }}>
+                                        (all animations require a 0 and 100)
+                                       </i>
+                                       <input
+                                        placeholder='enter a value from 0 to 100'
+                                        type='text'
+                                        name='completionPercent'
+                                        value={completionPercent}
+                                        onChange={(e) =>
+                                         onChangeSubCell(
+                                          i,
+                                          e,
+                                          "contanimationkey",
+                                          index,
+                                          ind,
+                                          indy
+                                         )
+                                        }
+                                       />
+                                       <button
+                                        className='btn btn-sm btn-dark'
+                                        onClick={() =>
+                                         addSubCellChildAnimationKeyframeProperty(
+                                          i,
+                                          index,
+                                          ind,
+                                          indy
+                                         )
+                                        }>
+                                        + Property
+                                       </button>
+
+                                       {properties.map(
+                                        (
+                                         {
+                                          propName,
+                                          propValue,
+                                          shadowValues,
+                                          transValues,
+                                         },
+                                         indo
+                                        ) => (
+                                         <div>
+                                          <select
+                                           name='propName'
+                                           value={propName}
+                                           onChange={(e) =>
+                                            onChangeSubCell(
+                                             i,
+                                             e,
+                                             "contanimationkeyprop",
+                                             index,
+                                             ind,
+                                             indy,
+                                             indo
+                                            )
+                                           }>
+                                           <option value='transform'>
+                                            Transform
+                                           </option>
+                                           <option value='height'>
+                                            Height
+                                           </option>
+                                           <option value='width'>Width</option>
+                                           <option value='border-left-color'>
+                                            Border Left Color
+                                           </option>
+                                           <option value='border-left-width'>
+                                            Border Left Width
+                                           </option>
+                                           <option value='background-color'>
+                                            Background Color
+                                           </option>
+                                           <option value='background-position'>
+                                            Background Position
+                                           </option>
+                                           <option value='background-size'>
+                                            Background Size
+                                           </option>
+                                           <option value='border-bottom-color'>
+                                            Border Bottom Color
+                                           </option>
+                                           <option value='border-bottom-left-radius'>
+                                            Border Bottom Left Radius
+                                           </option>
+                                           <option value='border-bottom-right-radius'>
+                                            Border Bottom Right Radius
+                                           </option>
+                                           <option value='border-bottom-width'>
+                                            Border Bottom Width
+                                           </option>
+                                           <option value='border-radius'>
+                                            Border Radius
+                                           </option>
+                                           <option value='border-right'>
+                                            Border Right
+                                           </option>
+                                           <option value='border-right-color'>
+                                            Border Right Color
+                                           </option>
+                                           <option value='border-right-width'>
+                                            Border Right Width
+                                           </option>
+                                           <option value='border-color'>
+                                            Border Color
+                                           </option>
+                                           <option value='border-width'>
+                                            Border Width
+                                           </option>
+                                           <option value='border-top-color'>
+                                            Border Top Color
+                                           </option>
+                                           <option value='border-top-left-radius'>
+                                            Border Top Left Radius
+                                           </option>
+                                           <option value='border-top-right-radius'>
+                                            Border Top Right Radius
+                                           </option>
+                                           <option value='border-top-width'>
+                                            Border Top Width
+                                           </option>
+                                           <option value='box-shadow'>
+                                            Box Shadow
+                                           </option>
+                                           <option value='font'>Font</option>
+                                           <option value='font-size'>
+                                            Font Size
+                                           </option>
+
+                                           <option value='font-weight'>
+                                            Font Weight
+                                           </option>
+                                           <option value='line-height'>
+                                            Line Height
+                                           </option>
+                                           <option value='margin-bottom'>
+                                            Margin Bottom
+                                           </option>
+                                           <option value='margin'>
+                                            Margin
+                                           </option>
+                                           <option value='margin-left'>
+                                            Margin Left
+                                           </option>
+                                           <option value='margin-top'>
+                                            Margin Top
+                                           </option>
+                                           <option value='margin-right'>
+                                            Margin Right
+                                           </option>
+                                           <option value='opacity'>
+                                            Opacity
+                                           </option>
+
+                                           <option value='padding-left'>
+                                            Padding Left
+                                           </option>
+                                           <option value='padding-right'>
+                                            Padding Right
+                                           </option>
+                                           <option value='padding-top'>
+                                            Padding Top
+                                           </option>
+                                           <option value='z-index'>
+                                            Z Index
+                                           </option>
+                                           <option value='padding-bottom'>
+                                            Padding Bottom
+                                           </option>
+                                           <option value='top'>Top</option>
+                                           <option value='left'>Left</option>
+                                           <option value='right'>Right</option>
+                                           <option value='bottom'>
+                                            Bottom
+                                           </option>
+                                          </select>
+                                          {propName.includes("width") ||
+                                          propName.includes("height") ||
+                                          propName.includes("size") ||
+                                          propName.includes("weight") ||
+                                          propName.includes("margin") ||
+                                          propName.includes("padding") ||
+                                          propName === "top" ||
+                                          propName === "bottom" ||
+                                          propName === "left" ||
+                                          propName === "right" ? (
+                                           <input
+                                            placeholder='enter a value in pixels'
+                                            type='text'
+                                            name='propValue'
+                                            value={propValue}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "contanimationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              indo
+                                             )
+                                            }
+                                           />
+                                          ) : (
+                                           ""
+                                          )}
+
+                                          {propName === "transform" ? (
+                                           <div>
+                                            <h5>Rotate Z Deg</h5>
+                                            <Slider
+                                             axis='x'
+                                             x={parseInt(transValues.rotateZ)}
+                                             name='rotateZ'
+                                             value={parseInt(
+                                              transValues.rotateZ
+                                             )}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "rotateZ",
+                                               "slider"
+                                              )
+                                             }
+                                             orientation='horizontal'
+                                             min={0}
+                                             max={360}
+                                             step={1}
+                                            />
+
+                                            <h5>Rotate X Deg</h5>
+                                            <Slider
+                                             axis='x'
+                                             x={parseInt(transValues.rotateX)}
+                                             name='rotateX'
+                                             value={parseInt(
+                                              transValues.rotateX
+                                             )}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "rotateX",
+                                               "slider"
+                                              )
+                                             }
+                                             orientation='horizontal'
+                                             min={0}
+                                             max={360}
+                                             step={1}
+                                            />
+
+                                            <h5>Translate X Px</h5>
+                                            <input
+                                             type='text'
+                                             name='translateX'
+                                             value={transValues.translateX}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "translateX"
+                                              )
+                                             }
+                                            />
+
+                                            <h5>Translate Y Px</h5>
+                                            <input
+                                             type='text'
+                                             name='translateY'
+                                             value={transValues.translateY}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "translateY"
+                                              )
+                                             }
+                                            />
+
+                                            <h5>Rotate Y Deg</h5>
+                                            <Slider
+                                             x={parseInt(transValues.rotateY)}
+                                             name='rotateY'
+                                             value={parseInt(
+                                              transValues.rotateY
+                                             )}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "rotateY",
+                                               "slider"
+                                              )
+                                             }
+                                             orientation='horizontal'
+                                             min={0}
+                                             max={360}
+                                             step={1}
+                                            />
+
+                                            <h5>Skew X Deg</h5>
+                                            <Slider
+                                             x={parseInt(transValues.skewX)}
+                                             name='skewX'
+                                             value={parseInt(transValues.skewX)}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "skewX",
+                                               "slider"
+                                              )
+                                             }
+                                             orientation='horizontal'
+                                             name='skewX'
+                                             min={0}
+                                             max={360}
+                                             step={1}
+                                            />
+
+                                            <h5>Skew Y Deg</h5>
+                                            <Slider
+                                             x={parseInt(transValues.skewY)}
+                                             name='skewY'
+                                             value={transValues.skewY}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "skewY",
+                                               "slider"
+                                              )
+                                             }
+                                             orientation='horizontal'
+                                             min={0}
+                                             max={360}
+                                             step={1}
+                                            />
+
+                                            <h5>Scale X Percent</h5>
+                                            <Slider
+                                             x={parseFloat(transValues.scaleX)}
+                                             name='scaleX'
+                                             value={transValues.scaleX}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "scaleX",
+                                               "slider"
+                                              )
+                                             }
+                                             orientation='horizontal'
+                                             min={-1}
+                                             max={2}
+                                             step={0.01}
+                                            />
+
+                                            <h5>Scale Y Percent</h5>
+                                            <Slider
+                                             x={parseFloat(transValues.scaleY)}
+                                             name='scaleY'
+                                             value={transValues.scaleY}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "scaleY",
+                                               "slider"
+                                              )
+                                             }
+                                             orientation='horizontal'
+                                             name='scaleY'
+                                             min={-1}
+                                             max={2}
+                                             step={0.01}
+                                            />
+                                           </div>
+                                          ) : (
+                                           ""
+                                          )}
+
+                                          {propName ===
+                                          "background-position" ? (
+                                           <select
+                                            name='propValue'
+                                            value={propValue}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "contanimationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              indo
+                                             )
+                                            }>
+                                            <option></option>
+                                            <option value='center'>
+                                             Center
+                                            </option>
+                                            <option value='left'>Left</option>
+                                            <option value='right'>Right</option>
+                                            <option value='top'>Top</option>
+                                            <option value='bottom'>
+                                             Bottom
+                                            </option>
+                                           </select>
+                                          ) : (
+                                           ""
+                                          )}
+
+                                          {propName.includes("shadow") ? (
+                                           <div>
+                                            <h5>Horizontal Shadow</h5>
+                                            <input
+                                             placeholder='enter a value in pixels'
+                                             type='text'
+                                             name='horizontalShadow'
+                                             value={
+                                              shadowValues.horizontalShadow
+                                             }
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "boxshadow"
+                                              )
+                                             }
+                                            />
+                                            <h5>Vertical Shadow</h5>
+                                            <input
+                                             placeholder='enter a value in pixels'
+                                             type='text'
+                                             name='verticalShadow'
+                                             value={shadowValues.verticalShadow}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "boxshadow"
+                                              )
+                                             }
+                                            />
+                                            <h5>Shadow Blur</h5>
+                                            <input
+                                             placeholder='enter a value in pixels'
+                                             type='text'
+                                             name='blurShadow'
+                                             value={shadowValues.blurShadow}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "boxshadow"
+                                              )
+                                             }
+                                            />
+                                            <h5>Shadow Spread</h5>
+                                            <input
+                                             placeholder='enter a value in pixels'
+                                             type='text'
+                                             name='spreadShadow'
+                                             value={shadowValues.spreadShadow}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "boxshadow"
+                                              )
+                                             }
+                                            />
+                                            <h5>Shadow Direction</h5>
+                                            <select
+                                             name='shadowDirection'
+                                             value={
+                                              shadowValues.shadowDirection
+                                             }
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "boxshadow"
+                                              )
+                                             }>
+                                             <option></option>
+                                             <option value='cover'>
+                                              Inset
+                                             </option>
+                                             <option value='contain'>
+                                              Outset
+                                             </option>
+                                            </select>
+                                            <h5>Shadow Color</h5>
+                                            <select
+                                             name='shadowColor'
+                                             value={shadowValues.shadowColor}
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "boxshadow"
+                                              )
+                                             }>
+                                             <option>Set Color...</option>
+                                             <option
+                                              value={pallet && pallet.primary}>
+                                              Primary
+                                             </option>
+                                             <option
+                                              value={pallet && pallet.dark}>
+                                              Dark
+                                             </option>
+                                             <option
+                                              value={pallet && pallet.light}>
+                                              Light
+                                             </option>
+                                             <option
+                                              value={pallet && pallet.danger}>
+                                              Danger
+                                             </option>
+                                             <option
+                                              value={pallet && pallet.success}>
+                                              Success
+                                             </option>
+                                            </select>
+                                           </div>
+                                          ) : (
+                                           ""
+                                          )}
+
+                                          {propName === "background-size" ? (
+                                           <select
+                                            name='propValue'
+                                            value={propValue}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "animationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              indo
+                                             )
+                                            }>
+                                            <option></option>
+                                            <option value='cover'>Cover</option>
+                                            <option value='contain'>
+                                             Contain
+                                            </option>
+                                           </select>
+                                          ) : (
+                                           ""
+                                          )}
+
+                                          {propName === "font" ? (
+                                           <div>
+                                            <h5>Current Font</h5>
+                                            <input
+                                             type='text'
+                                             value={propValue}
+                                            />
+                                            <button
+                                             className='btn btn-dark btn-sm'
+                                             onChange={(e) =>
+                                              onChangeSubCell(
+                                               i,
+                                               e,
+                                               "contanimationkeyprop",
+                                               index,
+                                               ind,
+                                               indy,
+                                               indo,
+                                               "font",
+                                               font
+                                              )
+                                             }>
+                                             Set Font
+                                            </button>
+                                           </div>
+                                          ) : (
+                                           ""
+                                          )}
+
+                                          {propName.includes("opacity") ||
+                                          propName.includes("radius") ? (
+                                           <Slider
+                                            axis='x'
+                                            x={css["animation"][index]}
+                                            value={parseFloat(
+                                             css["animation"][index]
+                                            )}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "contanimationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              indo
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            name='n'
+                                            min={0}
+                                            max={1}
+                                            step={0.01}
+                                           />
+                                          ) : (
+                                           ""
+                                          )}
+
+                                          {propName.includes("color") && (
+                                           <select
+                                            name='propValue'
+                                            value={propValue}
+                                            onChange={(e) =>
+                                             onChangeSubCell(
+                                              i,
+                                              e,
+                                              "contanimationkeyprop",
+                                              index,
+                                              ind,
+                                              indy,
+                                              indo
+                                             )
+                                            }>
+                                            <option>Set Color...</option>
+                                            <option
+                                             value={pallet && pallet.primary}>
+                                             Primary
+                                            </option>
+                                            <option
+                                             value={pallet && pallet.dark}>
+                                             Dark
+                                            </option>
+                                            <option
+                                             value={pallet && pallet.light}>
+                                             Light
+                                            </option>
+                                            <option
+                                             value={pallet && pallet.danger}>
+                                             Danger
+                                            </option>
+                                            <option
+                                             value={pallet && pallet.success}>
+                                             Success
+                                            </option>
+                                           </select>
+                                          )}
+                                         </div>
+                                        )
+                                       )}
+                                      </div>
+                                     )
+                                    )}
+                                   </div>
+                                  )
+                                 )}
+                               </ul>
+                              </div>
+                             </label>
+                            );
+                           } else if (key === "fontSize") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='5px'>XX Small</option>
+                               <option value='7px'>X Small</option>
+                               <option value='11px'>Small</option>
+                               <option value='16px'>Medium</option>
+                               <option value='24px'>Large</option>
+                               <option value='36px'>X Large</option>
+                               <option value='54px'>XX Large</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key.includes("Inset")) {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option>Outer</option>
+                               <option value='inset'>Inset</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "fontWeight") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option value='100'>100</option>
+                               <option value='200'>200</option>
+                               <option value='300'>300</option>
+                               <option value='400'>400</option>
+                               <option value='500'>500</option>
+                               <option value='600'>600</option>
+                               <option value='700'>700</option>
+                               <option value='800'>800</option>
+                               <option value='900'>900</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "opacity") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+                              <Slider
+                               axis='x'
+                               x={css.opacity}
+                               value={parseInt(css[key])}
+                               onChange={(e) =>
+                                onChangeSubCell(
+                                 i,
+                                 e,
+                                 "opacity",
+                                 "contentslider",
+                                 index
+                                )
+                               }
+                               orientation='horizontal'
+                               min={0}
+                               max={100}
+                               step={1}
+                              />
+                             </label>
+                            );
+                           } else if (key.includes("Radius")) {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+                              <Slider
+                               value={parseInt(css[key])}
+                               onChange={(e) =>
+                                onChangeSubCell(
+                                 i,
+                                 e,
+                                 key,
+                                 "contentslider",
+                                 index
+                                )
+                               }
+                               orientation='horizontal'
+                               min={0}
+                               max={50}
+                               step={0.5}
+                              />
+                             </label>
+                            );
+                           } else if (key === "textAlign") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+
+                               <option value='start'>Start</option>
+                               <option value='end'>End</option>
+                               <option value='left'>Left</option>
+                               <option value='right'>Right</option>
+                               <option value='center'>Center</option>
+                               <option value='justify'>Justify</option>
+                               <option value='matchParent'>Match Parent</option>
+                               <option value='justifyAll'>Justify All</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (
+                            key.includes("border") &&
+                            key.includes("Style")
+                           ) {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='solid'>Solid</option>
+                               <option value='double'>Double</option>
+                               <option value='dotted'>Dotted</option>
+                               <option value='dashed'>Dashed</option>
+                               <option value='groove'>Groove</option>
+                               <option value='none'>None</option>
+                               <option value='hidden'>Hidden</option>
+                               <option value='ridge'>Ridge</option>
+                               <option value='inset'>Inset</option>
+                               <option value='outset'>Outset</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key === "textShadowSize") {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='small'>2px</option>
+                              </select>
+                             </label>
+                            );
+                           } else if (key.includes("overflow")) {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+
+                              <select
+                               name={key}
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }>
+                               <option></option>
+                               <option value='visible'>Visible</option>
+                               <option value='hidden'>Hidden</option>
+                               <option value='clip'>Clip</option>
+                               <option value='scroll'>Scroll</option>
+                               <option value='auto'>Auto</option>
+                              </select>
+                             </label>
+                            );
+                           } else {
+                            return (
+                             <label key={key}>
+                              {key
+                               .replace(/([A-Z])/g, " $1")
+                               .replace(/^./, function (str) {
+                                return str.toUpperCase();
+                               })}
+                              <input
+                               type='text'
+                               placeholder='Enter A Value In Pixels'
+                               value={css[key]}
+                               onChange={(e) =>
+                                onChangeSubCell(i, e, "contentCss", index)
+                               }
+                               name={key}
+                              />
+                             </label>
+                            );
+                           }
+                          })
+                         )}
                        </div>
-                      </div>
-                     )}
+                      ) : (
+                       <div>
+                        <button
+                         className='btn btn-sm btn-dark'
+                         onClick={() =>
+                          setSubContentToggle((prevState) => !prevState)
+                         }>
+                         Show CSS
+                        </button>
+                        <h5>SubCell Settings</h5>
+                        <select
+                         name='background'
+                         onChange={(e) => {
+                          onChangeSubCell(i, e);
+                          {
+                           currentContent &&
+                            getContentImage(
+                             currentContent.content,
+                             i,
+                             "background",
+                             "cell"
+                            );
+                          }
+                          {
+                           currentContent && clearCurrentContent();
+                          }
+                         }}>
+                         <option>Background</option>
+                         <option value={pallet && pallet.primary}>
+                          Primary
+                         </option>
+                         <option value={pallet && pallet.dark}>Dark</option>
+                         <option value={pallet && pallet.light}>Light</option>
+                         <option value={pallet && pallet.danger}>Danger</option>
+                         <option value={pallet && pallet.success}>
+                          Success
+                         </option>
+                         {currentContent && (
+                          <option value={currentContent.content}>
+                           Set Image
+                          </option>
+                         )}
+                        </select>
+                        <label>Row Span</label>
+                        <input
+                         placeholder='Row Span'
+                         type='text'
+                         name='rowSpan'
+                         value={rowSpan}
+                         onChange={(e) => onChangeSubCell(i, e)}
+                        />
+                        <label>Column Span</label>
+                        <input
+                         placeholder='Column Span'
+                         type='text'
+                         name='columnSpan'
+                         value={columnSpan}
+                         onChange={(e) => onChangeSubCell(i, e)}
+                        />
+                        <label>Row Start</label>
+                        <input
+                         placeholder='top'
+                         type='text'
+                         name='top'
+                         value={top}
+                         onChange={(e) => onChangeSubCell(i, e)}
+                        />
+                        <label>Column Start</label>
+                        <input
+                         placeholder='left'
+                         type='text'
+                         name='left'
+                         value={left}
+                         onChange={(e) => onChangeSubCell(i, e)}
+                        />
+                        <div className='grid-2'>
+                         <div>
+                          {" "}
+                          <input
+                           type='radio'
+                           name='position'
+                           value='false'
+                           checked={position === "false"}
+                           onChange={(e) => onChangeSubCell(i, e)}
+                          />
+                          Left
+                         </div>
+                         <div>
+                          {" "}
+                          <input
+                           type='radio'
+                           name='position'
+                           value='true'
+                           checked={position === "true"}
+                           onChange={(e) => onChangeSubCell(i, e)}
+                          />
+                          Center{" "}
+                         </div>
+                        </div>
+                       </div>
+                      )}
+                     </div>
+                     <div
+                      className='card'
+                      style={{ backgroundColor: "#f4f4f4" }}>
+                      {subGridView === false ? (
+                       <div>
+                        <h5>BODY GRID SETTINGS</h5>
+                        <button
+                         className='btn btn-dark btn-sm'
+                         onClick={() => addBodyGrid(id)}>
+                         Add Grid
+                        </button>
+                        <button
+                         className='btn btn-dark btn-sm'
+                         onClick={() => addBodyColumn(id)}>
+                         Add Column
+                        </button>
+                        <button
+                         className='btn btn-dark btn-sm'
+                         onClick={() => addBodyRow(id)}>
+                         Add Row
+                        </button>
+                        <button
+                         className='btn btn-sm btn-dark'
+                         onClick={() => addBodyCell(id)}>
+                         Add Cell
+                        </button>
+                        <button
+                         className='btn btn-sm btn-dark'
+                         onClick={() =>
+                          toggleBodyGridView((prevState) => !prevState)
+                         }>
+                         View Grid
+                        </button>
+                        <select
+                         name='verticalAlignment'
+                         onChange={(e) => onChangeSubCell(i, e)}>
+                         <option>Vertical</option>
+                         <option value='start'>Start</option>
+                         <option value='end'>End</option>
+                         <option value='center'>Center</option>
+                         <option value='space-between'>Between</option>
+                         <option value='space-around'>Around</option>
+                         <option value='space-evenly'>Evenly</option>
+                         <option value='stretch'>Stretch</option>
+                        </select>
+                        <select
+                         name='horitzontalAlignment'
+                         onChange={(e) => onChangeSubCell(i, e)}>
+                         <option>Horizontal</option>
+                         <option value='start'>Start</option>
+                         <option value='end'>End</option>
+                         <option value='center'>Center</option>
+                         <option value='space-between'>Between</option>
+                         <option value='space-around'>Around</option>
+                         <option value='space-evenly'>Evenly</option>
+                        </select>
+                        <select
+                         name='layout'
+                         onChange={(e) => onChangeSubCell(i, e)}>
+                         <option>Layout</option>
+                         <option value='row'>Row</option>
+                         <option value='column'>Column</option>
+                         <option value='row dense'>Row Dense</option>
+                        </select>
+                       </div>
+                      ) : (
+                       <div>
+                        {" "}
+                        <button
+                         onClick={() =>
+                          toggleBodyGridView((prevState) => !prevState)
+                         }>
+                         Hide Grid
+                        </button>
+                        <div className='grid-2'>
+                         <div
+                          className='card'
+                          style={{ backgroundColor: "#f4f4f4" }}>
+                          {bodyGrids[
+                           bodyGrids.findIndex((x) => x.parent === id)
+                          ] &&
+                           bodyGrids[
+                            bodyGrids.findIndex((x) => x.parent === id)
+                           ].columns.map(({ size, unit }, index) => (
+                            <div>
+                             <div>
+                              <input
+                               placeholder='Column Size...'
+                               type='text'
+                               name='size'
+                               value={size}
+                               onChange={(e) => updateBodyColumn(e, id, index)}
+                              />
+                              <select
+                               name='unit'
+                               value={unit}
+                               onChange={(e) => updateBodyColumn(e, id, index)}>
+                               <option></option>
+                               <option value='px'>Pixels</option>
+                               <option value='fr'>Fractions</option>
+                               <option value='repeat(auto-fit,minmax(120px,1fr))'>
+                                Responsive
+                               </option>
+                              </select>
+                              <span
+                               style={{ float: "right" }}
+                               className='c4  olor-background lead'
+                               onClick={() => deleteBodyColumn(id, index)}>
+                               <a>X</a>
+                              </span>
+                             </div>
+                            </div>
+                           ))}
+                         </div>
+                         <div
+                          className='card'
+                          style={{ backgroundColor: "#f4f4f4" }}>
+                          {subGrids[
+                           subGrids.findIndex((x) => x.parent === id)
+                          ] &&
+                           subGrids[
+                            subGrids.findIndex((x) => x.parent === id)
+                           ].rows.map(({ size, unit }, index) => (
+                            <div>
+                             <input
+                              placeholder='Row Size...'
+                              type='text'
+                              name='size'
+                              onChange={(e) => updateBodyRow(e, id, index)}
+                             />
+                             <select
+                              name='unit'
+                              onChange={(e) => updateBodyRow(e, id, index)}>
+                              <option></option>
+                              <option value='px'>Pixels</option>
+                              <option value='fr'>Fractions</option>
+                             </select>
+                             <span
+                              style={{ float: "right" }}
+                              className='color-background lead'
+                              onClick={() => deleteBodyRow(id, index)}>
+                              <a>X</a>
+                             </span>
+                            </div>
+                           ))}
+                         </div>
+                        </div>
+                       </div>
+                      )}
+                     </div>
                     </div>
 
-                    <div className='grid-2'>
-                     <div>
-                      {" "}
-                      <input
-                       type='radio'
-                       name='position'
-                       value='false'
-                       checked={position === "false"}
-                       onChange={(e) => onChangeSubCell(i, e)}
-                      />
-                      Left
-                     </div>
-                     <div>
-                      {" "}
-                      <input
-                       type='radio'
-                       name='position'
-                       value='true'
-                       checked={position === "true"}
-                       id=''
-                       onChange={(e) => onChangeSubCell(i, e)}
-                      />
-                      Center{" "}
-                     </div>
-                    </div>
-                    <button
-                     className='btn btn-sm btn-dark'
-                     onClick={() => addBodyCell(id)}>
-                     Add Body Cell
-                    </button>
                     <select
                      name='viewToggle'
                      style={{ height: "20px", width: "75px" }}
                      className='btn btn-block'
-                     onChange={(e) => {
-                      onChangeSubCell(i, e);
-                     }}>
+                     onChange={(e) => onChangeSubCell(i, e)}>
                      <option value=''></option>
                      <option value='delete'>Delete Cell</option>
                      <option value='close'>Close</option>
@@ -6278,10 +10875,8 @@ const SecViewer = ({
                              <img
                               alt={name}
                               src={code}
-                              style={{
-                               height: `${height}px`,
-                               width: `${width}px`,
-                              }}
+                              height={`${height}px`}
+                              width={`${width}px`}
                              />
                             ) : (
                              ""
@@ -6396,72 +10991,5225 @@ const SecViewer = ({
                               </select>
                              </a>
                             </div>{" "}
-                            <h5>Cell Settings</h5>
-                            <select
-                             name='background'
-                             onChange={(e) => {
-                              onChangeBodyCell(i, e);
-                              {
-                               currentContent &&
-                                getContentImage(
-                                 currentContent.content,
-                                 i,
-                                 "background",
-                                 "bodyCell"
-                                );
-                              }
-                              {
-                               currentContent && clearCurrentContent();
-                              }
-                             }}>
-                             <option>Background</option>
-                             <option value={pallet && pallet.primary}>
-                              Primary
-                             </option>
-                             <option value={pallet && pallet.dark}>Dark</option>
-                             <option value={pallet && pallet.light}>
-                              Light
-                             </option>
-                             <option value={pallet && pallet.danger}>
-                              Danger
-                             </option>
-                             <option value={pallet && pallet.success}>
-                              Success
-                             </option>
-                             {currentContent && (
-                              <option value={currentContent.content}>
-                               Set Image
-                              </option>
-                             )}
-                            </select>
-                            <input
-                             placeholder='Row Span'
-                             type='text'
-                             name='rowSpan'
-                             value={rowSpan}
-                             onChange={(e) => onChangeBodyCell(i, e)}
-                            />
-                            <input
-                             placeholder='Column Span'
-                             type='text'
-                             name='columnSpan'
-                             value={columnSpan}
-                             onChange={(e) => onChangeBodyCell(i, e)}
-                            />
-                            <input
-                             placeholder='top'
-                             type='text'
-                             name='top'
-                             value={top}
-                             onChange={(e) => onChangeBodyCell(i, e)}
-                            />
-                            <input
-                             placeholder='left'
-                             type='text'
-                             name='left'
-                             value={left}
-                             onChange={(e) => onChangeBodyCell(i, e)}
-                            />
+                            <button
+                             onClick={() =>
+                              setBodyContentToggle((prevState) => !prevState)
+                             }>
+                             View CSS
+                            </button>
+                            {bodyContentToggle === true ? (
+                             <div>
+                              {Object.keys(filtered).length > 0 &&
+                               Object.keys(filtered).map((key) => {
+                                if (key.includes("Color")) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option>Set Color...</option>
+                                    <option value={pallet && pallet.primary}>
+                                     Primary
+                                    </option>
+                                    <option value={pallet && pallet.dark}>
+                                     Dark
+                                    </option>
+                                    <option value={pallet && pallet.light}>
+                                     Light
+                                    </option>
+                                    <option value={pallet && pallet.danger}>
+                                     Danger
+                                    </option>
+                                    <option value={pallet && pallet.success}>
+                                     Success
+                                    </option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "animation") {
+                                 return (
+                                  <label key={key}>
+                                   <div className='card'>
+                                    <button
+                                     className='btn btn-sm btn-dark'
+                                     onClick={() => addBodyCellAnimation(i)}>
+                                     + Animation
+                                    </button>
+                                    <h5>Current Animation Order</h5>
+                                    <ul>
+                                     {css.animation.length > 0 &&
+                                      css.animation.map(
+                                       (
+                                        {
+                                         animationName,
+                                         animationDuration,
+                                         animationTimingFunction,
+                                         animationDelay,
+                                         animationIterationCount,
+                                         animationDirection,
+                                         animationFillMode,
+                                         cubicNs,
+                                         steps,
+                                         keyframes,
+                                        },
+                                        index
+                                       ) => (
+                                        <div>
+                                         <h5>Animation Name</h5>
+                                         <input
+                                          type='text'
+                                          name='animationName'
+                                          value={animationName}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }
+                                         />
+                                         <h5>Animation Duration</h5>
+                                         <input
+                                          type='text'
+                                          name='animationDuration'
+                                          value={animationDuration}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }
+                                         />
+                                         <h5>Animation Function</h5>
+                                         <select
+                                          name='animationTimingFunction'
+                                          value={animationTimingFunction}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }>
+                                          <option></option>
+                                          <option value='ease'>Ease</option>
+                                          <option value='ease-in'>
+                                           Ease In
+                                          </option>
+                                          <option value='ease-in-out'>
+                                           Ease In Out
+                                          </option>
+                                          <option value='step-end'>
+                                           Step End
+                                          </option>
+                                          <option value='step-start'>
+                                           Step Start
+                                          </option>
+                                          <option value='cubic-bezier'>
+                                           Cubic Bezier
+                                          </option>
+                                          <option value='steps'>Steps</option>
+                                          <option value='inherit'>
+                                           Inherit
+                                          </option>
+                                          <option value='initial'>
+                                           Initial
+                                          </option>
+                                         </select>
+                                         <h5>Animation Delay</h5>
+                                         <input
+                                          placeholder='enter a value in seconds'
+                                          type='text'
+                                          name='animationDelay'
+                                          value={animationDelay}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }
+                                         />
+                                         {animationTimingFunction ===
+                                          "cubic-bezier" &&
+                                          Object.keys(cubicNs).map((n) => (
+                                           <div>
+                                            <h5>Cubic Bez (n,n,n,n)</h5>
+                                            <div key={n}>
+                                             <h5>N {parseInt(n) + 1}</h5>
+                                             <Slider
+                                              axis='x'
+                                              x={
+                                               css["animation"][index][
+                                                "cubicNs"
+                                               ][n]
+                                              }
+                                              value={parseFloat(
+                                               css["animation"][index][
+                                                "cubicNs"
+                                               ][n]
+                                              )}
+                                              onChange={(e) =>
+                                               onChangeBodyCell(
+                                                i,
+                                                e,
+                                                "cubicNs",
+                                                index,
+                                                n
+                                               )
+                                              }
+                                              orientation='horizontal'
+                                              name={n}
+                                              min={0}
+                                              max={1}
+                                              step={0.01}
+                                             />
+                                            </div>
+                                           </div>
+                                          ))}
+                                         <h5>Animation Iteration Count</h5>
+                                         <input
+                                          placeholder='Positive Integers Only'
+                                          type='text'
+                                          name='animationIterationCount'
+                                          value={animationIterationCount}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }
+                                         />
+                                         <h5>Animation Iteration Count</h5>
+                                         <input
+                                          placeholder='Positive Integers Only'
+                                          type='text'
+                                          name='animationIterationCount'
+                                          value={animationIterationCount}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }
+                                         />
+                                         <h5>Animation Direction</h5>
+                                         <select
+                                          name='animationDirection'
+                                          value={animationDirection}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }>
+                                          <option></option>
+                                          <option value='normal'>Normal</option>
+                                          <option value='reverse'>
+                                           Reverse
+                                          </option>
+                                          <option value='alternate'>
+                                           Alternate
+                                          </option>
+                                          <option value='reverse'>
+                                           Alternate Reverse
+                                          </option>
+                                          <option value='inherit'>
+                                           Inherit
+                                          </option>
+                                         </select>
+                                         <h5>Animation Fill Mode</h5>
+                                         <select
+                                          name='animationFillMode'
+                                          value={animationFillMode}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }>
+                                          <option></option>
+                                          <option value='none'>None</option>
+                                          <option value='forward'>
+                                           Forward
+                                          </option>
+                                          <option value='backward'>
+                                           Backward
+                                          </option>
+                                          <option value='both'>Both</option>
+                                          <option value='inherit'>
+                                           Inherit
+                                          </option>
+                                         </select>
+                                         <h5>Key Frames</h5>
+                                         <button
+                                          className='btn btn-sm btn-dark'
+                                          onClick={() =>
+                                           addBodyCellAnimationKeyframe(
+                                            i,
+                                            index
+                                           )
+                                          }>
+                                          + Keyframe
+                                         </button>
+                                         lineHeight:'',
+                                        </div>
+                                       )
+                                      )}
+                                    </ul>
+                                   </div>
+                                  </label>
+                                 );
+                                } else if (key === "posiition") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+                                   ition
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='fixed'>Fixed</option>
+                                    <option value='relative'>Relative</option>
+                                    <option value='absolute'>Absolute</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "backgroundRepeat") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='repeatX'>Repeat X</option>
+                                    <option value='repeatY'>Repeat Y</option>
+                                    <option value='repeat'>Repeat</option>
+                                    <option value='space'>Space</option>
+                                    <option value='round'>Round</option>
+                                    <option value='noRepeat'>No Repeat</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "backgroundPosition") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='center'>Center</option>
+                                    <option value='left'>Left</option>
+                                    <option value='right'>Right</option>
+                                    <option value='top'>Top</option>
+                                    <option value='bottom'>Bottom</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "backgroundSize") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='cover'>Cover</option>
+                                    <option value='contain'>Contain</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "display") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='block'>Block</option>
+                                    <option value='inline'>Inline</option>
+                                    <option value='inline-block'>
+                                     Inline Block
+                                    </option>
+                                    <option value='flex'>Flex</option>
+                                    <option value='none'>None</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "textDecorationLine") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='none'>None</option>
+                                    <option value='underline'>Underline</option>
+                                    <option value='overline'>Overline</option>
+                                    <option value='line-through'>
+                                     Line Through
+                                    </option>
+                                    <option value='blink'>Blink</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "textDecorationStyle") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='solid'>Solid</option>
+                                    <option value='double'>Double</option>
+                                    <option value='dotted'>Dotted</option>
+                                    <option value='dashed'>Dashed</option>
+                                    <option value='wavy'>Wavy</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "transition") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <button
+                                    className='btn btn-sm btn-dark'
+                                    onClick={() => addBodyCellTransition(i)}>
+                                    + Transition
+                                   </button>
+                                   <div
+                                    className='card'
+                                    style={{
+                                     overflowY: "scroll",
+                                     overflowX: "scroll",
+                                    }}>
+                                    {css.transition.map(
+                                     (
+                                      {
+                                       property,
+                                       duration,
+                                       timingFunction,
+                                       cubicNs,
+                                       delay,
+                                      },
+                                      index
+                                     ) => (
+                                      <div key={index} className='card'>
+                                       <h5>Transition Property</h5>
+                                       <select
+                                        onChange={(e) =>
+                                         onChangeBodyCell(
+                                          i,
+                                          e,
+                                          "transition",
+                                          index
+                                         )
+                                        }
+                                        value={property}
+                                        name='property'>
+                                        <option value=''></option>
+                                        {Object.keys(flatCss)
+                                         .filter(
+                                          (e) => typeof parseInt(e) === "number"
+                                         )
+                                         .map((c, i) => (
+                                          <option key={i} value={c}>
+                                           {c}
+                                          </option>
+                                         ))}
+                                        <option value='color'>Color</option>
+                                        <option value='background-color'>
+                                         Background Color
+                                        </option>
+                                       </select>
+                                       <h5>Transition Timing</h5>
+                                       <input
+                                        type='text'
+                                        name='duration'
+                                        onChange={(e) =>
+                                         onChangeBodyCell(
+                                          i,
+                                          e,
+                                          "transition",
+                                          index
+                                         )
+                                        }
+                                        value={duration}
+                                        placeholder='Enter A Value in seconds'
+                                       />
+                                       <h5>Transition Function</h5>
+                                       <select
+                                        name='timingFunction'
+                                        value={timingFunction}
+                                        onChange={(e) =>
+                                         onChangeBodyCell(
+                                          i,
+                                          e,
+                                          "transition",
+                                          index
+                                         )
+                                        }>
+                                        <option></option>
+                                        <option value='ease'>Ease</option>
+                                        <option value='ease-in'>Ease In</option>
+                                        <option value='ease-in-out'>
+                                         Ease In Out
+                                        </option>
+                                        <option value='step-end'>
+                                         Step End
+                                        </option>
+                                        <option value='step-start'>
+                                         Step Start
+                                        </option>
+                                        <option value='cubic-bezier'>
+                                         Cubic Bezier
+                                        </option>
+                                        <option value='inherit'>Inherit</option>
+                                        <option value='initial'>Initial</option>
+                                       </select>
+                                       <h5>Transition Delay</h5>
+                                       <input
+                                        type='text'
+                                        name='delay'
+                                        value={delay}
+                                        onChange={(e) =>
+                                         onChangeBodyCell(
+                                          i,
+                                          e,
+                                          "transition",
+                                          index
+                                         )
+                                        }
+                                        placeholder='Enter A Value in seconds'
+                                       />
+
+                                       {timingFunction === "cubic-bezier" &&
+                                        Object.keys(cubicNs).map((n) => (
+                                         <div>
+                                          <h5>Cubic Bez (n,n,n,n)</h5>
+                                          <div key={n}>
+                                           <h5>N {parseInt(n) + 1}</h5>
+                                           <Slider
+                                            axis='x'
+                                            x={
+                                             css["transition"][index][
+                                              "cubicNs"
+                                             ][n]
+                                            }
+                                            value={parseFloat(
+                                             css["transition"][index][
+                                              "cubicNs"
+                                             ][n]
+                                            )}
+                                            onChange={(e) =>
+                                             onChangeBodyCell(
+                                              i,
+                                              e,
+                                              "cubicNs",
+                                              index,
+                                              n
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            name={n}
+                                            min={0}
+                                            max={1}
+                                            step={0.01}
+                                           />
+                                          </div>
+                                         </div>
+                                        ))}
+                                      </div>
+                                     )
+                                    )}
+                                   </div>
+                                  </label>
+                                 );
+                                } else if (key === "transform") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "transform")
+                                    }
+                                    multiple>
+                                    <option></option>
+                                    <option value='rotateX'>RotateX</option>
+                                    <option value='rotateY'>RotateY</option>
+                                    <option value='skewX'>SkewX</option>
+                                    <option value='skewY'>SkewY</option>
+                                    <option value='rotateZ'>RotateZ</option>
+                                    <option value='scaleX'>ScaleX</option>
+                                    <option value='scaleY'>ScaleY</option>
+                                    <option value='translateX'>
+                                     TranslateX
+                                    </option>
+                                    <option value='translateY'>
+                                     TranslateY
+                                    </option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "transformProp") {
+                                 return (
+                                  <label key={key}>
+                                   <div className='card all-center'>
+                                    <h5>Current Transform Order</h5>
+                                    <ul>
+                                     {css.transform.map((m) => (
+                                      <li key={m}>{m}</li>
+                                     ))}
+                                    </ul>
+                                   </div>
+                                   {css.transform.includes("rotateZ") && (
+                                    <div>
+                                     <h5>Rotate Z Deg</h5>
+                                     <Slider
+                                      axis='x'
+                                      x={css["transformProp"]["rotateZ"]}
+                                      value={parseInt(
+                                       css["transformProp"]["rotateZ"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "rotateZ",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='rotateZ'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("rotateX") && (
+                                    <div>
+                                     <h5>Rotate X Deg</h5>
+                                     <Slider
+                                      axis='x'
+                                      x={css["transformProp"]["rotateX"]}
+                                      value={parseInt(
+                                       css["transformProp"]["rotateX"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "rotateX",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='rotateX'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("translateX") && (
+                                    <div>
+                                     <h5>Translate X Px</h5>
+                                     <input
+                                      type='text'
+                                      name='translateX'
+                                      value={css["transformProp"]["translateX"]}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e.target.value,
+                                        "translateX",
+                                        "transformProp"
+                                       )
+                                      }
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("translateY") && (
+                                    <div>
+                                     <h5>Translate Y Px</h5>
+                                     <input
+                                      type='text'
+                                      name='translateY'
+                                      value={css["transformProp"]["translateY"]}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e.target.value,
+                                        "translateY",
+                                        "transformProp"
+                                       )
+                                      }
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("rotateY") && (
+                                    <div>
+                                     <h5>Rotate Y Deg</h5>
+                                     <Slider
+                                      value={parseInt(
+                                       css["transformProp"]["rotateY"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "rotateY",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='rotateY'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("skewX") && (
+                                    <div>
+                                     <h5>Skew X Deg</h5>
+                                     <Slider
+                                      value={parseInt(
+                                       css["transformProp"]["skewX"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "skewX",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='skewX'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("skewY") && (
+                                    <div>
+                                     <h5>Skew Y Deg</h5>
+                                     <Slider
+                                      value={parseInt(
+                                       css["transformProp"]["skewY"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "skewY",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='skewY'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("scaleX") && (
+                                    <div>
+                                     <h5>Scale X Percent</h5>
+                                     <Slider
+                                      value={
+                                       parseInt(
+                                        css["transformProp"]["scaleX"]
+                                       ) * 10
+                                      }
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e / 10,
+                                        "scaleX",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='scaleX'
+                                      min={-100}
+                                      max={200}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}{" "}
+                                   {css.transform.includes("scaleY") && (
+                                    <div>
+                                     <h5>Scale Y Percent</h5>
+                                     <Slider
+                                      value={
+                                       parseInt(
+                                        css["transformProp"]["scaleY"]
+                                       ) * 10
+                                      }
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e / 10,
+                                        "scaleY",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='scaleY'
+                                      min={-100}
+                                      max={200}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                  </label>
+                                 );
+                                } else if (key === "fontSize") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='5px'>XX Small</option>
+                                    <option value='7px'>X Small</option>
+                                    <option value='11px'>Small</option>
+                                    <option value='16px'>Medium</option>
+                                    <option value='24px'>Large</option>
+                                    <option value='36px'>X Large</option>
+                                    <option value='54px'>XX Large</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key.includes("Inset")) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option>Outer</option>
+                                    <option value='inset'>Inset</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "fontWeight") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option value='100'>100</option>
+                                    <option value='200'>200</option>
+                                    <option value='300'>300</option>
+                                    <option value='400'>400</option>
+                                    <option value='500'>500</option>
+                                    <option value='600'>600</option>
+                                    <option value='700'>700</option>
+                                    <option value='800'>800</option>
+                                    <option value='900'>900</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "opacity") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+                                   <Slider
+                                    axis='x'
+                                    x={css.opacity}
+                                    value={parseInt(css[key])}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "opacity", "slider")
+                                    }
+                                    orientation='horizontal'
+                                    min={0}
+                                    max={100}
+                                    step={1}
+                                   />
+                                  </label>
+                                 );
+                                } else if (key.includes("Radius")) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+                                   <Slider
+                                    value={parseInt(css[key])}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, key, "slider")
+                                    }
+                                    orientation='horizontal'
+                                    min={0}
+                                    max={50}
+                                    step={0.5}
+                                   />
+                                  </label>
+                                 );
+                                } else if (key === "textAlign") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+
+                                    <option value='start'>Start</option>
+                                    <option value='end'>End</option>
+                                    <option value='left'>Left</option>
+                                    <option value='right'>Right</option>
+                                    <option value='center'>Center</option>
+                                    <option value='justify'>Justify</option>
+                                    <option value='matchParent'>
+                                     Match Parent
+                                    </option>
+                                    <option value='justifyAll'>
+                                     Justify All
+                                    </option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (
+                                 key.includes("border") &&
+                                 key.includes("Style")
+                                ) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='solid'>Solid</option>
+                                    <option value='double'>Double</option>
+                                    <option value='dotted'>Dotted</option>
+                                    <option value='dashed'>Dashed</option>
+                                    <option value='groove'>Groove</option>
+                                    <option value='none'>None</option>
+                                    <option value='hidden'>Hidden</option>
+                                    <option value='ridge'>Ridge</option>
+                                    <option value='inset'>Inset</option>
+                                    <option value='outset'>Outset</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "textShadowSize") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='small'>2px</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key.includes("overflow")) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='visible'>Visible</option>
+                                    <option value='hidden'>Hidden</option>
+                                    <option value='clip'>Clip</option>
+                                    <option value='scroll'>Scroll</option>
+                                    <option value='auto'>Auto</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+                                   <input
+                                    type='text'
+                                    placeholder='Enter A Value In Pixels'
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }
+                                    name={key}
+                                   />
+                                  </label>
+                                 );
+                                }
+                               })}
+
+                              {gridLevel &&
+                               Object.keys(filtered).length === 0 &&
+                               Object.keys(css).map((key) => {
+                                if (key.includes("Color")) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option>Set Color...</option>
+                                    <option value={pallet && pallet.primary}>
+                                     Primary
+                                    </option>
+                                    <option value={pallet && pallet.dark}>
+                                     Dark
+                                    </option>
+                                    <option value={pallet && pallet.light}>
+                                     Light
+                                    </option>
+                                    <option value={pallet && pallet.danger}>
+                                     Danger
+                                    </option>
+                                    <option value={pallet && pallet.success}>
+                                     Success
+                                    </option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "position") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='fixed'>Fixed</option>
+                                    <option value='relative'>Relative</option>
+                                    <option value='absolute'>Absolute</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "backgroundRepeat") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='repeatX'>Repeat X</option>
+                                    <option value='repeatY'>Repeat Y</option>
+                                    <option value='repeat'>Repeat</option>
+                                    <option value='space'>Space</option>
+                                    <option value='round'>Round</option>
+                                    <option value='noRepeat'>No Repeat</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "backgroundPosition") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='center'>Center</option>
+                                    <option value='left'>Left</option>
+                                    <option value='right'>Right</option>
+                                    <option value='top'>Top</option>
+                                    <option value='bottom'>Bottom</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "backgroundSize") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='cover'>Cover</option>
+                                    <option value='contain'>Contain</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "display") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='block'>Block</option>
+                                    <option value='inline'>Inline</option>
+                                    <option value='inline-block'>
+                                     Inline Block
+                                    </option>
+                                    <option value='flex'>Flex</option>
+                                    <option value='none'>None</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "textDecorationLine") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='none'>None</option>
+                                    <option value='underline'>Underline</option>
+                                    <option value='overline'>Overline</option>
+                                    <option value='line-through'>
+                                     Line Through
+                                    </option>
+                                    <option value='blink'>Blink</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "textDecorationStyle") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='solid'>Solid</option>
+                                    <option value='double'>Double</option>
+                                    <option value='dotted'>Dotted</option>
+                                    <option value='dashed'>Dashed</option>
+                                    <option value='wavy'>Wavy</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "transition") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <button
+                                    className='btn btn-sm btn-dark'
+                                    onClick={() => addBodyCellTransition(i)}>
+                                    + Transition
+                                   </button>
+                                   <div
+                                    className='card'
+                                    style={{
+                                     overflowY: "scroll",
+                                     overflowX: "scroll",
+                                    }}>
+                                    {css.transition.map(
+                                     (
+                                      {
+                                       property,
+                                       duration,
+                                       timingFunction,
+                                       cubicNs,
+                                       delay,
+                                      },
+                                      index
+                                     ) => (
+                                      <div key={index} className='card'>
+                                       <h5>Transition Property</h5>
+                                       <select
+                                        name='property'
+                                        value={property}
+                                        onChange={(e) =>
+                                         onChangeBodyCell(
+                                          i,
+                                          e,
+                                          "transition",
+                                          index
+                                         )
+                                        }>
+                                        <option value='translate'>
+                                         Translate
+                                        </option>
+                                        <option value='transform'>
+                                         Transform
+                                        </option>
+                                        <option value='height'>Height</option>
+                                        <option value='width'>Width</option>
+                                        <option value='border-left-color'>
+                                         Border Left Color
+                                        </option>
+                                        <option value='border-left-width'>
+                                         Border Left Width
+                                        </option>
+                                        <option value='background-color'>
+                                         Background Color
+                                        </option>
+                                        <option value='background-position'>
+                                         Background Position
+                                        </option>
+                                        <option value='background-size'>
+                                         Background Size
+                                        </option>
+                                        <option value='border-bottom-color'>
+                                         Border Bottom Color
+                                        </option>
+                                        <option value='border-bottom-left-radius'>
+                                         Border Bottom Left Radius
+                                        </option>
+                                        <option value='border-bottom-right-radius'>
+                                         Border Bottom Right Radius
+                                        </option>
+                                        <option value='border-bottom-width'>
+                                         Border Bottom Width
+                                        </option>
+                                        <option value='border-radius'>
+                                         Border Radius
+                                        </option>
+                                        <option value='border-right'>
+                                         Border Right
+                                        </option>
+                                        <option value='border-right-color'>
+                                         Border Right Color
+                                        </option>
+                                        <option value='border-right-width'>
+                                         Border Right Width
+                                        </option>
+                                        <option value='border-color'>
+                                         Border Color
+                                        </option>
+                                        <option value='border-width'>
+                                         Border Width
+                                        </option>
+                                        <option value='border-top-color'>
+                                         Border Top Color
+                                        </option>
+                                        <option value='border-top-left-radius'>
+                                         Border Top Left Radius
+                                        </option>
+                                        <option value='border-top-right-radius'>
+                                         Border Top Right Radius
+                                        </option>
+                                        <option value='border-top-width'>
+                                         Border Top Width
+                                        </option>
+                                        <option value='box-shadow'>
+                                         Box Shadow
+                                        </option>
+                                        <option value='font'>Font</option>
+                                        <option value='font-size'>
+                                         Font Size
+                                        </option>
+                                        <option value='flex'>Flex</option>
+                                        <option value='font-weight'>
+                                         Font Weight
+                                        </option>
+                                        <option value='line-height'>
+                                         Line Height
+                                        </option>
+                                        <option value='margin-bottom'>
+                                         Margin Bottom
+                                        </option>
+                                        <option value='margin'>Margin</option>
+                                        <option value='margin-left'>
+                                         Margin Left
+                                        </option>
+                                        <option value='margin-top'>
+                                         Margin Top
+                                        </option>
+                                        <option value='margin-right'>
+                                         Margin Right
+                                        </option>
+                                        <option value='opacity'>Opacity</option>
+                                        <option value='outline'>Outline</option>
+                                        <option value='padding-left'>
+                                         Padding Left
+                                        </option>
+                                        <option value='padding-right'>
+                                         Padding Right
+                                        </option>
+                                        <option value='padding-top'>
+                                         Padding Top
+                                        </option>
+                                        <option value='z-index'>Z Index</option>
+                                        <option value='padding-bottom'>
+                                         Padding Bottom
+                                        </option>
+                                        <option value='top'>Top</option>
+                                        <option value='left'>Left</option>
+                                        <option value='right'>Right</option>
+                                        <option value='bottom'>Bottom</option>
+                                       </select>
+                                       <h5>Transition Timing</h5>
+                                       <input
+                                        type='text'
+                                        name='duration'
+                                        onChange={(e) =>
+                                         onChangeBodyCell(
+                                          i,
+                                          e,
+                                          "transition",
+                                          index
+                                         )
+                                        }
+                                        value={duration}
+                                        placeholder='Enter A Value in seconds'
+                                       />
+                                       <h5>Transition Function</h5>
+                                       <select
+                                        name='timingFunction'
+                                        value={timingFunction}
+                                        onChange={(e) =>
+                                         onChangeBodyCell(
+                                          i,
+                                          e,
+                                          "transition",
+                                          index
+                                         )
+                                        }>
+                                        <option></option>
+                                        <option value='ease'>Ease</option>
+                                        <option value='ease-in'>Ease In</option>
+                                        <option value='ease-in-out'>
+                                         Ease In Out
+                                        </option>
+                                        <option value='step-end'>
+                                         Step End
+                                        </option>
+                                        <option value='step-start'>
+                                         Step Start
+                                        </option>
+                                        <option value='cubic-bezier'>
+                                         Cubic Bezier
+                                        </option>
+                                        <option value='inherit'>Inherit</option>
+                                        <option value='initial'>Initial</option>
+                                       </select>
+                                       <h5>Transition Delay</h5>
+                                       <input
+                                        type='text'
+                                        name='delay'
+                                        value={delay}
+                                        onChange={(e) =>
+                                         onChangeBodyCell(
+                                          i,
+                                          e,
+                                          "transition",
+                                          index
+                                         )
+                                        }
+                                        placeholder='Enter A Value in seconds'
+                                       />
+
+                                       {timingFunction === "cubic-bezier" &&
+                                        Object.keys(cubicNs).map((n) => (
+                                         <div>
+                                          <h5>Cubic Bez (n,n,n,n)</h5>
+                                          <div key={n}>
+                                           <h5>N {parseInt(n) + 1}</h5>
+                                           <Slider
+                                            axis='x'
+                                            x={
+                                             css["transition"][index][
+                                              "cubicNs"
+                                             ][n]
+                                            }
+                                            value={parseFloat(
+                                             css["transition"][index][
+                                              "cubicNs"
+                                             ][n]
+                                            )}
+                                            onChange={(e) =>
+                                             onChangeBodyCell(
+                                              i,
+                                              e,
+                                              "cubicNs",
+                                              index,
+                                              n
+                                             )
+                                            }
+                                            orientation='horizontal'
+                                            name={n}
+                                            min={0}
+                                            max={1}
+                                            step={0.01}
+                                           />
+                                          </div>
+                                         </div>
+                                        ))}
+                                      </div>
+                                     )
+                                    )}
+                                   </div>
+                                  </label>
+                                 );
+                                } else if (key === "transform") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "transform")
+                                    }
+                                    multiple>
+                                    <option></option>
+                                    <option value='rotateX'>RotateX</option>
+                                    <option value='rotateY'>RotateY</option>
+                                    <option value='skewX'>SkewX</option>
+                                    <option value='skewY'>SkewY</option>
+                                    <option value='rotateZ'>RotateZ</option>
+                                    <option value='scaleX'>ScaleX</option>
+                                    <option value='scaleY'>ScaleY</option>
+                                    <option value='translateX'>
+                                     TranslateX
+                                    </option>
+                                    <option value='translateY'>
+                                     TranslateY
+                                    </option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "transformProp") {
+                                 return (
+                                  <label key={key}>
+                                   <div className='card all-center'>
+                                    <h5>Current Transform Order</h5>
+                                    <ul>
+                                     {css.transform.map((m) => (
+                                      <li key={m}>{m}</li>
+                                     ))}
+                                    </ul>
+                                   </div>
+                                   {css.transform.includes("rotateZ") && (
+                                    <div>
+                                     <h5>Rotate Z Deg</h5>
+                                     <Slider
+                                      axis='x'
+                                      x={css["transformProp"]["rotateZ"]}
+                                      value={parseInt(
+                                       css["transformProp"]["rotateZ"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "rotateZ",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='rotateZ'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("rotateX") && (
+                                    <div>
+                                     <h5>Rotate X Deg</h5>
+                                     <Slider
+                                      axis='x'
+                                      x={css["transformProp"]["rotateX"]}
+                                      value={parseInt(
+                                       css["transformProp"]["rotateX"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "rotateX",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='rotateX'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("translateX") && (
+                                    <div>
+                                     <h5>Translate X Px</h5>
+                                     <input
+                                      type='text'
+                                      name='translateX'
+                                      value={css["transformProp"]["translateX"]}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e.target.value,
+                                        "translateX",
+                                        "transformProp"
+                                       )
+                                      }
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("translateY") && (
+                                    <div>
+                                     <h5>Translate Y Px</h5>
+                                     <input
+                                      type='text'
+                                      name='translateY'
+                                      value={css["transformProp"]["translateY"]}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e.target.value,
+                                        "translateY",
+                                        "transformProp"
+                                       )
+                                      }
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("rotateY") && (
+                                    <div>
+                                     <h5>Rotate Y Deg</h5>
+                                     <Slider
+                                      value={parseInt(
+                                       css["transformProp"]["rotateY"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "rotateY",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='rotateY'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("skewX") && (
+                                    <div>
+                                     <h5>Skew X Deg</h5>
+                                     <Slider
+                                      value={parseInt(
+                                       css["transformProp"]["skewX"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "skewX",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='skewX'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("skewY") && (
+                                    <div>
+                                     <h5>Skew Y Deg</h5>
+                                     <Slider
+                                      value={parseInt(
+                                       css["transformProp"]["skewY"]
+                                      )}
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e,
+                                        "skewY",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='skewY'
+                                      min={0}
+                                      max={360}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                   {css.transform.includes("scaleX") && (
+                                    <div>
+                                     <h5>Scale X Percent</h5>
+                                     <Slider
+                                      value={
+                                       parseInt(
+                                        css["transformProp"]["scaleX"]
+                                       ) * 10
+                                      }
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e / 10,
+                                        "scaleX",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='scaleX'
+                                      min={-100}
+                                      max={200}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}{" "}
+                                   {css.transform.includes("scaleY") && (
+                                    <div>
+                                     <h5>Scale Y Percent</h5>
+                                     <Slider
+                                      value={
+                                       parseInt(
+                                        css["transformProp"]["scaleY"]
+                                       ) * 10
+                                      }
+                                      onChange={(e) =>
+                                       onChangeBodyCell(
+                                        i,
+                                        e / 10,
+                                        "scaleY",
+                                        "transformProp"
+                                       )
+                                      }
+                                      orientation='horizontal'
+                                      name='scaleY'
+                                      min={-100}
+                                      max={200}
+                                      step={1}
+                                     />
+                                    </div>
+                                   )}
+                                  </label>
+                                 );
+                                } else if (key === "animation") {
+                                 return (
+                                  <label key={key}>
+                                   <div className='card'>
+                                    <button
+                                     className='btn btn-sm btn-dark'
+                                     onClick={() => addBodyCellAnimation(i)}>
+                                     + Animation
+                                    </button>
+                                    <h5>Current Animation Order</h5>
+                                    <ul>
+                                     {css.animation.length > 0 &&
+                                      css.animation.map(
+                                       (
+                                        {
+                                         animationName,
+                                         animationDuration,
+                                         animationTimingFunction,
+                                         animationDelay,
+                                         animationIterationCount,
+                                         animationDirection,
+                                         animationFillMode,
+                                         cubicNs,
+                                         keyframes,
+                                        },
+                                        index
+                                       ) => (
+                                        <div>
+                                         <h5>Animation Name</h5>
+                                         <input
+                                          type='text'
+                                          name='animationName'
+                                          value={animationName}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }
+                                         />
+                                         <h5>Animation Duration</h5>
+                                         <input
+                                          type='text'
+                                          name='animationDuration'
+                                          value={animationDuration}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }
+                                         />
+                                         <h5>Animation Function</h5>
+                                         <select
+                                          name='animationTimingFunction'
+                                          value={animationTimingFunction}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }>
+                                          <option></option>
+                                          <option value='ease'>Ease</option>
+                                          <option value='ease-in'>
+                                           Ease In
+                                          </option>
+                                          <option value='ease-in-out'>
+                                           Ease In Out
+                                          </option>
+                                          <option value='step-end'>
+                                           Step End
+                                          </option>
+                                          <option value='step-start'>
+                                           Step Start
+                                          </option>
+                                          <option value='cubic-bezier'>
+                                           Cubic Bezier
+                                          </option>
+                                          <option value='steps'>Steps</option>
+                                          <option value='inherit'>
+                                           Inherit
+                                          </option>
+                                          <option value='initial'>
+                                           Initial
+                                          </option>
+                                         </select>
+
+                                         {animationTimingFunction ===
+                                          "cubic-bezier" &&
+                                          Object.keys(cubicNs).map((n) => (
+                                           <div>
+                                            <h5>Cubic Bez (n,n,n,n)</h5>
+                                            <div key={n}>
+                                             <h5>N {parseInt(n) + 1}</h5>
+                                             <Slider
+                                              axis='x'
+                                              x={
+                                               css["animation"][index][
+                                                "cubicNs"
+                                               ][n]
+                                              }
+                                              value={parseFloat(
+                                               css["animation"][index][
+                                                "cubicNs"
+                                               ][n]
+                                              )}
+                                              onChange={(e) =>
+                                               onChangeBodyCell(
+                                                i,
+                                                e,
+                                                "cubicNs",
+                                                index,
+                                                n,
+                                                "animation"
+                                               )
+                                              }
+                                              orientation='horizontal'
+                                              name={n}
+                                              min={0}
+                                              max={1}
+                                              step={0.01}
+                                             />
+                                            </div>
+                                           </div>
+                                          ))}
+                                         <h5>Animation Delay</h5>
+                                         <input
+                                          placeholder='enter a value in seconds'
+                                          type='text'
+                                          name='animationDelay'
+                                          value={animationDelay}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }
+                                         />
+                                         <h5>Animation Iteration Count</h5>
+
+                                         <i style={{ fontSize: "8px" }}>
+                                          Typing the value "infinite" will do
+                                          what you imagine it does.
+                                         </i>
+                                         <input
+                                          placeholder='Positive Integers Only'
+                                          type='text'
+                                          name='animationIterationCount'
+                                          value={animationIterationCount}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }
+                                         />
+
+                                         <h5>Animation Direction</h5>
+                                         <select
+                                          name='animationDirection'
+                                          value={animationDirection}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }>
+                                          <option></option>
+                                          <option value='normal'>Normal</option>
+                                          <option value='reverse'>
+                                           Reverse
+                                          </option>
+                                          <option value='alternate'>
+                                           Alternate
+                                          </option>
+                                          <option value='reverse'>
+                                           Alternate Reverse
+                                          </option>
+                                          <option value='inherit'>
+                                           Inherit
+                                          </option>
+                                         </select>
+                                         <h5>Animation Fill Mode</h5>
+                                         <select
+                                          name='animationFillMode'
+                                          value={animationFillMode}
+                                          onChange={(e) =>
+                                           onChangeBodyCell(
+                                            i,
+                                            e,
+                                            "animation",
+                                            index
+                                           )
+                                          }>
+                                          <option></option>
+                                          <option value='none'>None</option>
+                                          <option value='forward'>
+                                           Forward
+                                          </option>
+                                          <option value='backward'>
+                                           Backward
+                                          </option>
+                                          <option value='both'>Both</option>
+                                          <option value='inherit'>
+                                           Inherit
+                                          </option>
+                                         </select>
+
+                                         <h5>Key Frames</h5>
+                                         <button
+                                          className='btn btn-sm btn-dark'
+                                          onClick={() =>
+                                           addBodyCellAnimationKeyframe(
+                                            i,
+                                            index
+                                           )
+                                          }>
+                                          + Keyframe
+                                         </button>
+
+                                         {keyframes.map(
+                                          (
+                                           { completionPercent, properties },
+                                           ind
+                                          ) => (
+                                           <div>
+                                            <h5>Completion Percentage </h5>
+                                            <i style={{ fontSize: "8px" }}>
+                                             (all animations require a 0 and
+                                             100)
+                                            </i>
+                                            <input
+                                             placeholder='enter a value from 0 to 100'
+                                             type='text'
+                                             name='completionPercent'
+                                             value={completionPercent}
+                                             onChange={(e) =>
+                                              onChangeBodyCell(
+                                               i,
+                                               e,
+                                               "animationkey",
+                                               index,
+                                               ind
+                                              )
+                                             }
+                                            />
+                                            <button
+                                             className='btn btn-sm btn-dark'
+                                             onClick={() =>
+                                              addBodyCellAnimationKeyframeProperty(
+                                               i,
+                                               index,
+                                               ind
+                                              )
+                                             }>
+                                             + Property
+                                            </button>
+
+                                            {properties.map(
+                                             (
+                                              {
+                                               propName,
+                                               propValue,
+                                               shadowValues,
+                                               transValues,
+                                              },
+                                              indy
+                                             ) => (
+                                              <div>
+                                               <select
+                                                name='propName'
+                                                value={propName}
+                                                onChange={(e) =>
+                                                 onChangeBodyCell(
+                                                  i,
+                                                  e,
+                                                  "animationkeyprop",
+                                                  index,
+                                                  ind,
+                                                  indy
+                                                 )
+                                                }>
+                                                <option value='transform'>
+                                                 Transform
+                                                </option>
+                                                <option value='height'>
+                                                 Height
+                                                </option>
+                                                <option value='width'>
+                                                 Width
+                                                </option>
+                                                <option value='border-left-color'>
+                                                 Border Left Color
+                                                </option>
+                                                <option value='border-left-width'>
+                                                 Border Left Width
+                                                </option>
+                                                <option value='background-color'>
+                                                 Background Color
+                                                </option>
+                                                <option value='background-position'>
+                                                 Background Position
+                                                </option>
+                                                <option value='background-size'>
+                                                 Background Size
+                                                </option>
+                                                <option value='border-bottom-color'>
+                                                 Border Bottom Color
+                                                </option>
+                                                <option value='border-bottom-left-radius'>
+                                                 Border Bottom Left Radius
+                                                </option>
+                                                <option value='border-bottom-right-radius'>
+                                                 Border Bottom Right Radius
+                                                </option>
+                                                <option value='border-bottom-width'>
+                                                 Border Bottom Width
+                                                </option>
+                                                <option value='border-radius'>
+                                                 Border Radius
+                                                </option>
+                                                <option value='border-right'>
+                                                 Border Right
+                                                </option>
+                                                <option value='border-right-color'>
+                                                 Border Right Color
+                                                </option>
+                                                <option value='border-right-width'>
+                                                 Border Right Width
+                                                </option>
+                                                <option value='border-color'>
+                                                 Border Color
+                                                </option>
+                                                <option value='border-width'>
+                                                 Border Width
+                                                </option>
+                                                <option value='border-top-color'>
+                                                 Border Top Color
+                                                </option>
+                                                <option value='border-top-left-radius'>
+                                                 Border Top Left Radius
+                                                </option>
+                                                <option value='border-top-right-radius'>
+                                                 Border Top Right Radius
+                                                </option>
+                                                <option value='border-top-width'>
+                                                 Border Top Width
+                                                </option>
+                                                <option value='box-shadow'>
+                                                 Box Shadow
+                                                </option>
+                                                <option value='font'>
+                                                 Font
+                                                </option>
+                                                <option value='font-size'>
+                                                 Font Size
+                                                </option>
+
+                                                <option value='font-weight'>
+                                                 Font Weight
+                                                </option>
+                                                <option value='line-height'>
+                                                 Line Height
+                                                </option>
+                                                <option value='margin-bottom'>
+                                                 Margin Bottom
+                                                </option>
+                                                <option value='margin'>
+                                                 Margin
+                                                </option>
+                                                <option value='margin-left'>
+                                                 Margin Left
+                                                </option>
+                                                <option value='margin-top'>
+                                                 Margin Top
+                                                </option>
+                                                <option value='margin-right'>
+                                                 Margin Right
+                                                </option>
+                                                <option value='opacity'>
+                                                 Opacity
+                                                </option>
+
+                                                <option value='padding-left'>
+                                                 Padding Left
+                                                </option>
+                                                <option value='padding-right'>
+                                                 Padding Right
+                                                </option>
+                                                <option value='padding-top'>
+                                                 Padding Top
+                                                </option>
+                                                <option value='z-index'>
+                                                 Z Index
+                                                </option>
+                                                <option value='padding-bottom'>
+                                                 Padding Bottom
+                                                </option>
+                                                <option value='top'>Top</option>
+                                                <option value='left'>
+                                                 Left
+                                                </option>
+                                                <option value='right'>
+                                                 Right
+                                                </option>
+                                                <option value='bottom'>
+                                                 Bottom
+                                                </option>
+                                               </select>
+                                               {propName.includes("width") ||
+                                               propName.includes("height") ||
+                                               propName.includes("size") ||
+                                               propName.includes("weight") ||
+                                               propName.includes("margin") ||
+                                               propName.includes("padding") ||
+                                               propName === "top" ||
+                                               propName === "bottom" ||
+                                               propName === "left" ||
+                                               propName === "right" ? (
+                                                <input
+                                                 placeholder='enter a value in pixels'
+                                                 type='text'
+                                                 name='propValue'
+                                                 value={propValue}
+                                                 onChange={(e) =>
+                                                  onChangeBodyCell(
+                                                   i,
+                                                   e,
+                                                   "animationkeyprop",
+                                                   index,
+                                                   ind,
+                                                   indy
+                                                  )
+                                                 }
+                                                />
+                                               ) : (
+                                                ""
+                                               )}
+
+                                               {propName === "transform" ? (
+                                                <div>
+                                                 <h5>Rotate Z Deg</h5>
+                                                 <Slider
+                                                  axis='x'
+                                                  x={parseInt(
+                                                   transValues.rotateZ
+                                                  )}
+                                                  name='rotateZ'
+                                                  value={parseInt(
+                                                   transValues.rotateZ
+                                                  )}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "rotateZ",
+                                                    "slider"
+                                                   )
+                                                  }
+                                                  orientation='horizontal'
+                                                  min={0}
+                                                  max={360}
+                                                  step={1}
+                                                 />
+
+                                                 <h5>Rotate X Deg</h5>
+                                                 <Slider
+                                                  axis='x'
+                                                  x={parseInt(
+                                                   transValues.rotateX
+                                                  )}
+                                                  name='rotateX'
+                                                  value={parseInt(
+                                                   transValues.rotateX
+                                                  )}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "rotateX",
+                                                    "slider"
+                                                   )
+                                                  }
+                                                  orientation='horizontal'
+                                                  min={0}
+                                                  max={360}
+                                                  step={1}
+                                                 />
+
+                                                 <h5>Translate X Px</h5>
+                                                 <input
+                                                  type='text'
+                                                  name='translateX'
+                                                  value={transValues.translateX}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "translateX"
+                                                   )
+                                                  }
+                                                 />
+
+                                                 <h5>Translate Y Px</h5>
+                                                 <input
+                                                  type='text'
+                                                  name='translateY'
+                                                  value={transValues.translateY}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "translateY"
+                                                   )
+                                                  }
+                                                 />
+
+                                                 <h5>Rotate Y Deg</h5>
+                                                 <Slider
+                                                  x={parseInt(
+                                                   transValues.rotateY
+                                                  )}
+                                                  name='rotateY'
+                                                  value={parseInt(
+                                                   transValues.rotateY
+                                                  )}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "rotateY",
+                                                    "slider"
+                                                   )
+                                                  }
+                                                  orientation='horizontal'
+                                                  min={0}
+                                                  max={360}
+                                                  step={1}
+                                                 />
+
+                                                 <h5>Skew X Deg</h5>
+                                                 <Slider
+                                                  x={parseInt(
+                                                   transValues.skewX
+                                                  )}
+                                                  name='skewX'
+                                                  value={parseInt(
+                                                   transValues.skewX
+                                                  )}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "skewX",
+                                                    "slider"
+                                                   )
+                                                  }
+                                                  orientation='horizontal'
+                                                  name='skewX'
+                                                  min={0}
+                                                  max={360}
+                                                  step={1}
+                                                 />
+
+                                                 <h5>Skew Y Deg</h5>
+                                                 <Slider
+                                                  x={parseInt(
+                                                   transValues.skewY
+                                                  )}
+                                                  name='skewY'
+                                                  value={transValues.skewY}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "skewY",
+                                                    "slider"
+                                                   )
+                                                  }
+                                                  orientation='horizontal'
+                                                  min={0}
+                                                  max={360}
+                                                  step={1}
+                                                 />
+
+                                                 <h5>Scale X Percent</h5>
+                                                 <Slider
+                                                  x={parseFloat(
+                                                   transValues.scaleX
+                                                  )}
+                                                  name='scaleX'
+                                                  value={transValues.scaleX}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "scaleX",
+                                                    "slider"
+                                                   )
+                                                  }
+                                                  orientation='horizontal'
+                                                  min={-1}
+                                                  max={2}
+                                                  step={0.01}
+                                                 />
+
+                                                 <h5>Scale Y Percent</h5>
+                                                 <Slider
+                                                  x={parseFloat(
+                                                   transValues.scaleY
+                                                  )}
+                                                  name='scaleY'
+                                                  value={transValues.scaleY}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "scaleY",
+                                                    "slider"
+                                                   )
+                                                  }
+                                                  orientation='horizontal'
+                                                  name='scaleY'
+                                                  min={-1}
+                                                  max={2}
+                                                  step={0.01}
+                                                 />
+                                                </div>
+                                               ) : (
+                                                ""
+                                               )}
+
+                                               {propName ===
+                                               "background-position" ? (
+                                                <select
+                                                 name='propValue'
+                                                 value={propValue}
+                                                 onChange={(e) =>
+                                                  onChangeBodyCell(
+                                                   i,
+                                                   e,
+                                                   "animationkeyprop",
+                                                   index,
+                                                   ind,
+                                                   indy
+                                                  )
+                                                 }>
+                                                 <option></option>
+                                                 <option value='center'>
+                                                  Center
+                                                 </option>
+                                                 <option value='left'>
+                                                  Left
+                                                 </option>
+                                                 <option value='right'>
+                                                  Right
+                                                 </option>
+                                                 <option value='top'>
+                                                  Top
+                                                 </option>
+                                                 <option value='bottom'>
+                                                  Bottom
+                                                 </option>
+                                                </select>
+                                               ) : (
+                                                ""
+                                               )}
+
+                                               {propName.includes("shadow") ? (
+                                                <div>
+                                                 <h5>Horizontal Shadow</h5>
+                                                 <input
+                                                  placeholder='enter a value in pixels'
+                                                  type='text'
+                                                  name='horizontalShadow'
+                                                  value={
+                                                   shadowValues.horizontalShadow
+                                                  }
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "boxshadow"
+                                                   )
+                                                  }
+                                                 />
+                                                 <h5>Vertical Shadow</h5>
+                                                 <input
+                                                  placeholder='enter a value in pixels'
+                                                  type='text'
+                                                  name='verticalShadow'
+                                                  value={
+                                                   shadowValues.verticalShadow
+                                                  }
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "boxshadow"
+                                                   )
+                                                  }
+                                                 />
+                                                 <h5>Shadow Blur</h5>
+                                                 <input
+                                                  placeholder='enter a value in pixels'
+                                                  type='text'
+                                                  name='blurShadow'
+                                                  value={
+                                                   shadowValues.blurShadow
+                                                  }
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "boxshadow"
+                                                   )
+                                                  }
+                                                 />
+                                                 <h5>Shadow Spread</h5>
+                                                 <input
+                                                  placeholder='enter a value in pixels'
+                                                  type='text'
+                                                  name='spreadShadow'
+                                                  value={
+                                                   shadowValues.spreadShadow
+                                                  }
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "boxshadow"
+                                                   )
+                                                  }
+                                                 />
+                                                 <h5>Shadow Direction</h5>
+                                                 <select
+                                                  name='shadowDirection'
+                                                  value={
+                                                   shadowValues.shadowDirection
+                                                  }
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "boxshadow"
+                                                   )
+                                                  }>
+                                                  <option></option>
+                                                  <option value='cover'>
+                                                   Inset
+                                                  </option>
+                                                  <option value='contain'>
+                                                   Outset
+                                                  </option>
+                                                 </select>
+                                                 <h5>Shadow Color</h5>
+                                                 <select
+                                                  name='shadowColor'
+                                                  value={
+                                                   shadowValues.shadowColor
+                                                  }
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "boxshadow"
+                                                   )
+                                                  }>
+                                                  <option>Set Color...</option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.primary
+                                                   }>
+                                                   Primary
+                                                  </option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.dark
+                                                   }>
+                                                   Dark
+                                                  </option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.light
+                                                   }>
+                                                   Light
+                                                  </option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.danger
+                                                   }>
+                                                   Danger
+                                                  </option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.success
+                                                   }>
+                                                   Success
+                                                  </option>
+                                                 </select>
+                                                </div>
+                                               ) : (
+                                                ""
+                                               )}
+
+                                               {propName ===
+                                               "background-size" ? (
+                                                <select
+                                                 name='propValue'
+                                                 value={propValue}
+                                                 onChange={(e) =>
+                                                  onChangeBodyCell(
+                                                   i,
+                                                   e,
+                                                   "animationkeyprop",
+                                                   index,
+                                                   ind,
+                                                   indy
+                                                  )
+                                                 }>
+                                                 <option></option>
+                                                 <option value='cover'>
+                                                  Cover
+                                                 </option>
+                                                 <option value='contain'>
+                                                  Contain
+                                                 </option>
+                                                </select>
+                                               ) : (
+                                                ""
+                                               )}
+
+                                               {propName === "font" ? (
+                                                <div>
+                                                 <h5>Current Font</h5>
+                                                 <input
+                                                  type='text'
+                                                  value={propValue}
+                                                 />
+                                                 <button
+                                                  className='btn btn-dark btn-sm'
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    "font",
+                                                    font
+                                                   )
+                                                  }>
+                                                  Set Font
+                                                 </button>
+                                                </div>
+                                               ) : (
+                                                ""
+                                               )}
+
+                                               {propName.includes("opacity") ||
+                                               propName.includes("radius") ? (
+                                                <Slider
+                                                 axis='x'
+                                                 x={css["animation"][index]}
+                                                 value={parseFloat(
+                                                  css["animation"][index]
+                                                 )}
+                                                 onChange={(e) =>
+                                                  onChangeBodyCell(
+                                                   i,
+                                                   e,
+                                                   "animationkeyprop",
+                                                   index,
+                                                   ind,
+                                                   indy
+                                                  )
+                                                 }
+                                                 orientation='horizontal'
+                                                 name='n'
+                                                 min={0}
+                                                 max={1}
+                                                 step={0.01}
+                                                />
+                                               ) : (
+                                                ""
+                                               )}
+
+                                               {propName.includes("color") && (
+                                                <select
+                                                 name='propValue'
+                                                 value={propValue}
+                                                 onChange={(e) =>
+                                                  onChangeBodyCell(
+                                                   i,
+                                                   e,
+                                                   "animationkeyprop",
+                                                   index,
+                                                   ind,
+                                                   indy
+                                                  )
+                                                 }>
+                                                 <option>Set Color...</option>
+                                                 <option
+                                                  value={
+                                                   pallet && pallet.primary
+                                                  }>
+                                                  Primary
+                                                 </option>
+                                                 <option
+                                                  value={pallet && pallet.dark}>
+                                                  Dark
+                                                 </option>
+                                                 <option
+                                                  value={
+                                                   pallet && pallet.light
+                                                  }>
+                                                  Light
+                                                 </option>
+                                                 <option
+                                                  value={
+                                                   pallet && pallet.danger
+                                                  }>
+                                                  Danger
+                                                 </option>
+                                                 <option
+                                                  value={
+                                                   pallet && pallet.success
+                                                  }>
+                                                  Success
+                                                 </option>
+                                                </select>
+                                               )}
+                                              </div>
+                                             )
+                                            )}
+                                           </div>
+                                          )
+                                         )}
+                                        </div>
+                                       )
+                                      )}
+                                    </ul>
+                                   </div>
+                                  </label>
+                                 );
+                                } else if (key === "fontSize") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='5px'>XX Small</option>
+                                    <option value='7px'>X Small</option>
+                                    <option value='11px'>Small</option>
+                                    <option value='16px'>Medium</option>
+                                    <option value='24px'>Large</option>
+                                    <option value='36px'>X Large</option>
+                                    <option value='54px'>XX Large</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key.includes("Inset")) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option>Outer</option>
+                                    <option value='inset'>Inset</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "fontWeight") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option value='100'>100</option>
+                                    <option value='200'>200</option>
+                                    <option value='300'>300</option>
+                                    <option value='400'>400</option>
+                                    <option value='500'>500</option>
+                                    <option value='600'>600</option>
+                                    <option value='700'>700</option>
+                                    <option value='800'>800</option>
+                                    <option value='900'>900</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "opacity") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+                                   <Slider
+                                    axis='x'
+                                    x={css.opacity}
+                                    value={parseInt(css[key])}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "opacity", "slider")
+                                    }
+                                    orientation='horizontal'
+                                    min={0}
+                                    max={100}
+                                    step={1}
+                                   />
+                                  </label>
+                                 );
+                                } else if (key.includes("Radius")) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+                                   <Slider
+                                    value={parseInt(css[key])}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, key, "slider")
+                                    }
+                                    orientation='horizontal'
+                                    min={0}
+                                    max={50}
+                                    step={0.5}
+                                   />
+                                  </label>
+                                 );
+                                } else if (key === "textAlign") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+
+                                    <option value='start'>Start</option>
+                                    <option value='end'>End</option>
+                                    <option value='left'>Left</option>
+                                    <option value='right'>Right</option>
+                                    <option value='center'>Center</option>
+                                    <option value='justify'>Justify</option>
+                                    <option value='matchParent'>
+                                     Match Parent
+                                    </option>
+                                    <option value='justifyAll'>
+                                     Justify All
+                                    </option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (
+                                 key.includes("border") &&
+                                 key.includes("Style")
+                                ) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='solid'>Solid</option>
+                                    <option value='double'>Double</option>
+                                    <option value='dotted'>Dotted</option>
+                                    <option value='dashed'>Dashed</option>
+                                    <option value='groove'>Groove</option>
+                                    <option value='none'>None</option>
+                                    <option value='hidden'>Hidden</option>
+                                    <option value='ridge'>Ridge</option>
+                                    <option value='inset'>Inset</option>
+                                    <option value='outset'>Outset</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key === "textShadowSize") {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='small'>2px</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else if (key.includes("overflow")) {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+
+                                   <select
+                                    name={key}
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }>
+                                    <option></option>
+                                    <option value='visible'>Visible</option>
+                                    <option value='hidden'>Hidden</option>
+                                    <option value='clip'>Clip</option>
+                                    <option value='scroll'>Scroll</option>
+                                    <option value='auto'>Auto</option>
+                                   </select>
+                                  </label>
+                                 );
+                                } else {
+                                 return (
+                                  <label key={key}>
+                                   {key
+                                    .replace(/([A-Z])/g, " $1")
+                                    .replace(/^./, function (str) {
+                                     return str.toUpperCase();
+                                    })}
+                                   <input
+                                    type='text'
+                                    placeholder='Enter A Value In Pixels'
+                                    value={css[key]}
+                                    onChange={(e) =>
+                                     onChangeBodyCell(i, e, "css")
+                                    }
+                                    name={key}
+                                   />
+                                  </label>
+                                 );
+                                }
+                               })}
+                              {!gridLevel &&
+                               Object.keys(filtered).length === 0 &&
+                               currentResults.map((css) =>
+                                Object.keys(css).map((key) => {
+                                 const index = contentCss.findIndex(
+                                  (x) => x.id === css.id
+                                 );
+                                 if (key.includes("Color")) {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option>Set Color...</option>
+                                     <option value={pallet && pallet.primary}>
+                                      Primary
+                                     </option>
+                                     <option value={pallet && pallet.dark}>
+                                      Dark
+                                     </option>
+                                     <option value={pallet && pallet.light}>
+                                      Light
+                                     </option>
+                                     <option value={pallet && pallet.danger}>
+                                      Danger
+                                     </option>
+                                     <option value={pallet && pallet.success}>
+                                      Success
+                                     </option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "position") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='fixed'>Fixed</option>
+                                     <option value='relative'>Relative</option>
+                                     <option value='absolute'>Absolute</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "backgroundRepeat") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='repeatX'>Repeat X</option>
+                                     <option value='repeatY'>Repeat Y</option>
+                                     <option value='repeat'>Repeat</option>
+                                     <option value='space'>Space</option>
+                                     <option value='round'>Round</option>
+                                     <option value='noRepeat'>No Repeat</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "backgroundPosition") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='center'>Center</option>
+                                     <option value='left'>Left</option>
+                                     <option value='right'>Right</option>
+                                     <option value='top'>Top</option>
+                                     <option value='bottom'>Bottom</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "backgroundSize") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='cover'>Cover</option>
+                                     <option value='contain'>Contain</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "display") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='block'>Block</option>
+                                     <option value='inline'>Inline</option>
+                                     <option value='inline-block'>
+                                      Inline Block
+                                     </option>
+                                     <option value='flex'>Flex</option>
+                                     <option value='none'>None</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "textDecorationLine") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='none'>None</option>
+                                     <option value='underline'>
+                                      Underline
+                                     </option>
+                                     <option value='overline'>Overline</option>
+                                     <option value='line-through'>
+                                      Line Through
+                                     </option>
+                                     <option value='blink'>Blink</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "textDecorationStyle") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='solid'>Solid</option>
+                                     <option value='double'>Double</option>
+                                     <option value='dotted'>Dotted</option>
+                                     <option value='dashed'>Dashed</option>
+                                     <option value='wavy'>Wavy</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "transition") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <button
+                                     className='btn btn-sm btn-dark'
+                                     onClick={() =>
+                                      addCellChildTransition(i, index)
+                                     }>
+                                     + Transition
+                                    </button>
+                                    <div
+                                     className='card'
+                                     style={{
+                                      overflowY: "scroll",
+                                      overflowX: "scroll",
+                                     }}>
+                                     {css.transition.map(
+                                      (
+                                       {
+                                        property,
+                                        duration,
+                                        timingFunction,
+                                        cubicNs,
+                                        delay,
+                                       },
+                                       ind
+                                      ) => (
+                                       <div key={index} className='card'>
+                                        <h5>Transition Property</h5>
+                                        <select
+                                         onChange={(e) =>
+                                          onChangeBodyCell(
+                                           i,
+                                           e,
+                                           "conttransition",
+                                           index,
+                                           ind
+                                          )
+                                         }
+                                         value={property}
+                                         name='property'>
+                                         <option value=''></option>
+                                         {Object.keys(flatCss)
+                                          .filter(
+                                           (e) =>
+                                            typeof parseInt(e) === "number"
+                                          )
+                                          .map((c, i) => (
+                                           <option key={i} value={c}>
+                                            {c}
+                                           </option>
+                                          ))}
+                                         <option value='color'>Color</option>
+                                         <option value='background-color'>
+                                          Background Color
+                                         </option>
+                                        </select>
+                                        <h5>Transition Timing</h5>
+                                        <input
+                                         type='text'
+                                         name='duration'
+                                         onChange={(e) =>
+                                          onChangeBodyCell(
+                                           i,
+                                           e,
+                                           "conttransition",
+                                           index,
+                                           ind
+                                          )
+                                         }
+                                         value={duration}
+                                         placeholder='Enter A Value in seconds'
+                                        />
+                                        <h5>Transition Function</h5>
+                                        <select
+                                         name='timingFunction'
+                                         value={timingFunction}
+                                         onChange={(e) =>
+                                          onChangeBodyCell(
+                                           i,
+                                           e,
+                                           "conttransition",
+                                           index,
+                                           ind
+                                          )
+                                         }>
+                                         <option></option>
+                                         <option value='ease'>Ease</option>
+                                         <option value='ease-in'>
+                                          Ease In
+                                         </option>
+                                         <option value='ease-in-out'>
+                                          Ease In Out
+                                         </option>
+                                         <option value='step-end'>
+                                          Step End
+                                         </option>
+                                         <option value='step-start'>
+                                          Step Start
+                                         </option>
+                                         <option value='cubic-bezier'>
+                                          Cubic Bezier
+                                         </option>
+                                         <option value='inherit'>
+                                          Inherit
+                                         </option>
+                                         <option value='initial'>
+                                          Initial
+                                         </option>
+                                        </select>
+                                        <h5>Transition Delay</h5>
+                                        <input
+                                         type='text'
+                                         name='delay'
+                                         value={delay}
+                                         onChange={(e) =>
+                                          onChangeBodyCell(
+                                           i,
+                                           e,
+                                           "conttransition",
+                                           index,
+                                           ind
+                                          )
+                                         }
+                                         placeholder='Enter A Value in seconds'
+                                        />
+
+                                        {timingFunction === "cubic-bezier" &&
+                                         Object.keys(cubicNs).map((n) => (
+                                          <div>
+                                           <h5>Cubic Bez (n,n,n,n)</h5>
+                                           <div key={n}>
+                                            <h5>N {parseInt(n) + 1}</h5>
+                                            <Slider
+                                             axis='x'
+                                             x={
+                                              css["transition"][ind]["cubicNs"][
+                                               n
+                                              ]
+                                             }
+                                             value={parseFloat(
+                                              css["transition"][ind]["cubicNs"][
+                                               n
+                                              ]
+                                             )}
+                                             onChange={(e) =>
+                                              onChangeBodyCell(
+                                               i,
+                                               e,
+                                               "contcubicNs",
+                                               index,
+                                               ind,
+                                               n
+                                              )
+                                             }
+                                             orientation='horizontal'
+                                             name={n}
+                                             min={0}
+                                             max={1}
+                                             step={0.01}
+                                            />
+                                           </div>
+                                          </div>
+                                         ))}
+                                       </div>
+                                      )
+                                     )}
+                                    </div>
+                                   </label>
+                                  );
+                                 } else if (key === "transform") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "conttransform",
+                                       index
+                                      )
+                                     }
+                                     multiple>
+                                     <option></option>
+                                     <option value='rotateX'>RotateX</option>
+                                     <option value='rotateY'>RotateY</option>
+                                     <option value='skewX'>SkewX</option>
+                                     <option value='skewY'>SkewY</option>
+                                     <option value='rotateZ'>RotateZ</option>
+                                     <option value='scaleX'>ScaleX</option>
+                                     <option value='scaleY'>ScaleY</option>
+                                     <option value='translateX'>
+                                      TranslateX
+                                     </option>
+                                     <option value='translateY'>
+                                      TranslateY
+                                     </option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "transformProp") {
+                                  return (
+                                   <label key={key}>
+                                    <div className='card all-center'>
+                                     <h5>Current Transform Order</h5>
+                                     <ul>
+                                      {css.transform.map((m) => (
+                                       <li key={m}>{m}</li>
+                                      ))}
+                                     </ul>
+                                    </div>
+                                    {css.transform.includes("rotateZ") && (
+                                     <div>
+                                      <h5>Rotate Z Deg</h5>
+                                      <Slider
+                                       axis='x'
+                                       x={css["transformProp"]["rotateZ"]}
+                                       value={parseInt(
+                                        css["transformProp"]["rotateZ"]
+                                       )}
+                                       onChange={(e) =>
+                                        onChangeBodyCell(
+                                         i,
+                                         e,
+                                         "rotateZ",
+                                         "conttransformProp",
+                                         index
+                                        )
+                                       }
+                                       orientation='horizontal'
+                                       name='rotateZ'
+                                       min={0}
+                                       max={360}
+                                       step={1}
+                                      />
+                                     </div>
+                                    )}
+                                    {css.transform.includes("rotateX") && (
+                                     <div>
+                                      <h5>Rotate X Deg</h5>
+                                      <Slider
+                                       axis='x'
+                                       x={css["transformProp"]["rotateX"]}
+                                       value={parseInt(
+                                        css["transformProp"]["rotateX"]
+                                       )}
+                                       onChange={(e) =>
+                                        onChangeBodyCell(
+                                         i,
+                                         e,
+                                         "rotateX",
+                                         "conttransformProp",
+                                         index
+                                        )
+                                       }
+                                       orientation='horizontal'
+                                       name='rotateX'
+                                       min={0}
+                                       max={360}
+                                       step={1}
+                                      />
+                                     </div>
+                                    )}
+                                    {css.transform.includes("translateX") && (
+                                     <div>
+                                      <h5>Translate X Px</h5>
+                                      <input
+                                       type='text'
+                                       name='translateX'
+                                       value={
+                                        css["transformProp"]["translateX"]
+                                       }
+                                       onChange={(e) =>
+                                        onChangeBodyCell(
+                                         i,
+                                         e.target.value,
+                                         "translateX",
+                                         "conttransformProp",
+                                         index
+                                        )
+                                       }
+                                      />
+                                     </div>
+                                    )}
+                                    {css.transform.includes("translateY") && (
+                                     <div>
+                                      <h5>Translate Y Px</h5>
+                                      <input
+                                       type='text'
+                                       name='translateY'
+                                       value={
+                                        css["transformProp"]["translateY"]
+                                       }
+                                       onChange={(e) =>
+                                        onChangeBodyCell(
+                                         i,
+                                         e.target.value,
+                                         "translateY",
+                                         "conttransformProp",
+                                         index
+                                        )
+                                       }
+                                      />
+                                     </div>
+                                    )}
+                                    {css.transform.includes("rotateY") && (
+                                     <div>
+                                      <h5>Rotate Y Deg</h5>
+                                      <Slider
+                                       value={parseInt(
+                                        css["transformProp"]["rotateY"]
+                                       )}
+                                       onChange={(e) =>
+                                        onChangeBodyCell(
+                                         i,
+                                         e,
+                                         "rotateY",
+                                         "conttransformProp",
+                                         index
+                                        )
+                                       }
+                                       orientation='horizontal'
+                                       name='rotateY'
+                                       min={0}
+                                       max={360}
+                                       step={1}
+                                      />
+                                     </div>
+                                    )}
+                                    {css.transform.includes("skewX") && (
+                                     <div>
+                                      <h5>Skew X Deg</h5>
+                                      <Slider
+                                       value={parseInt(
+                                        css["transformProp"]["skewX"]
+                                       )}
+                                       onChange={(e) =>
+                                        onChangeBodyCell(
+                                         i,
+                                         e,
+                                         "skewX",
+                                         "conttransformProp",
+                                         index
+                                        )
+                                       }
+                                       orientation='horizontal'
+                                       name='skewX'
+                                       min={0}
+                                       max={360}
+                                       step={1}
+                                      />
+                                     </div>
+                                    )}
+                                    {css.transform.includes("skewY") && (
+                                     <div>
+                                      <h5>Skew Y Deg</h5>
+                                      <Slider
+                                       value={parseInt(
+                                        css["transformProp"]["skewY"]
+                                       )}
+                                       onChange={(e) =>
+                                        onChangeBodyCell(
+                                         i,
+                                         e,
+                                         "skewY",
+                                         "conttransformProp",
+                                         index
+                                        )
+                                       }
+                                       orientation='horizontal'
+                                       name='skewY'
+                                       min={0}
+                                       max={360}
+                                       step={1}
+                                      />
+                                     </div>
+                                    )}
+                                    {css.transform.includes("scaleX") && (
+                                     <div>
+                                      <h5>Scale X Percent</h5>
+                                      <Slider
+                                       value={
+                                        parseInt(
+                                         css["transformProp"]["scaleX"]
+                                        ) * 10
+                                       }
+                                       onChange={(e) =>
+                                        onChangeBodyCell(
+                                         i,
+                                         e / 10,
+                                         "scaleX",
+                                         "conttransformProp",
+                                         index
+                                        )
+                                       }
+                                       orientation='horizontal'
+                                       name='scaleX'
+                                       min={-100}
+                                       max={200}
+                                       step={1}
+                                      />
+                                     </div>
+                                    )}{" "}
+                                    {css.transform.includes("scaleY") && (
+                                     <div>
+                                      <h5>Scale Y Percent</h5>
+                                      <Slider
+                                       value={
+                                        parseInt(
+                                         css["transformProp"]["scaleY"]
+                                        ) * 10
+                                       }
+                                       onChange={(e) =>
+                                        onChangeBodyCell(
+                                         i,
+                                         e / 10,
+                                         "scaleY",
+                                         "conttransformProp",
+                                         index
+                                        )
+                                       }
+                                       orientation='horizontal'
+                                       name='scaleY'
+                                       min={-100}
+                                       max={200}
+                                       step={1}
+                                      />
+                                     </div>
+                                    )}
+                                   </label>
+                                  );
+                                 } else if (key === "animation") {
+                                  return (
+                                   <label key={key}>
+                                    <div className='card'>
+                                     <button
+                                      className='btn btn-sm btn-dark'
+                                      onClick={() =>
+                                       addCellChildAnimation(i, index)
+                                      }>
+                                      + Animation
+                                     </button>
+                                     <h5>Current Animation Order</h5>
+                                     <ul>
+                                      {css.animation.length > 0 &&
+                                       css.animation.map(
+                                        (
+                                         {
+                                          animationName,
+                                          animationDuration,
+                                          animationTimingFunction,
+                                          animationDelay,
+                                          cubicNs,
+                                          steps,
+                                          animationIterationCount,
+                                          animationDirection,
+                                          animationFillMode,
+                                          keyframes,
+                                         },
+                                         ind
+                                        ) => (
+                                         <div key={ind}>
+                                          <h5>Animation Name</h5>
+                                          <input
+                                           type='text'
+                                           name='animationName'
+                                           value={animationName}
+                                           onChange={(e) =>
+                                            onChangeBodyCell(
+                                             i,
+                                             e,
+                                             "contanimation",
+                                             index,
+                                             ind
+                                            )
+                                           }
+                                          />
+                                          <h5>Animation Duration</h5>
+                                          <input
+                                           type='text'
+                                           name='animationDuration'
+                                           value={animationDuration}
+                                           onChange={(e) =>
+                                            onChangeBodyCell(
+                                             i,
+                                             e,
+                                             "contanimation",
+                                             index,
+                                             ind
+                                            )
+                                           }
+                                          />
+                                          <h5>Animation Function</h5>
+                                          <select
+                                           name='animationTimingFunction'
+                                           value={animationTimingFunction}
+                                           onChange={(e) =>
+                                            onChangeBodyCell(
+                                             i,
+                                             e,
+                                             "contanimation",
+                                             index,
+                                             ind
+                                            )
+                                           }>
+                                           <option></option>
+                                           <option value='ease'>Ease</option>
+                                           <option value='ease-in'>
+                                            Ease In
+                                           </option>
+                                           <option value='ease-in-out'>
+                                            Ease In Out
+                                           </option>
+                                           <option value='step-end'>
+                                            Step End
+                                           </option>
+                                           <option value='step-start'>
+                                            Step Start
+                                           </option>
+                                           <option value='cubic-bezier'>
+                                            Cubic Bezier
+                                           </option>
+                                           <option value='steps'>Steps</option>
+                                           <option value='inherit'>
+                                            Inherit
+                                           </option>
+                                           <option value='initial'>
+                                            Initial
+                                           </option>
+                                          </select>
+                                          <h5>Animation Delay</h5>
+                                          <input
+                                           placeholder='enter a value in seconds'
+                                           type='text'
+                                           name='animationDelay'
+                                           value={animationDelay}
+                                           onChange={(e) =>
+                                            onChangeBodyCell(
+                                             i,
+                                             e,
+                                             "contanimation",
+                                             index,
+                                             ind
+                                            )
+                                           }
+                                          />
+                                          <h5>Animation Iteration Count</h5>
+                                          <input
+                                           placeholder='Positive Integers Only'
+                                           type='text'
+                                           name='animationIterationCount'
+                                           value={animationIterationCount}
+                                           onChange={(e) =>
+                                            onChangeBodyCell(
+                                             i,
+                                             e,
+                                             "contanimation",
+                                             index,
+                                             ind
+                                            )
+                                           }
+                                          />
+
+                                          <h5>Animation Direction</h5>
+                                          <select
+                                           name='animationDirection'
+                                           value={animationDirection}
+                                           onChange={(e) =>
+                                            onChangeBodyCell(
+                                             i,
+                                             e,
+                                             "contanimation",
+                                             index,
+                                             ind
+                                            )
+                                           }>
+                                           <option></option>
+                                           <option value='normal'>
+                                            Normal
+                                           </option>
+                                           <option value='reverse'>
+                                            Reverse
+                                           </option>
+                                           <option value='alternate'>
+                                            Alternate
+                                           </option>
+                                           <option value='reverse'>
+                                            Alternate Reverse
+                                           </option>
+                                           <option value='inherit'>
+                                            Inherit
+                                           </option>
+                                          </select>
+                                          <h5>Animation Fill Mode</h5>
+                                          <select
+                                           name='animationFillMode'
+                                           value={animationFillMode}
+                                           onChange={(e) =>
+                                            onChangeBodyCell(
+                                             i,
+                                             e,
+                                             "contanimation",
+                                             index,
+                                             ind
+                                            )
+                                           }>
+                                           <option></option>
+                                           <option value='none'>None</option>
+                                           <option value='forward'>
+                                            Forward
+                                           </option>
+                                           <option value='backward'>
+                                            Backward
+                                           </option>
+                                           <option value='both'>Both</option>
+                                           <option value='inherit'>
+                                            Inherit
+                                           </option>
+                                          </select>
+
+                                          <h5>Key Frames</h5>
+                                          <button
+                                           className='btn btn-sm btn-dark'
+                                           onClick={() =>
+                                            addCellChildAnimationKeyframe(
+                                             i,
+                                             index,
+                                             ind
+                                            )
+                                           }>
+                                           + Keyframe
+                                          </button>
+
+                                          {animationTimingFunction ===
+                                           "cubic-bezier" &&
+                                           Object.keys(cubicNs).map((n) => (
+                                            <div>
+                                             <h5>Cubic Bez (n,n,n,n)</h5>
+                                             <div key={n}>
+                                              <h5>N {parseInt(n) + 1}</h5>
+                                              <Slider
+                                               axis='x'
+                                               x={
+                                                css["animation"][index][
+                                                 "cubicNs"
+                                                ][n]
+                                               }
+                                               value={parseFloat(
+                                                css["animation"][index][
+                                                 "cubicNs"
+                                                ][n]
+                                               )}
+                                               onChange={(e) =>
+                                                onChangeBodyCell(
+                                                 i,
+                                                 e,
+                                                 "cubicNs",
+                                                 index,
+                                                 n
+                                                )
+                                               }
+                                               orientation='horizontal'
+                                               name={n}
+                                               min={0}
+                                               max={1}
+                                               step={0.01}
+                                              />
+                                             </div>
+                                            </div>
+                                           ))}
+
+                                          {keyframes.map(
+                                           (
+                                            { completionPercent, properties },
+                                            indy
+                                           ) => (
+                                            <div>
+                                             <h5>Completion Percentage </h5>
+                                             <i style={{ fontSize: "8px" }}>
+                                              (all animations require a 0 and
+                                              100)
+                                             </i>
+                                             <input
+                                              placeholder='enter a value from 0 to 100'
+                                              type='text'
+                                              name='completionPercent'
+                                              value={completionPercent}
+                                              onChange={(e) =>
+                                               onChangeBodyCell(
+                                                i,
+                                                e,
+                                                "contanimationkey",
+                                                index,
+                                                ind,
+                                                indy
+                                               )
+                                              }
+                                             />
+                                             <button
+                                              className='btn btn-sm btn-dark'
+                                              onClick={() =>
+                                               addCellChildAnimationKeyframeProperty(
+                                                i,
+                                                index,
+                                                ind,
+                                                indy
+                                               )
+                                              }>
+                                              + Property
+                                             </button>
+
+                                             {properties.map(
+                                              (
+                                               {
+                                                propName,
+                                                propValue,
+                                                shadowValues,
+                                                transValues,
+                                               },
+                                               indo
+                                              ) => (
+                                               <div>
+                                                <select
+                                                 name='propName'
+                                                 value={propName}
+                                                 onChange={(e) =>
+                                                  onChangeBodyCell(
+                                                   i,
+                                                   e,
+                                                   "contanimationkeyprop",
+                                                   index,
+                                                   ind,
+                                                   indy,
+                                                   indo
+                                                  )
+                                                 }>
+                                                 <option value='transform'>
+                                                  Transform
+                                                 </option>
+                                                 <option value='height'>
+                                                  Height
+                                                 </option>
+                                                 <option value='width'>
+                                                  Width
+                                                 </option>
+                                                 <option value='border-left-color'>
+                                                  Border Left Color
+                                                 </option>
+                                                 <option value='border-left-width'>
+                                                  Border Left Width
+                                                 </option>
+                                                 <option value='background-color'>
+                                                  Background Color
+                                                 </option>
+                                                 <option value='background-position'>
+                                                  Background Position
+                                                 </option>
+                                                 <option value='background-size'>
+                                                  Background Size
+                                                 </option>
+                                                 <option value='border-bottom-color'>
+                                                  Border Bottom Color
+                                                 </option>
+                                                 <option value='border-bottom-left-radius'>
+                                                  Border Bottom Left Radius
+                                                 </option>
+                                                 <option value='border-bottom-right-radius'>
+                                                  Border Bottom Right Radius
+                                                 </option>
+                                                 <option value='border-bottom-width'>
+                                                  Border Bottom Width
+                                                 </option>
+                                                 <option value='border-radius'>
+                                                  Border Radius
+                                                 </option>
+                                                 <option value='border-right'>
+                                                  Border Right
+                                                 </option>
+                                                 <option value='border-right-color'>
+                                                  Border Right Color
+                                                 </option>
+                                                 <option value='border-right-width'>
+                                                  Border Right Width
+                                                 </option>
+                                                 <option value='border-color'>
+                                                  Border Color
+                                                 </option>
+                                                 <option value='border-width'>
+                                                  Border Width
+                                                 </option>
+                                                 <option value='border-top-color'>
+                                                  Border Top Color
+                                                 </option>
+                                                 <option value='border-top-left-radius'>
+                                                  Border Top Left Radius
+                                                 </option>
+                                                 <option value='border-top-right-radius'>
+                                                  Border Top Right Radius
+                                                 </option>
+                                                 <option value='border-top-width'>
+                                                  Border Top Width
+                                                 </option>
+                                                 <option value='box-shadow'>
+                                                  Box Shadow
+                                                 </option>
+                                                 <option value='font'>
+                                                  Font
+                                                 </option>
+                                                 <option value='font-size'>
+                                                  Font Size
+                                                 </option>
+
+                                                 <option value='font-weight'>
+                                                  Font Weight
+                                                 </option>
+                                                 <option value='line-height'>
+                                                  Line Height
+                                                 </option>
+                                                 <option value='margin-bottom'>
+                                                  Margin Bottom
+                                                 </option>
+                                                 <option value='margin'>
+                                                  Margin
+                                                 </option>
+                                                 <option value='margin-left'>
+                                                  Margin Left
+                                                 </option>
+                                                 <option value='margin-top'>
+                                                  Margin Top
+                                                 </option>
+                                                 <option value='margin-right'>
+                                                  Margin Right
+                                                 </option>
+                                                 <option value='opacity'>
+                                                  Opacity
+                                                 </option>
+
+                                                 <option value='padding-left'>
+                                                  Padding Left
+                                                 </option>
+                                                 <option value='padding-right'>
+                                                  Padding Right
+                                                 </option>
+                                                 <option value='padding-top'>
+                                                  Padding Top
+                                                 </option>
+                                                 <option value='z-index'>
+                                                  Z Index
+                                                 </option>
+                                                 <option value='padding-bottom'>
+                                                  Padding Bottom
+                                                 </option>
+                                                 <option value='top'>
+                                                  Top
+                                                 </option>
+                                                 <option value='left'>
+                                                  Left
+                                                 </option>
+                                                 <option value='right'>
+                                                  Right
+                                                 </option>
+                                                 <option value='bottom'>
+                                                  Bottom
+                                                 </option>
+                                                </select>
+                                                {propName.includes("width") ||
+                                                propName.includes("height") ||
+                                                propName.includes("size") ||
+                                                propName.includes("weight") ||
+                                                propName.includes("margin") ||
+                                                propName.includes("padding") ||
+                                                propName === "top" ||
+                                                propName === "bottom" ||
+                                                propName === "left" ||
+                                                propName === "right" ? (
+                                                 <input
+                                                  placeholder='enter a value in pixels'
+                                                  type='text'
+                                                  name='propValue'
+                                                  value={propValue}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "contanimationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    indo
+                                                   )
+                                                  }
+                                                 />
+                                                ) : (
+                                                 ""
+                                                )}
+
+                                                {propName === "transform" ? (
+                                                 <div>
+                                                  <h5>Rotate Z Deg</h5>
+                                                  <Slider
+                                                   axis='x'
+                                                   x={parseInt(
+                                                    transValues.rotateZ
+                                                   )}
+                                                   name='rotateZ'
+                                                   value={parseInt(
+                                                    transValues.rotateZ
+                                                   )}
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "rotateZ",
+                                                     "slider"
+                                                    )
+                                                   }
+                                                   orientation='horizontal'
+                                                   min={0}
+                                                   max={360}
+                                                   step={1}
+                                                  />
+
+                                                  <h5>Rotate X Deg</h5>
+                                                  <Slider
+                                                   axis='x'
+                                                   x={parseInt(
+                                                    transValues.rotateX
+                                                   )}
+                                                   name='rotateX'
+                                                   value={parseInt(
+                                                    transValues.rotateX
+                                                   )}
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "rotateX",
+                                                     "slider"
+                                                    )
+                                                   }
+                                                   orientation='horizontal'
+                                                   min={0}
+                                                   max={360}
+                                                   step={1}
+                                                  />
+
+                                                  <h5>Translate X Px</h5>
+                                                  <input
+                                                   type='text'
+                                                   name='translateX'
+                                                   value={
+                                                    transValues.translateX
+                                                   }
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "translateX"
+                                                    )
+                                                   }
+                                                  />
+
+                                                  <h5>Translate Y Px</h5>
+                                                  <input
+                                                   type='text'
+                                                   name='translateY'
+                                                   value={
+                                                    transValues.translateY
+                                                   }
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "translateY"
+                                                    )
+                                                   }
+                                                  />
+
+                                                  <h5>Rotate Y Deg</h5>
+                                                  <Slider
+                                                   x={parseInt(
+                                                    transValues.rotateY
+                                                   )}
+                                                   name='rotateY'
+                                                   value={parseInt(
+                                                    transValues.rotateY
+                                                   )}
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "rotateY",
+                                                     "slider"
+                                                    )
+                                                   }
+                                                   orientation='horizontal'
+                                                   min={0}
+                                                   max={360}
+                                                   step={1}
+                                                  />
+
+                                                  <h5>Skew X Deg</h5>
+                                                  <Slider
+                                                   x={parseInt(
+                                                    transValues.skewX
+                                                   )}
+                                                   name='skewX'
+                                                   value={parseInt(
+                                                    transValues.skewX
+                                                   )}
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "skewX",
+                                                     "slider"
+                                                    )
+                                                   }
+                                                   orientation='horizontal'
+                                                   name='skewX'
+                                                   min={0}
+                                                   max={360}
+                                                   step={1}
+                                                  />
+
+                                                  <h5>Skew Y Deg</h5>
+                                                  <Slider
+                                                   x={parseInt(
+                                                    transValues.skewY
+                                                   )}
+                                                   name='skewY'
+                                                   value={transValues.skewY}
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "skewY",
+                                                     "slider"
+                                                    )
+                                                   }
+                                                   orientation='horizontal'
+                                                   min={0}
+                                                   max={360}
+                                                   step={1}
+                                                  />
+
+                                                  <h5>Scale X Percent</h5>
+                                                  <Slider
+                                                   x={parseFloat(
+                                                    transValues.scaleX
+                                                   )}
+                                                   name='scaleX'
+                                                   value={transValues.scaleX}
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "scaleX",
+                                                     "slider"
+                                                    )
+                                                   }
+                                                   orientation='horizontal'
+                                                   min={-1}
+                                                   max={2}
+                                                   step={0.01}
+                                                  />
+
+                                                  <h5>Scale Y Percent</h5>
+                                                  <Slider
+                                                   x={parseFloat(
+                                                    transValues.scaleY
+                                                   )}
+                                                   name='scaleY'
+                                                   value={transValues.scaleY}
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "scaleY",
+                                                     "slider"
+                                                    )
+                                                   }
+                                                   orientation='horizontal'
+                                                   name='scaleY'
+                                                   min={-1}
+                                                   max={2}
+                                                   step={0.01}
+                                                  />
+                                                 </div>
+                                                ) : (
+                                                 ""
+                                                )}
+
+                                                {propName ===
+                                                "background-position" ? (
+                                                 <select
+                                                  name='propValue'
+                                                  value={propValue}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "contanimationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    indo
+                                                   )
+                                                  }>
+                                                  <option></option>
+                                                  <option value='center'>
+                                                   Center
+                                                  </option>
+                                                  <option value='left'>
+                                                   Left
+                                                  </option>
+                                                  <option value='right'>
+                                                   Right
+                                                  </option>
+                                                  <option value='top'>
+                                                   Top
+                                                  </option>
+                                                  <option value='bottom'>
+                                                   Bottom
+                                                  </option>
+                                                 </select>
+                                                ) : (
+                                                 ""
+                                                )}
+
+                                                {propName.includes("shadow") ? (
+                                                 <div>
+                                                  <h5>Horizontal Shadow</h5>
+                                                  <input
+                                                   placeholder='enter a value in pixels'
+                                                   type='text'
+                                                   name='horizontalShadow'
+                                                   value={
+                                                    shadowValues.horizontalShadow
+                                                   }
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "boxshadow"
+                                                    )
+                                                   }
+                                                  />
+                                                  <h5>Vertical Shadow</h5>
+                                                  <input
+                                                   placeholder='enter a value in pixels'
+                                                   type='text'
+                                                   name='verticalShadow'
+                                                   value={
+                                                    shadowValues.verticalShadow
+                                                   }
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "boxshadow"
+                                                    )
+                                                   }
+                                                  />
+                                                  <h5>Shadow Blur</h5>
+                                                  <input
+                                                   placeholder='enter a value in pixels'
+                                                   type='text'
+                                                   name='blurShadow'
+                                                   value={
+                                                    shadowValues.blurShadow
+                                                   }
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "boxshadow"
+                                                    )
+                                                   }
+                                                  />
+                                                  <h5>Shadow Spread</h5>
+                                                  <input
+                                                   placeholder='enter a value in pixels'
+                                                   type='text'
+                                                   name='spreadShadow'
+                                                   value={
+                                                    shadowValues.spreadShadow
+                                                   }
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "boxshadow"
+                                                    )
+                                                   }
+                                                  />
+                                                  <h5>Shadow Direction</h5>
+                                                  <select
+                                                   name='shadowDirection'
+                                                   value={
+                                                    shadowValues.shadowDirection
+                                                   }
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "boxshadow"
+                                                    )
+                                                   }>
+                                                   <option></option>
+                                                   <option value='cover'>
+                                                    Inset
+                                                   </option>
+                                                   <option value='contain'>
+                                                    Outset
+                                                   </option>
+                                                  </select>
+                                                  <h5>Shadow Color</h5>
+                                                  <select
+                                                   name='shadowColor'
+                                                   value={
+                                                    shadowValues.shadowColor
+                                                   }
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "boxshadow"
+                                                    )
+                                                   }>
+                                                   <option>Set Color...</option>
+                                                   <option
+                                                    value={
+                                                     pallet && pallet.primary
+                                                    }>
+                                                    Primary
+                                                   </option>
+                                                   <option
+                                                    value={
+                                                     pallet && pallet.dark
+                                                    }>
+                                                    Dark
+                                                   </option>
+                                                   <option
+                                                    value={
+                                                     pallet && pallet.light
+                                                    }>
+                                                    Light
+                                                   </option>
+                                                   <option
+                                                    value={
+                                                     pallet && pallet.danger
+                                                    }>
+                                                    Danger
+                                                   </option>
+                                                   <option
+                                                    value={
+                                                     pallet && pallet.success
+                                                    }>
+                                                    Success
+                                                   </option>
+                                                  </select>
+                                                 </div>
+                                                ) : (
+                                                 ""
+                                                )}
+
+                                                {propName ===
+                                                "background-size" ? (
+                                                 <select
+                                                  name='propValue'
+                                                  value={propValue}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "animationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    indo
+                                                   )
+                                                  }>
+                                                  <option></option>
+                                                  <option value='cover'>
+                                                   Cover
+                                                  </option>
+                                                  <option value='contain'>
+                                                   Contain
+                                                  </option>
+                                                 </select>
+                                                ) : (
+                                                 ""
+                                                )}
+
+                                                {propName === "font" ? (
+                                                 <div>
+                                                  <h5>Current Font</h5>
+                                                  <input
+                                                   type='text'
+                                                   value={propValue}
+                                                  />
+                                                  <button
+                                                   className='btn btn-dark btn-sm'
+                                                   onChange={(e) =>
+                                                    onChangeBodyCell(
+                                                     i,
+                                                     e,
+                                                     "contanimationkeyprop",
+                                                     index,
+                                                     ind,
+                                                     indy,
+                                                     indo,
+                                                     "font",
+                                                     font
+                                                    )
+                                                   }>
+                                                   Set Font
+                                                  </button>
+                                                 </div>
+                                                ) : (
+                                                 ""
+                                                )}
+
+                                                {propName.includes("opacity") ||
+                                                propName.includes("radius") ? (
+                                                 <Slider
+                                                  axis='x'
+                                                  x={css["animation"][index]}
+                                                  value={parseFloat(
+                                                   css["animation"][index]
+                                                  )}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "contanimationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    indo
+                                                   )
+                                                  }
+                                                  orientation='horizontal'
+                                                  name='n'
+                                                  min={0}
+                                                  max={1}
+                                                  step={0.01}
+                                                 />
+                                                ) : (
+                                                 ""
+                                                )}
+
+                                                {propName.includes("color") && (
+                                                 <select
+                                                  name='propValue'
+                                                  value={propValue}
+                                                  onChange={(e) =>
+                                                   onChangeBodyCell(
+                                                    i,
+                                                    e,
+                                                    "contanimationkeyprop",
+                                                    index,
+                                                    ind,
+                                                    indy,
+                                                    indo
+                                                   )
+                                                  }>
+                                                  <option>Set Color...</option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.primary
+                                                   }>
+                                                   Primary
+                                                  </option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.dark
+                                                   }>
+                                                   Dark
+                                                  </option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.light
+                                                   }>
+                                                   Light
+                                                  </option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.danger
+                                                   }>
+                                                   Danger
+                                                  </option>
+                                                  <option
+                                                   value={
+                                                    pallet && pallet.success
+                                                   }>
+                                                   Success
+                                                  </option>
+                                                 </select>
+                                                )}
+                                               </div>
+                                              )
+                                             )}
+                                            </div>
+                                           )
+                                          )}
+                                         </div>
+                                        )
+                                       )}
+                                     </ul>
+                                    </div>
+                                   </label>
+                                  );
+                                 } else if (key === "fontSize") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='5px'>XX Small</option>
+                                     <option value='7px'>X Small</option>
+                                     <option value='11px'>Small</option>
+                                     <option value='16px'>Medium</option>
+                                     <option value='24px'>Large</option>
+                                     <option value='36px'>X Large</option>
+                                     <option value='54px'>XX Large</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key.includes("Inset")) {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option>Outer</option>
+                                     <option value='inset'>Inset</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "fontWeight") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option value='100'>100</option>
+                                     <option value='200'>200</option>
+                                     <option value='300'>300</option>
+                                     <option value='400'>400</option>
+                                     <option value='500'>500</option>
+                                     <option value='600'>600</option>
+                                     <option value='700'>700</option>
+                                     <option value='800'>800</option>
+                                     <option value='900'>900</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "opacity") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+                                    <Slider
+                                     axis='x'
+                                     x={css.opacity}
+                                     value={parseInt(css[key])}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "opacity",
+                                       "contentslider",
+                                       index
+                                      )
+                                     }
+                                     orientation='horizontal'
+                                     min={0}
+                                     max={100}
+                                     step={1}
+                                    />
+                                   </label>
+                                  );
+                                 } else if (key.includes("Radius")) {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+                                    <Slider
+                                     value={parseInt(css[key])}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       key,
+                                       "contentslider",
+                                       index
+                                      )
+                                     }
+                                     orientation='horizontal'
+                                     min={0}
+                                     max={50}
+                                     step={0.5}
+                                    />
+                                   </label>
+                                  );
+                                 } else if (key === "textAlign") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+
+                                     <option value='start'>Start</option>
+                                     <option value='end'>End</option>
+                                     <option value='left'>Left</option>
+                                     <option value='right'>Right</option>
+                                     <option value='center'>Center</option>
+                                     <option value='justify'>Justify</option>
+                                     <option value='matchParent'>
+                                      Match Parent
+                                     </option>
+                                     <option value='justifyAll'>
+                                      Justify All
+                                     </option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (
+                                  key.includes("border") &&
+                                  key.includes("Style")
+                                 ) {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='solid'>Solid</option>
+                                     <option value='double'>Double</option>
+                                     <option value='dotted'>Dotted</option>
+                                     <option value='dashed'>Dashed</option>
+                                     <option value='groove'>Groove</option>
+                                     <option value='none'>None</option>
+                                     <option value='hidden'>Hidden</option>
+                                     <option value='ridge'>Ridge</option>
+                                     <option value='inset'>Inset</option>
+                                     <option value='outset'>Outset</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key === "textShadowSize") {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='small'>2px</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else if (key.includes("overflow")) {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+
+                                    <select
+                                     name={key}
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }>
+                                     <option></option>
+                                     <option value='visible'>Visible</option>
+                                     <option value='hidden'>Hidden</option>
+                                     <option value='clip'>Clip</option>
+                                     <option value='scroll'>Scroll</option>
+                                     <option value='auto'>Auto</option>
+                                    </select>
+                                   </label>
+                                  );
+                                 } else {
+                                  return (
+                                   <label key={key}>
+                                    {key
+                                     .replace(/([A-Z])/g, " $1")
+                                     .replace(/^./, function (str) {
+                                      return str.toUpperCase();
+                                     })}
+                                    <input
+                                     type='text'
+                                     placeholder='Enter A Value In Pixels'
+                                     value={css[key]}
+                                     onChange={(e) =>
+                                      onChangeBodyCell(
+                                       i,
+                                       e,
+                                       "contentCss",
+                                       index
+                                      )
+                                     }
+                                     name={key}
+                                    />
+                                   </label>
+                                  );
+                                 }
+                                })
+                               )}
+                             </div>
+                            ) : (
+                             <div>
+                              <h5>Cell Settings</h5>
+                              <select
+                               name='background'
+                               onChange={(e) => {
+                                onChangeBodyCell(i, e);
+                                {
+                                 currentContent &&
+                                  getContentImage(
+                                   currentContent.content,
+                                   i,
+                                   "background",
+                                   "bodyCell"
+                                  );
+                                }
+                                {
+                                 currentContent && clearCurrentContent();
+                                }
+                               }}>
+                               <option>Background</option>
+                               <option value={pallet && pallet.primary}>
+                                Primary
+                               </option>
+                               <option value={pallet && pallet.dark}>
+                                Dark
+                               </option>
+                               <option value={pallet && pallet.light}>
+                                Light
+                               </option>
+                               <option value={pallet && pallet.danger}>
+                                Danger
+                               </option>
+                               <option value={pallet && pallet.success}>
+                                Success
+                               </option>
+                               {currentContent && (
+                                <option value={currentContent.content}>
+                                 Set Image
+                                </option>
+                               )}
+                              </select>
+                              <input
+                               placeholder='Row Span'
+                               type='text'
+                               name='rowSpan'
+                               value={rowSpan}
+                               onChange={(e) => onChangeBodyCell(i, e)}
+                              />
+                              <input
+                               placeholder='Column Span'
+                               type='text'
+                               name='columnSpan'
+                               value={columnSpan}
+                               onChange={(e) => onChangeBodyCell(i, e)}
+                              />
+                              <input
+                               placeholder='top'
+                               type='text'
+                               name='top'
+                               value={top}
+                               onChange={(e) => onChangeBodyCell(i, e)}
+                              />
+                              <input
+                               placeholder='left'
+                               type='text'
+                               name='left'
+                               value={left}
+                               onChange={(e) => onChangeBodyCell(i, e)}
+                              />
+                             </div>
+                            )}
                            </div>
                           ) : (
                            ""
@@ -6541,7 +16289,8 @@ const SecViewer = ({
                                } else
                                 return (
                                  <Fragment>
-                                  <span>
+                                  <span
+                                   style={{ background: "initial !important" }}>
                                    {type === "h" && headingSize === "h1" ? (
                                     <h1
                                      style={{
@@ -6983,10 +16732,8 @@ const SecViewer = ({
                                     <img
                                      alt={name}
                                      src={code}
-                                     style={{
-                                      height: `${height}px`,
-                                      width: `${width}px`,
-                                     }}
+                                     height={`${height}px`}
+                                     width={`${width}px`}
                                     />
                                    ) : (
                                     ""
@@ -7103,7 +16850,7 @@ const SecViewer = ({
       {},
       {
        ...css,
-       animation: "winkies",
+
        boxShadow: `${
         css.boxShaadowHoriz ||
         css.boxShadowVert ||
@@ -7179,7 +16926,6 @@ const SecViewer = ({
             .replaceAll(",", " ")}`
          : "translateX(0px)",
        opacity: css.opacity,
-       height: "",
 
        animation: str`${css.animation
         .filter((a) => a.animationName.length > 0)
@@ -7217,7 +16963,7 @@ const SecViewer = ({
        borderBottomRightRadius: css.borderBottomRightRadius + "%",
        borderTopLeftRadius: css.borderTopLeftRadius + "%",
        borderBottomLeftRadius: css.borderBottomLeftRadius + "%",
-       width: "",
+
        backgroundImage:
         code.length > 0
          ? `url('${code}');`
@@ -7236,7 +16982,7 @@ const SecViewer = ({
       return cl;
      })
      .toString();
-    const ruleString = `.a${id} div:nth-child(${i + 1}){
+    const ruleString = `.a${id} span:nth-child(${i + 1}){
      ${cellRules}}\r`;
 
     return ruleString;
@@ -7505,7 +17251,891 @@ const SecViewer = ({
     .replace("base64", "base64,");
 
    return res;
-  })}`,
+  })}
+  
+    ${subCells.map(({ id, css, contentCss, content, background, code }, i) => {
+     function clean(obj) {
+      for (var propName in obj) {
+       if (
+        obj[propName] === "" ||
+        obj[propName] === true ||
+        obj[propName] === false
+       ) {
+        delete obj[propName];
+       } else if (
+        propName === "boxShadowBottom" ||
+        propName === "boxShadowRight" ||
+        propName === "boxShadowLeft" ||
+        propName === "boxShaadowHoriz" ||
+        propName === "boxShadowColor" ||
+        propName === "textShadowSize" ||
+        propName === "textShadowColor" ||
+        propName === "id" ||
+        propName === "transformProp"
+       ) {
+        delete obj[propName];
+       }
+      }
+      return obj;
+     }
+
+     let img =
+      "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVQYV2NkIAKckTrzn5GQOpAik2cmjHgVwhSBDMOpEFkRToXoirAqxKYIQyEuRSgK8SmCKySkCKyQGEUghQD+Nia8BIDCEQAAAABJRU5ErkJggg==";
+
+     const childRules = contentCss.map((css, i) => {
+      const ruleObj = clean(
+       Object.assign(
+        {},
+        {
+         ...css,
+
+         boxShadow: `${
+          css.boxShaadowHoriz ||
+          css.boxShadowVert ||
+          css.boxShadowSpread ||
+          css.boxShadowBlur
+           ? `${css.boxShaadowHoriz ? css.boxShaadowHoriz : "0px"} ${
+              css.boxShaadowVert ? css.boxShadowVert : "0px"
+             } ${css.boxShaadowBlur ? css.boxShadowBlur : "0px"} ${
+              css.boxShaadowSpread ? css.boxShadowSpread : "0px"
+             } ${css.boxShaadowColor ? css.boxShadowColor : ""} ${
+              css.boxShaadowInset ? css.boxShadowInset : ""
+             }`
+           : `0px 0px 0px 0px`
+         }`,
+         textShadow:
+          css.textShadowSize === "small" &&
+          `-2px -2px 0 ${css.textShadowColor},
+               2px -2px 0 ${css.textShadowColor},
+               -2px 2px 0 ${css.textShadowColor},
+               2px 2px 0 ${css.textShadowColor},
+               -3px 0 0 ${css.textShadowColor},
+               3px 0 0 ${css.textShadowColor},
+               0 -3px 0 ${css.textShadowColor},
+               0 3px 0 ${css.textShadowColor}`,
+         transform:
+          css.transform.length > 0
+           ? str`${css.transform
+              .map((transform) => {
+               if (transform.includes("scale")) {
+                return `${transform}(${
+                 parseInt(
+                  Object.keys(css.transformProp)
+                   .filter((e) => e === transform)
+                   .map((e) => {
+                    const val = css.transformProp[transform];
+                    return val;
+                   })[0]
+                 ) >= 0
+                  ? parseInt(
+                     Object.keys(css.transformProp)
+                      .filter((e) => e === transform)
+                      .map((e) => {
+                       const val = css.transformProp[transform];
+                       return val;
+                      })[0]
+                    )
+                  : 1 -
+                    parseInt(
+                     Object.keys(css.transformProp)
+                      .filter((e) => e === transform)
+                      .map((e) => {
+                       const val = css.transformProp[transform];
+                       return val;
+                      })[0]
+                    ) *
+                     0.1 *
+                     -1
+                })`;
+               } else {
+                return `${transform}(${parseInt(
+                 Object.keys(css.transformProp)
+                  .filter((e) => e === transform)
+                  .map((e) => {
+                   const val = css.transformProp[transform];
+                   return val;
+                  })[0]
+                )}${transform.includes("translate") ? "px" : ""}${
+                 transform.includes("rotate") ? "deg" : ""
+                }${transform.includes("skew") ? "deg" : ""})`;
+               }
+              })
+              .toString()
+              .replaceAll(",", " ")}`
+           : "translateX(0px)",
+         opacity: css.opacity,
+
+         animation: str`${css.animation
+          .filter((a) => a.animationName.length > 0)
+          .map(
+           ({
+            animationName,
+            animationTimingFunction,
+            animationDelay,
+            animationDirection,
+            animationDuration,
+            animationFillMode,
+            animationIterationCount,
+           }) => {
+            const str = `${animationName} ${animationDuration}s ${animationTimingFunction} ${animationIterationCount} ${animationDirection} ${animationFillMode} `;
+            return str;
+           }
+          )}`,
+         transition: str`${css.transition
+          .map(({ property, duration, timingFunction, cubicNs, delay }) => {
+           const transString = `width ${parseFloat(duration)}s ${
+            timingFunction === "cubic-bezier"
+             ? `${timingFunction}(${
+                (parseFloat(cubicNs["0"]),
+                parseFloat(cubicNs["1"]),
+                parseFloat(cubicNs["2"]),
+                parseFloat(cubicNs["3"]))
+               })`
+             : `${timingFunction}`
+           } ${delay && `${parseFloat(delay)}s`}`;
+           return transString;
+          })
+          .toString()}`,
+
+         borderTopRightRadius: css.borderTopRightRadius + "%",
+         borderBottomRightRadius: css.borderBottomRightRadius + "%",
+         borderTopLeftRadius: css.borderTopLeftRadius + "%",
+         borderBottomLeftRadius: css.borderBottomLeftRadius + "%",
+
+         backgroundImage:
+          code.length > 0
+           ? `url('${code}');`
+           : !background.includes("#") && ` url('${img}')`,
+         backgroundColor: background.includes("#") && `${background}`,
+        }
+       )
+      );
+      const cellRules = Object.keys(ruleObj)
+       .map((k, i) => {
+        const rule = Object.values(ruleObj)[i];
+        const property = k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+
+        const cl = `${property}:${rule};\n`;
+
+        return cl;
+       })
+       .toString();
+      const ruleString = `.a${id} span:nth-child(${i + 1}){
+     ${cellRules}}\r`;
+
+      return ruleString;
+     });
+
+     const ruleObj = clean(
+      Object.assign(
+       {},
+       {
+        ...css,
+        boxShadow: `${
+         css.boxShaadowHoriz ||
+         css.boxShadowVert ||
+         css.boxShadowSpread ||
+         css.boxShadowBlur
+          ? `${css.boxShaadowHoriz ? css.boxShaadowHoriz : "0px"} ${
+             css.boxShaadowVert ? css.boxShadowVert : "0px"
+            } ${css.boxShaadowBlur ? css.boxShadowBlur : "0px"} ${
+             css.boxShaadowSpread ? css.boxShadowSpread : "0px"
+            } ${css.boxShaadowColor ? css.boxShadowColor : ""} ${
+             css.boxShaadowInset ? css.boxShadowInset : ""
+            }`
+          : `0px 0px 0px 0px`
+        }`,
+        textShadow:
+         css.textShadowSize === "small" &&
+         `-2px -2px 0 ${css.textShadowColor},
+               2px -2px 0 ${css.textShadowColor},
+               -2px 2px 0 ${css.textShadowColor},
+               2px 2px 0 ${css.textShadowColor},
+               -3px 0 0 ${css.textShadowColor},
+               3px 0 0 ${css.textShadowColor},
+               0 -3px 0 ${css.textShadowColor},
+               0 3px 0 ${css.textShadowColor}`,
+
+        animation: str`${css.animation
+         .filter((a) => a.animationName.length > 0)
+         .map(
+          ({
+           animationName,
+           animationTimingFunction,
+           animationDelay,
+           animationDirection,
+           animationDuration,
+           animationFillMode,
+           animationIterationCount,
+          }) => {
+           const str = `${animationName} ${animationDuration}s ${animationTimingFunction} ${animationIterationCount} ${animationDirection} ${animationFillMode} `;
+           return str;
+          }
+         )}`,
+        transform:
+         css.transform.length > 0
+          ? str`${css.transform
+             .map((transform) => {
+              if (transform.includes("scale")) {
+               return `${transform}(${
+                parseInt(
+                 Object.keys(css.transformProp)
+                  .filter((e) => e === transform)
+                  .map((e) => {
+                   const val = css.transformProp[transform];
+                   return val;
+                  })[0]
+                ) >= 0
+                 ? parseInt(
+                    Object.keys(css.transformProp)
+                     .filter((e) => e === transform)
+                     .map((e) => {
+                      const val = css.transformProp[transform];
+                      return val;
+                     })[0]
+                   )
+                 : 1 -
+                   parseInt(
+                    Object.keys(css.transformProp)
+                     .filter((e) => e === transform)
+                     .map((e) => {
+                      const val = css.transformProp[transform];
+                      return val;
+                     })[0]
+                   ) *
+                    0.1 *
+                    -1
+               })`;
+              } else {
+               return `${transform}(${parseInt(
+                Object.keys(css.transformProp)
+                 .filter((e) => e === transform)
+                 .map((e) => {
+                  const val = css.transformProp[transform];
+                  return val;
+                 })[0]
+               )}${transform.includes("translate") ? "px" : ""}${
+                transform.includes("rotate") ? "deg" : ""
+               }${transform.includes("skew") ? "deg" : ""})`;
+              }
+             })
+             .toString()
+             .replaceAll(",", " ")}`
+          : "translateX(0px)",
+        opacity: css.opacity,
+        height:
+         css.height > 0
+          ? css.height
+          : `${
+             grid.columns[i] &&
+             grid.columns[i].size.length > 0 &&
+             grid.columns[i].size
+            }` +
+            `${
+             grid.columns[i] &&
+             grid.columns[i].unit.length > 0 &&
+             grid.columns[i].unit
+            }`,
+        transition: str`${css.transition
+         .map(({ property, duration, timingFunction, cubicNs, delay }) => {
+          const transString = `width ${parseFloat(duration)}s ${
+           timingFunction === "cubic-bezier"
+            ? `${timingFunction}(${
+               (parseFloat(cubicNs["0"]),
+               parseFloat(cubicNs["1"]),
+               parseFloat(cubicNs["2"]),
+               parseFloat(cubicNs["3"]))
+              })`
+            : `${timingFunction}`
+          } ${delay && `${parseFloat(delay)}s`}`;
+          return transString;
+         })
+         .toString()}`,
+
+        borderTopRightRadius: css.borderTopRightRadius + "%",
+        borderBottomRightRadius: css.borderBottomRightRadius + "%",
+        borderTopLeftRadius: css.borderTopLeftRadius + "%",
+        borderBottomLeftRadius: css.borderBottomLeftRadius + "%",
+        width: css.width
+         ? css.width > 0
+         : `${
+            grid.rows[i] && grid.rows[i].size.length > 0 && grid.rows[i].size
+           }` +
+           `${
+            grid.rows[i] && grid.rows[i].unit.length > 0 && grid.rows[i].unit
+           }`,
+        backgroundImage:
+         code.length > 0
+          ? `url('${code}');`
+          : !background.includes("#") && ` url('${img}')`,
+        backgroundColor: background.includes("#") && `${background}`,
+       }
+      )
+     );
+
+     const cellRules = Object.keys(ruleObj)
+      .map((k, i) => {
+       const rule = Object.values(ruleObj)[i];
+       const property = k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+
+       const cl = `${
+        property.includes("keyframe") ? `@${property}` : `${property}:`
+       }  ${property.includes("keyframe") ? `${rule}` : `${rule};\r`}`;
+
+       return cl;
+      })
+      .reverse()
+      .toString();
+
+     const ruleString = `.a${id} {
+     ${cellRules}}\r`;
+
+     const parentkeyframes = str`${css.animation
+      .filter((a) => a.animationName.length > 0)
+      .map(({ animationName, keyframes }, index) => {
+       const keyframe = `${animationName} {
+          ${keyframes.map(({ completionPercent, properties }, ind) => {
+           const frame = `${completionPercent}% {${properties.map(
+            ({ propName, propValue, shadowValues, transValues }, i) => {
+             let frameString = [];
+             if (propName.includes("transform")) {
+              frameString.push(
+               ` transform: ${Object.keys(transValues)
+
+                .map((k, i) => {
+                 const val = parseFloat(Object.values(transValues)[i]);
+                 const trans = ` ${k}(${val}${k.includes("skew") ? "deg" : ""}${
+                  k.includes("rotate") ? "deg" : ""
+                 }${k.includes("translate") ? "px" : ""}) `;
+                 return trans;
+                })
+                .toString()};`
+              );
+             } else if (propName.includes("shadow")) {
+              frameString.push(
+               ` box-shadow: ${Object.values(shadowValues)
+                .map((v) => {
+                 let val;
+                 typeof v === "number"
+                  ? (val = ` ${parseFloat(v)}px `)
+                  : (val = ` ${v} `);
+                 return val;
+                })
+                .toString()}; `
+              );
+             } else {
+              frameString.push(` ${propName}:${propValue}; `);
+             }
+             return frameString.toString();
+            }
+           )} }\r\n`;
+           return frame;
+          })}
+        }
+        `;
+       return `@keyframes ${keyframe}`;
+      })}`;
+
+     const childkeyframes = str`${contentCss.map(({ animation }, index) => {
+      const frames = animation
+       .filter((a) => a.animationName.length > 0)
+       .map(({ animationName, keyframes }) => {
+        const keyframe = `${animationName} {
+          ${keyframes.map(({ completionPercent, properties }, ind) => {
+           const frame = `${completionPercent}% {${properties.map(
+            ({ propName, propValue, shadowValues, transValues }, i) => {
+             let frameString = [];
+             if (propName.includes("transform")) {
+              frameString.push(
+               ` transform: ${Object.keys(transValues)
+
+                .map((k, i) => {
+                 const val = parseFloat(Object.values(transValues)[i]);
+                 const trans = ` ${k}(${val}${k.includes("skew") ? "deg" : ""}${
+                  k.includes("rotate") ? "deg" : ""
+                 }${k.includes("translate") ? "px" : ""}) `;
+                 return trans;
+                })
+                .toString()};`
+              );
+             } else if (propName.includes("shadow")) {
+              frameString.push(
+               ` box-shadow: ${Object.values(shadowValues)
+                .map((v) => {
+                 let val;
+                 typeof v === "number"
+                  ? (val = ` ${parseFloat(v)}px `)
+                  : (val = ` ${v} `);
+                 return val;
+                })
+                .toString()}; `
+              );
+             } else {
+              frameString.push(` ${propName}:${propValue}; `);
+             }
+             return frameString.toString();
+            }
+           )} }\r\n`;
+           return frame;
+          })}
+        }
+        `;
+        return `@keyframes ${keyframe}`;
+       });
+      return frames;
+     })}`;
+
+     const res = [parentkeyframes, childkeyframes, ruleString, childRules]
+      .toString()
+      .replace(/\,/g, "")
+      .replace("base64", "base64,");
+
+     return res;
+    })}
+  
+    ${bodyCells.map(({ id, css, contentCss, content, background, code }, i) => {
+     function clean(obj) {
+      for (var propName in obj) {
+       if (
+        obj[propName] === "" ||
+        obj[propName] === true ||
+        obj[propName] === false
+       ) {
+        delete obj[propName];
+       } else if (
+        propName === "boxShadowBottom" ||
+        propName === "boxShadowRight" ||
+        propName === "boxShadowLeft" ||
+        propName === "boxShaadowHoriz" ||
+        propName === "boxShadowColor" ||
+        propName === "textShadowSize" ||
+        propName === "textShadowColor" ||
+        propName === "id" ||
+        propName === "transformProp"
+       ) {
+        delete obj[propName];
+       }
+      }
+      return obj;
+     }
+
+     let img =
+      "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVQYV2NkIAKckTrzn5GQOpAik2cmjHgVwhSBDMOpEFkRToXoirAqxKYIQyEuRSgK8SmCKySkCKyQGEUghQD+Nia8BIDCEQAAAABJRU5ErkJggg==";
+
+     const childRules = contentCss.map((css, i) => {
+      const ruleObj = clean(
+       Object.assign(
+        {},
+        {
+         ...css,
+
+         boxShadow: `${
+          css.boxShaadowHoriz ||
+          css.boxShadowVert ||
+          css.boxShadowSpread ||
+          css.boxShadowBlur
+           ? `${css.boxShaadowHoriz ? css.boxShaadowHoriz : "0px"} ${
+              css.boxShaadowVert ? css.boxShadowVert : "0px"
+             } ${css.boxShaadowBlur ? css.boxShadowBlur : "0px"} ${
+              css.boxShaadowSpread ? css.boxShadowSpread : "0px"
+             } ${css.boxShaadowColor ? css.boxShadowColor : ""} ${
+              css.boxShaadowInset ? css.boxShadowInset : ""
+             }`
+           : `0px 0px 0px 0px`
+         }`,
+         textShadow:
+          css.textShadowSize === "small" &&
+          `-2px -2px 0 ${css.textShadowColor},
+               2px -2px 0 ${css.textShadowColor},
+               -2px 2px 0 ${css.textShadowColor},
+               2px 2px 0 ${css.textShadowColor},
+               -3px 0 0 ${css.textShadowColor},
+               3px 0 0 ${css.textShadowColor},
+               0 -3px 0 ${css.textShadowColor},
+               0 3px 0 ${css.textShadowColor}`,
+         transform:
+          css.transform.length > 0
+           ? str`${css.transform
+              .map((transform) => {
+               if (transform.includes("scale")) {
+                return `${transform}(${
+                 parseInt(
+                  Object.keys(css.transformProp)
+                   .filter((e) => e === transform)
+                   .map((e) => {
+                    const val = css.transformProp[transform];
+                    return val;
+                   })[0]
+                 ) >= 0
+                  ? parseInt(
+                     Object.keys(css.transformProp)
+                      .filter((e) => e === transform)
+                      .map((e) => {
+                       const val = css.transformProp[transform];
+                       return val;
+                      })[0]
+                    )
+                  : 1 -
+                    parseInt(
+                     Object.keys(css.transformProp)
+                      .filter((e) => e === transform)
+                      .map((e) => {
+                       const val = css.transformProp[transform];
+                       return val;
+                      })[0]
+                    ) *
+                     0.1 *
+                     -1
+                })`;
+               } else {
+                return `${transform}(${parseInt(
+                 Object.keys(css.transformProp)
+                  .filter((e) => e === transform)
+                  .map((e) => {
+                   const val = css.transformProp[transform];
+                   return val;
+                  })[0]
+                )}${transform.includes("translate") ? "px" : ""}${
+                 transform.includes("rotate") ? "deg" : ""
+                }${transform.includes("skew") ? "deg" : ""})`;
+               }
+              })
+              .toString()
+              .replaceAll(",", " ")}`
+           : "translateX(0px)",
+         opacity: css.opacity,
+
+         animation: str`${css.animation
+          .filter((a) => a.animationName.length > 0)
+          .map(
+           ({
+            animationName,
+            animationTimingFunction,
+            animationDelay,
+            animationDirection,
+            animationDuration,
+            animationFillMode,
+            animationIterationCount,
+           }) => {
+            const str = `${animationName} ${animationDuration}s ${animationTimingFunction} ${animationIterationCount} ${animationDirection} ${animationFillMode} `;
+            return str;
+           }
+          )}`,
+         transition: str`${css.transition
+          .map(({ property, duration, timingFunction, cubicNs, delay }) => {
+           const transString = `width ${parseFloat(duration)}s ${
+            timingFunction === "cubic-bezier"
+             ? `${timingFunction}(${
+                (parseFloat(cubicNs["0"]),
+                parseFloat(cubicNs["1"]),
+                parseFloat(cubicNs["2"]),
+                parseFloat(cubicNs["3"]))
+               })`
+             : `${timingFunction}`
+           } ${delay && `${parseFloat(delay)}s`}`;
+           return transString;
+          })
+          .toString()}`,
+
+         borderTopRightRadius: css.borderTopRightRadius + "%",
+         borderBottomRightRadius: css.borderBottomRightRadius + "%",
+         borderTopLeftRadius: css.borderTopLeftRadius + "%",
+         borderBottomLeftRadius: css.borderBottomLeftRadius + "%",
+
+         backgroundImage:
+          code.length > 0
+           ? `url('${code}');`
+           : !background.includes("#") && ` url('${img}')`,
+         backgroundColor: background.includes("#") && `${background}`,
+        }
+       )
+      );
+      const cellRules = Object.keys(ruleObj)
+       .map((k, i) => {
+        const rule = Object.values(ruleObj)[i];
+        const property = k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+
+        const cl = `${property}:${rule};\n`;
+
+        return cl;
+       })
+       .toString();
+      const ruleString = `.a${id} span:nth-child(${i + 1}){
+     ${cellRules}}\r`;
+
+      return ruleString;
+     });
+
+     const ruleObj = clean(
+      Object.assign(
+       {},
+       {
+        ...css,
+        boxShadow: `${
+         css.boxShaadowHoriz ||
+         css.boxShadowVert ||
+         css.boxShadowSpread ||
+         css.boxShadowBlur
+          ? `${css.boxShaadowHoriz ? css.boxShaadowHoriz : "0px"} ${
+             css.boxShaadowVert ? css.boxShadowVert : "0px"
+            } ${css.boxShaadowBlur ? css.boxShadowBlur : "0px"} ${
+             css.boxShaadowSpread ? css.boxShadowSpread : "0px"
+            } ${css.boxShaadowColor ? css.boxShadowColor : ""} ${
+             css.boxShaadowInset ? css.boxShadowInset : ""
+            }`
+          : `0px 0px 0px 0px`
+        }`,
+        textShadow:
+         css.textShadowSize === "small" &&
+         `-2px -2px 0 ${css.textShadowColor},
+               2px -2px 0 ${css.textShadowColor},
+               -2px 2px 0 ${css.textShadowColor},
+               2px 2px 0 ${css.textShadowColor},
+               -3px 0 0 ${css.textShadowColor},
+               3px 0 0 ${css.textShadowColor},
+               0 -3px 0 ${css.textShadowColor},
+               0 3px 0 ${css.textShadowColor}`,
+
+        animation: str`${css.animation
+         .filter((a) => a.animationName.length > 0)
+         .map(
+          ({
+           animationName,
+           animationTimingFunction,
+           animationDelay,
+           animationDirection,
+           animationDuration,
+           animationFillMode,
+           animationIterationCount,
+          }) => {
+           const str = `${animationName} ${animationDuration}s ${animationTimingFunction} ${animationIterationCount} ${animationDirection} ${animationFillMode} `;
+           return str;
+          }
+         )}`,
+        transform:
+         css.transform.length > 0
+          ? str`${css.transform
+             .map((transform) => {
+              if (transform.includes("scale")) {
+               return `${transform}(${
+                parseInt(
+                 Object.keys(css.transformProp)
+                  .filter((e) => e === transform)
+                  .map((e) => {
+                   const val = css.transformProp[transform];
+                   return val;
+                  })[0]
+                ) >= 0
+                 ? parseInt(
+                    Object.keys(css.transformProp)
+                     .filter((e) => e === transform)
+                     .map((e) => {
+                      const val = css.transformProp[transform];
+                      return val;
+                     })[0]
+                   )
+                 : 1 -
+                   parseInt(
+                    Object.keys(css.transformProp)
+                     .filter((e) => e === transform)
+                     .map((e) => {
+                      const val = css.transformProp[transform];
+                      return val;
+                     })[0]
+                   ) *
+                    0.1 *
+                    -1
+               })`;
+              } else {
+               return `${transform}(${parseInt(
+                Object.keys(css.transformProp)
+                 .filter((e) => e === transform)
+                 .map((e) => {
+                  const val = css.transformProp[transform];
+                  return val;
+                 })[0]
+               )}${transform.includes("translate") ? "px" : ""}${
+                transform.includes("rotate") ? "deg" : ""
+               }${transform.includes("skew") ? "deg" : ""})`;
+              }
+             })
+             .toString()
+             .replaceAll(",", " ")}`
+          : "translateX(0px)",
+        opacity: css.opacity,
+        height:
+         css.height > 0
+          ? css.height
+          : `${
+             grid.columns[i] &&
+             grid.columns[i].size.length > 0 &&
+             grid.columns[i].size
+            }` +
+            `${
+             grid.columns[i] &&
+             grid.columns[i].unit.length > 0 &&
+             grid.columns[i].unit
+            }`,
+        transition: str`${css.transition
+         .map(({ property, duration, timingFunction, cubicNs, delay }) => {
+          const transString = `width ${parseFloat(duration)}s ${
+           timingFunction === "cubic-bezier"
+            ? `${timingFunction}(${
+               (parseFloat(cubicNs["0"]),
+               parseFloat(cubicNs["1"]),
+               parseFloat(cubicNs["2"]),
+               parseFloat(cubicNs["3"]))
+              })`
+            : `${timingFunction}`
+          } ${delay && `${parseFloat(delay)}s`}`;
+          return transString;
+         })
+         .toString()}`,
+
+        borderTopRightRadius: css.borderTopRightRadius + "%",
+        borderBottomRightRadius: css.borderBottomRightRadius + "%",
+        borderTopLeftRadius: css.borderTopLeftRadius + "%",
+        borderBottomLeftRadius: css.borderBottomLeftRadius + "%",
+        width: css.width
+         ? css.width > 0
+         : `${
+            grid.rows[i] && grid.rows[i].size.length > 0 && grid.rows[i].size
+           }` +
+           `${
+            grid.rows[i] && grid.rows[i].unit.length > 0 && grid.rows[i].unit
+           }`,
+        backgroundImage:
+         code.length > 0
+          ? `url('${code}');`
+          : !background.includes("#") && ` url('${img}')`,
+        backgroundColor: background.includes("#") && `${background}`,
+       }
+      )
+     );
+
+     const cellRules = Object.keys(ruleObj)
+      .map((k, i) => {
+       const rule = Object.values(ruleObj)[i];
+       const property = k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+
+       const cl = `${
+        property.includes("keyframe") ? `@${property}` : `${property}:`
+       }  ${property.includes("keyframe") ? `${rule}` : `${rule};\r`}`;
+
+       return cl;
+      })
+      .reverse()
+      .toString();
+
+     const ruleString = `.a${id} {
+     ${cellRules}}\r`;
+
+     const parentkeyframes = str`${css.animation
+      .filter((a) => a.animationName.length > 0)
+      .map(({ animationName, keyframes }, index) => {
+       const keyframe = `${animationName} {
+          ${keyframes.map(({ completionPercent, properties }, ind) => {
+           const frame = `${completionPercent}% {${properties.map(
+            ({ propName, propValue, shadowValues, transValues }, i) => {
+             let frameString = [];
+             if (propName.includes("transform")) {
+              frameString.push(
+               ` transform: ${Object.keys(transValues)
+
+                .map((k, i) => {
+                 const val = parseFloat(Object.values(transValues)[i]);
+                 const trans = ` ${k}(${val}${k.includes("skew") ? "deg" : ""}${
+                  k.includes("rotate") ? "deg" : ""
+                 }${k.includes("translate") ? "px" : ""}) `;
+                 return trans;
+                })
+                .toString()};`
+              );
+             } else if (propName.includes("shadow")) {
+              frameString.push(
+               ` box-shadow: ${Object.values(shadowValues)
+                .map((v) => {
+                 let val;
+                 typeof v === "number"
+                  ? (val = ` ${parseFloat(v)}px `)
+                  : (val = ` ${v} `);
+                 return val;
+                })
+                .toString()}; `
+              );
+             } else {
+              frameString.push(` ${propName}:${propValue}; `);
+             }
+             return frameString.toString();
+            }
+           )} }\r\n`;
+           return frame;
+          })}
+        }
+        `;
+       return `@keyframes ${keyframe}`;
+      })}`;
+
+     const childkeyframes = str`${contentCss.map(({ animation }, index) => {
+      const frames = animation
+       .filter((a) => a.animationName.length > 0)
+       .map(({ animationName, keyframes }) => {
+        const keyframe = `${animationName} {
+          ${keyframes.map(({ completionPercent, properties }, ind) => {
+           const frame = `${completionPercent}% {${properties.map(
+            ({ propName, propValue, shadowValues, transValues }, i) => {
+             let frameString = [];
+             if (propName.includes("transform")) {
+              frameString.push(
+               ` transform: ${Object.keys(transValues)
+
+                .map((k, i) => {
+                 const val = parseFloat(Object.values(transValues)[i]);
+                 const trans = ` ${k}(${val}${k.includes("skew") ? "deg" : ""}${
+                  k.includes("rotate") ? "deg" : ""
+                 }${k.includes("translate") ? "px" : ""}) `;
+                 return trans;
+                })
+                .toString()};`
+              );
+             } else if (propName.includes("shadow")) {
+              frameString.push(
+               ` box-shadow: ${Object.values(shadowValues)
+                .map((v) => {
+                 let val;
+                 typeof v === "number"
+                  ? (val = ` ${parseFloat(v)}px `)
+                  : (val = ` ${v} `);
+                 return val;
+                })
+                .toString()}; `
+              );
+             } else {
+              frameString.push(` ${propName}:${propValue}; `);
+             }
+             return frameString.toString();
+            }
+           )} }\r\n`;
+           return frame;
+          })}
+        }
+        `;
+        return `@keyframes ${keyframe}`;
+       });
+      return frames;
+     })}`;
+
+     const res = [parentkeyframes, childkeyframes, ruleString, childRules]
+      .toString()
+      .replace(/\,/g, "")
+      .replace("base64", "base64,");
+
+     return res;
+    })}
+  
+  
+  
+  `,
      }}></style>
    </Grid>
   </div>

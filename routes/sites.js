@@ -57,8 +57,6 @@ router.get("/components", auth, async (req, res) => {
  try {
   const components = await Component.find({ "user": req.query.q });
   res.json(components);
-
-  console.log(components);
  } catch (err) {
   console.error(err.message);
   res.status(500).send("Server Error");
@@ -71,7 +69,7 @@ router.get("/content", auth, async (req, res) => {
  const { content, userid } = stuff;
  const cont = content;
 
- console.log(stuff);
+ console.log(stuff, "stuff");
  const contentKeys = cont
   .map(({ contentId }) => contentId)
   .filter((value, index, self) => self.indexOf(value) === index);
@@ -142,8 +140,9 @@ router.get("/content", auth, async (req, res) => {
    });
 
   const verticalkeys = cont
-   .filter((k) => k.contentType === "verticals")
+   .filter((k) => k.type === "verticals")
    .map(({ key, content }) => {
+    console.log(key, "key");
     if (key.includes(".")) {
      let objkey = key.substr(key.indexOf(".") + 1, key.length);
 
@@ -155,11 +154,15 @@ router.get("/content", auth, async (req, res) => {
 
      return pushedObj;
     } else {
+     console.log(key, "hello");
+
+     console.log(content, "hhel?");
      let obj = [key, content];
      return obj;
     }
    });
 
+  console.log(verticalkeys, "verticalKeys");
   const articlekeys = cont
    .filter((k) => k.type === "articles")
    .map(({ key, content }) => {
@@ -278,6 +281,8 @@ router.get("/content", auth, async (req, res) => {
    .flat()
    .filter((k) => Object.keys(k).length > 0);
 
+  console.log(mappedContent);
+
   res.json(mappedContent);
  } catch (err) {
   console.error(err.message);
@@ -316,10 +321,8 @@ router.get("/pages/:id", auth, async (req, res) => {
 });
 router.get("/components/:id", auth, async (req, res) => {
  try {
-  console.log(req.params);
   const component = await Component.findById(req.params.id);
 
-  console.log(component);
   res.json(component);
  } catch (err) {
   console.error(err.message);
@@ -607,14 +610,10 @@ router.get("/blogs", auth, async (req, res) => {
 router.get("/articles/latest", auth, async (req, res) => {
  const reqbody = JSON.parse(req.query.q);
 
- console.log(reqbody);
-
  const { startDate, endDate } = reqbody;
 
  const momentPeriodStart = new Date(startDate);
  const momentPeriodEnd = new Date(endDate);
-
- console.log(momentPeriodStart);
 
  const articles = await Article.find({
   createDate: {
@@ -628,14 +627,10 @@ router.get("/articles/latest", auth, async (req, res) => {
 router.get("/reviews/latest", auth, async (req, res) => {
  const reqbody = JSON.parse(req.query.q);
 
- console.log(reqbody);
-
  const { startDate, endDate } = reqbody;
 
  const momentPeriodStart = new Date(startDate);
  const momentPeriodEnd = new Date(endDate);
-
- console.log(momentPeriodStart);
 
  const reviews = await Review.find({
   createDate: {
@@ -650,14 +645,10 @@ router.get("/reviews/latest", auth, async (req, res) => {
 router.get("/quizs/latest", auth, async (req, res) => {
  const reqbody = JSON.parse(req.query.q);
 
- console.log(reqbody);
-
  const { startDate, endDate } = reqbody;
 
  const momentPeriodStart = new Date(startDate);
  const momentPeriodEnd = new Date(endDate);
-
- console.log(momentPeriodStart);
 
  const quizs = await Quiz.find({
   createDate: {
@@ -672,14 +663,10 @@ router.get("/quizs/latest", auth, async (req, res) => {
 router.get("/blogs/latest", auth, async (req, res) => {
  const reqbody = JSON.parse(req.query.q);
 
- console.log(reqbody);
-
  const { startDate, endDate } = reqbody;
 
  const momentPeriodStart = new Date(startDate);
  const momentPeriodEnd = new Date(endDate);
-
- console.log(momentPeriodStart);
 
  const blogs = await Blog.find({
   createDate: {

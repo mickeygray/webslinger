@@ -1,4 +1,11 @@
-const Pagination = ({ postsPerPage, totalPosts, paginate, toggleGrid }) => {
+const Pagination = ({
+ postsPerPage,
+ totalPosts,
+ paginate,
+ toggleGrid,
+ setPageId,
+ pages,
+}) => {
  const pageNumbers = [];
 
  for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
@@ -13,6 +20,7 @@ const Pagination = ({ postsPerPage, totalPosts, paginate, toggleGrid }) => {
        onClick={() => {
         paginate(number);
         toggleGrid && toggleGrid();
+        setPageId && setPageId(pages[parseInt(number) - 1].id);
        }}
        className='btn btn-light btn-sm'>
        {number}

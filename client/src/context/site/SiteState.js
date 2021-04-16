@@ -73,6 +73,8 @@ import {
  CLEAR_COMPONENTCONTENT,
  SET_LOADEDCOMPONENTS,
  ADD_COMPONENT,
+ ADD_PAGE,
+ SET_PAGE,
 } from "../types";
 const AppContext = createContext();
 const SiteState = (props) => {
@@ -90,8 +92,10 @@ const SiteState = (props) => {
    content: [],
    cellStructure: null,
    myComponents: null,
-
+   pages: null,
    sites: null,
+   MyComponent: null,
+   componentContent: null,
   },
   body: {
    grid: {
@@ -112,10 +116,537 @@ const SiteState = (props) => {
    cellStructure: [],
   },
   page: {
-   pages: [],
-   LoadedComponents: [],
-   MyComponent: null,
-   componentContent: null,
+   key: "",
+   layout: {
+    rows: [],
+    className: `G${uuidV4}`,
+    columns: [],
+    rowString: "",
+    columnString: "",
+    direction: "row",
+    verticalAlignment: "start",
+    horizontalAlignment: "start",
+   },
+   css: {
+    className: `G${uuidV4}`,
+    backgroundColor: "",
+    marginTop: "",
+    marginLeft: "",
+    width: "",
+    height: "",
+    marginBottom: "",
+    marginRight: "",
+    borderLeftStyle: "",
+    borderLeftColor: "",
+    borderLeftWidth: "",
+    borderRightStyle: "",
+    borderRightColor: "",
+    borderRightWidth: "",
+    borderTopStyle: "",
+    borderTopColor: "",
+    borderTopWidth: "",
+    borderBottomStyle: "",
+    borderBottomColor: "",
+    borderBottomWidth: "",
+    borderTopLeftRadius: "0",
+    borderTopRightRadius: "0",
+    borderBottomLeftRadius: "0",
+    borderBottomRightRadius: "0",
+    boxShadowHoriz: "",
+    boxShadowVert: "",
+    boxShadowBlur: "",
+    boxShadowSpread: "",
+    boxShadowColor: "",
+    boxShadowInset: "",
+    fontSize: "",
+    lineHeight: "",
+    fontWeight: "",
+    zIndex: "",
+    display: "",
+    textIndent: "",
+    transition: [],
+    transform: [],
+    transformProp: {
+     skewX: 0,
+     skewY: 0,
+     rotateX: 0,
+     rotateY: 0,
+     rotateZ: 0,
+     scaleY: 1,
+     scaleX: 1,
+     translateX: 0,
+     translateY: 0,
+    },
+    animation: [],
+    textAlign: "",
+    textShadowSize: "",
+    textShadowColor: "",
+    textDecorationLine: "",
+    textDecorationThickness: "",
+    textDecorationStyle: "",
+    textDecorationColor: "",
+    position: "",
+    top: "",
+    left: "",
+    bottom: "",
+    right: "",
+    paddingTop: "",
+    paddingLeft: "",
+    paddingRight: "",
+    paddingBottom: "",
+    backgroundRepeat: "",
+    backgroundPosition: "",
+    backgroundSize: "",
+    opacity: "100%",
+    overflowX: "",
+    overflowY: "",
+   },
+   nav: {
+    navGrid: {
+     className: `g${uuidV4}`,
+     area: "nav",
+     rows: [],
+     columns: [],
+     rowString: "",
+     columnString: "",
+     direction: "row",
+     verticalAlignment: "start",
+     horizontalAlignment: "start",
+    },
+    navCells: [],
+    navCSS: {
+     className: `nav${uuidV4}`,
+     width: "0",
+     height: "0",
+     marginTop: "",
+     marginLeft: "",
+     backgroundColor: "",
+     marginBottom: "",
+     marginRight: "",
+     borderLeftStyle: "",
+     borderLeftColor: "",
+     borderLeftWidth: "",
+     borderRightStyle: "",
+     borderRightColor: "",
+     borderRightWidth: "",
+     borderTopStyle: "",
+     borderTopColor: "",
+     borderTopWidth: "",
+     lineHeight: "",
+     borderBottomStyle: "",
+     borderBottomColor: "",
+     borderBottomWidth: "",
+     borderTopLeftRadius: "0",
+     borderTopRightRadius: "0",
+     borderBottomLeftRadius: "0",
+     borderBottomRightRadius: "0",
+     boxShadowHoriz: "",
+     boxShadowVert: "",
+     boxShadowBlur: "",
+     boxShadowSpread: "",
+     boxShadowColor: "",
+     boxShadowInset: "",
+     fontSize: "",
+     fontWeight: "",
+     zIndex: "",
+     display: "",
+     textIndent: "",
+     transition: [],
+     transform: [],
+
+     transformProp: {
+      skewX: 0,
+      skewY: 0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
+      scaleY: 1,
+      scaleX: 1,
+      translateX: 0,
+      translateY: 0,
+     },
+     animation: [],
+     textAlign: "",
+     textShadowSize: "",
+     textShadowColor: "",
+     textDecorationLine: "",
+     textDecorationThickness: "",
+     textDecorationStyle: "",
+     textDecorationColor: "",
+     position: "",
+     top: "",
+     left: "",
+     bottom: "",
+     right: "",
+     paddingTop: "",
+     paddingLeft: "",
+     paddingRight: "",
+     paddingBottom: "",
+     backgroundRepeat: "",
+     backgroundPosition: "",
+     backgroundSize: "",
+     opacity: "100%",
+     overflowX: "",
+     overflowY: "",
+    },
+   },
+   header: {
+    headerGrid: {
+     className: `g${uuidV4}`,
+     rows: [],
+     area: "header",
+     columns: [],
+     rowString: "",
+     columnString: "",
+     direction: "row",
+     verticalAlignment: "start",
+     horizontalAlignment: "start",
+    },
+    headerCells: [],
+    headerCSS: {
+     className: `header${uuidV4}`,
+     width: "0",
+     height: "0",
+     marginTop: "",
+     marginLeft: "",
+     marginBottom: "",
+     marginRight: "",
+     borderLeftStyle: "",
+     borderLeftColor: "",
+     backgroundColor: "",
+     borderLeftWidth: "",
+     borderRightStyle: "",
+     borderRightColor: "",
+     borderRightWidth: "",
+     borderTopStyle: "",
+     borderTopColor: "",
+     borderTopWidth: "",
+     lineHeight: "",
+     borderBottomStyle: "",
+     borderBottomColor: "",
+     borderBottomWidth: "",
+     borderTopLeftRadius: "0",
+     borderTopRightRadius: "0",
+     borderBottomLeftRadius: "0",
+     borderBottomRightRadius: "0",
+     boxShadowHoriz: "",
+     boxShadowVert: "",
+     boxShadowBlur: "",
+     boxShadowSpread: "",
+     boxShadowColor: "",
+     boxShadowInset: "",
+     fontSize: "",
+     fontWeight: "",
+     zIndex: "",
+     display: "",
+     textIndent: "",
+     transition: [],
+     transform: [],
+
+     transformProp: {
+      skewX: 0,
+      skewY: 0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
+      scaleY: 1,
+      scaleX: 1,
+      translateX: 0,
+      translateY: 0,
+     },
+     animation: [],
+     textAlign: "",
+     textShadowSize: "",
+     textShadowColor: "",
+     textDecorationLine: "",
+     textDecorationThickness: "",
+     textDecorationStyle: "",
+     textDecorationColor: "",
+     position: "",
+     top: "",
+     left: "",
+     bottom: "",
+     right: "",
+     paddingTop: "",
+     paddingLeft: "",
+     paddingRight: "",
+     paddingBottom: "",
+     backgroundRepeat: "",
+     backgroundPosition: "",
+     backgroundSize: "",
+     opacity: "100%",
+     overflowX: "",
+     overflowY: "",
+    },
+   },
+   main: {
+    mainGrid: {
+     className: `g${uuidV4}`,
+     rows: [],
+     columns: [],
+     area: "main",
+     rowString: "",
+     columnString: "",
+     direction: "row",
+     verticalAlignment: "start",
+     horizontalAlignment: "start",
+    },
+    mainCells: [],
+    mainCSS: {
+     className: `main${uuidV4}`,
+     width: "0",
+     height: "0",
+     marginTop: "",
+     marginLeft: "",
+     marginBottom: "",
+     marginRight: "",
+     borderLeftStyle: "",
+     backgroundColor: "",
+     borderLeftColor: "",
+     borderLeftWidth: "",
+     borderRightStyle: "",
+     borderRightColor: "",
+     borderRightWidth: "",
+     borderTopStyle: "",
+     borderTopColor: "",
+     borderTopWidth: "",
+     lineHeight: "",
+     borderBottomStyle: "",
+     borderBottomColor: "",
+     borderBottomWidth: "",
+     borderTopLeftRadius: "0",
+     borderTopRightRadius: "0",
+     borderBottomLeftRadius: "0",
+     borderBottomRightRadius: "0",
+     boxShadowHoriz: "",
+     boxShadowVert: "",
+     boxShadowBlur: "",
+     boxShadowSpread: "",
+     boxShadowColor: "",
+     boxShadowInset: "",
+     fontSize: "",
+     fontWeight: "",
+     zIndex: "",
+     display: "",
+     textIndent: "",
+     transition: [],
+     transform: [],
+
+     transformProp: {
+      skewX: 0,
+      skewY: 0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
+      scaleY: 1,
+      scaleX: 1,
+      translateX: 0,
+      translateY: 0,
+     },
+     animation: [],
+     textAlign: "",
+     textShadowSize: "",
+     textShadowColor: "",
+     textDecorationLine: "",
+     textDecorationThickness: "",
+     textDecorationStyle: "",
+     textDecorationColor: "",
+     position: "",
+     top: "",
+     left: "",
+     bottom: "",
+     right: "",
+     paddingTop: "",
+     paddingLeft: "",
+     paddingRight: "",
+     paddingBottom: "",
+     backgroundRepeat: "",
+     backgroundPosition: "",
+     backgroundSize: "",
+     opacity: "100%",
+     overflowX: "",
+     overflowY: "",
+    },
+   },
+   article: {
+    articleGrid: {
+     className: `g${uuidV4}`,
+     rows: [],
+     columns: [],
+     rowString: "",
+     area: "article",
+     columnString: "",
+     direction: "row",
+     verticalAlignment: "start",
+     horizontalAlignment: "start",
+    },
+    articleCells: [],
+    articleCSS: {
+     className: `article${uuidV4}`,
+     width: "0",
+     height: "0",
+     marginTop: "",
+     marginLeft: "",
+     marginBottom: "",
+     marginRight: "",
+     borderLeftStyle: "",
+     borderLeftColor: "",
+     borderLeftWidth: "",
+     borderRightStyle: "",
+     borderRightColor: "",
+     borderRightWidth: "",
+     backgroundColor: "",
+     borderTopStyle: "",
+     borderTopColor: "",
+     borderTopWidth: "",
+     lineHeight: "",
+     borderBottomStyle: "",
+     borderBottomColor: "",
+     borderBottomWidth: "",
+     borderTopLeftRadius: "0",
+     borderTopRightRadius: "0",
+     borderBottomLeftRadius: "0",
+     borderBottomRightRadius: "0",
+     boxShadowHoriz: "",
+     boxShadowVert: "",
+     boxShadowBlur: "",
+     boxShadowSpread: "",
+     boxShadowColor: "",
+     boxShadowInset: "",
+     fontSize: "",
+     fontWeight: "",
+     zIndex: "",
+     display: "",
+     textIndent: "",
+     transition: [],
+     transform: [],
+
+     transformProp: {
+      skewX: 0,
+      skewY: 0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
+      scaleY: 1,
+      scaleX: 1,
+      translateX: 0,
+      translateY: 0,
+     },
+     animation: [],
+     textAlign: "",
+     textShadowSize: "",
+     textShadowColor: "",
+     textDecorationLine: "",
+     textDecorationThickness: "",
+     textDecorationStyle: "",
+     textDecorationColor: "",
+     position: "",
+     top: "",
+     left: "",
+     bottom: "",
+     right: "",
+     paddingTop: "",
+     paddingLeft: "",
+     paddingRight: "",
+     paddingBottom: "",
+     backgroundRepeat: "",
+     backgroundPosition: "",
+     backgroundSize: "",
+     opacity: "100%",
+     overflowX: "",
+     overflowY: "",
+    },
+   },
+   footer: {
+    footerGrid: {
+     className: `g${uuidV4}`,
+     rows: [],
+     columns: [],
+     rowString: "",
+     area: "footer",
+     columnString: "",
+     direction: "row",
+     verticalAlignment: "start",
+     horizontalAlignment: "start",
+    },
+    footerCells: [],
+    footerCSS: {
+     className: `footer${uuidV4}`,
+     width: "0",
+     height: "0",
+     marginTop: "",
+     marginLeft: "",
+     marginBottom: "",
+     marginRight: "",
+     borderLeftStyle: "",
+     borderLeftColor: "",
+     borderLeftWidth: "",
+     borderRightStyle: "",
+     borderRightColor: "",
+     borderRightWidth: "",
+     borderTopStyle: "",
+     borderTopColor: "",
+     backgroundColor: "",
+     borderTopWidth: "",
+     lineHeight: "",
+     borderBottomStyle: "",
+     borderBottomColor: "",
+     borderBottomWidth: "",
+     borderTopLeftRadius: "0",
+     borderTopRightRadius: "0",
+     borderBottomLeftRadius: "0",
+     borderBottomRightRadius: "0",
+     boxShadowHoriz: "",
+     boxShadowVert: "",
+     boxShadowBlur: "",
+     boxShadowSpread: "",
+     boxShadowColor: "",
+     boxShadowInset: "",
+     fontSize: "",
+     fontWeight: "",
+     zIndex: "",
+     display: "",
+     textIndent: "",
+     transition: [],
+     transform: [],
+
+     transformProp: {
+      skewX: 0,
+      skewY: 0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
+      scaleY: 1,
+      scaleX: 1,
+      translateX: 0,
+      translateY: 0,
+     },
+     animation: [],
+     textAlign: "",
+     textShadowSize: "",
+     textShadowColor: "",
+     textDecorationLine: "",
+     textDecorationThickness: "",
+     backgroundColor: "",
+     textDecorationStyle: "",
+     textDecorationColor: "",
+     position: "",
+     top: "",
+     left: "",
+     bottom: "",
+     right: "",
+     paddingTop: "",
+     paddingLeft: "",
+     paddingRight: "",
+     paddingBottom: "",
+     backgroundRepeat: "",
+     backgroundPosition: "",
+     backgroundSize: "",
+     opacity: "100%",
+     overflowX: "",
+     overflowY: "",
+    },
+   },
   },
  };
 
@@ -187,7 +718,7 @@ const SiteState = (props) => {
   textDecorationThickness: "",
   textDecorationStyle: "",
   textDecorationColor: "",
-  pos: "",
+  position: "",
   top: "",
   left: "",
   bottom: "",
@@ -338,7 +869,7 @@ const SiteState = (props) => {
    textDecorationThickness: "",
    textDecorationStyle: "",
    textDecorationColor: "",
-   pos: "",
+   position: "",
    top: "",
    left: "",
    bottom: "",
@@ -428,7 +959,7 @@ const SiteState = (props) => {
    textDecorationThickness: "",
    textDecorationStyle: "",
    textDecorationColor: "",
-   pos: "",
+   position: "",
    top: "",
    left: "",
    bottom: "",
@@ -516,7 +1047,7 @@ const SiteState = (props) => {
    textDecorationThickness: "",
    textDecorationStyle: "",
    textDecorationColor: "",
-   pos: "",
+   position: "",
    top: "",
    left: "",
    bottom: "",
@@ -542,103 +1073,104 @@ const SiteState = (props) => {
   bodyViewState: false,
  };
 
- const page = {
+ const areaCell = {
+  className: "",
+  top: 0,
+  gridArea: "",
+  rowSpan: 0,
+  left: 0,
+  columnSpan: 0,
+  css: {
+   width: "0",
+   height: "0",
+   marginTop: "",
+   marginLeft: "",
+   marginBottom: "",
+   marginRight: "",
+   borderLeftStyle: "",
+   borderLeftColor: "",
+   borderLeftWidth: "",
+   borderRightStyle: "",
+   borderRightColor: "",
+   borderRightWidth: "",
+   borderTopStyle: "",
+   borderTopColor: "",
+   borderTopWidth: "",
+   lineHeight: "",
+   borderBottomStyle: "",
+   borderBottomColor: "",
+   borderBottomWidth: "",
+   borderTopLeftRadius: "0",
+   borderTopRightRadius: "0",
+   borderBottomLeftRadius: "0",
+   borderBottomRightRadius: "0",
+   boxShadowHoriz: "",
+   boxShadowVert: "",
+   boxShadowBlur: "",
+   boxShadowSpread: "",
+   boxShadowColor: "",
+   boxShadowInset: "",
+   fontSize: "",
+   fontWeight: "",
+   zIndex: "",
+   display: "",
+   textIndent: "",
+   transition: [],
+   transform: [],
+
+   transformProp: {
+    skewX: 0,
+    skewY: 0,
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    scaleY: 1,
+    scaleX: 1,
+    translateX: 0,
+    translateY: 0,
+   },
+   animation: [],
+   textAlign: "",
+   textShadowSize: "",
+   textShadowColor: "",
+   textDecorationLine: "",
+   textDecorationThickness: "",
+   textDecorationStyle: "",
+   textDecorationColor: "",
+   position: "",
+   top: "",
+   left: "",
+   bottom: "",
+   right: "",
+   paddingTop: "",
+   paddingLeft: "",
+   paddingRight: "",
+   paddingBottom: "",
+   backgroundRepeat: "",
+   backgroundPosition: "",
+   backgroundSize: "",
+   opacity: "100%",
+   overflowX: "",
+   overflowY: "",
+  },
+  background: "",
+  position: "",
+  code: "",
+  templateArea: "",
+ };
+
+ const newPage = {
   url: "",
+  id: uuidV4(),
   route: "",
   layout: "",
-  pageGrid: {
-   key: uuidV4(),
-   rows: [],
-   columns: [],
-   rowString: "",
-   columnString: "",
-   direction: "row",
-   verticalAlignment: "start",
-   horizontalAlignment: "start",
-  },
+  html: "",
+  styleSheet: "",
+  LoadedComponents: [],
   name: "",
   head: {
-   metaTags: [{ tag: "", content: "" }],
+   metaTags: [],
    title: "",
-  },
-  nav: {
-   navSections: [],
-   navCells: [],
-   layout: "",
-   navGrid: {
-    key: uuidV4(),
-    rows: [],
-    columns: [],
-    rowString: "",
-    columnString: "",
-    direction: "row",
-    verticalAlignment: "start",
-    horizontalAlignment: "start",
-   },
-  },
-  header: {
-   headerSections: [],
-   headerCells: [],
-   layout: "",
-   navGrid: {
-    key: uuidV4(),
-    rows: [],
-    columns: [],
-    rowString: "",
-    columnString: "",
-    direction: "row",
-    verticalAlignment: "start",
-    horizontalAlignment: "start",
-   },
-   navStyles: {},
-  },
-  article: {
-   articleSections: [],
-   articleCells: [],
-   layout: "",
-   articleGrid: {
-    key: uuidV4(),
-    rows: [],
-    columns: [],
-    rowString: "",
-    columnString: "",
-    direction: "row",
-    verticalAlignment: "start",
-    horizontalAlignment: "start",
-   },
-   articleStyles: {},
-  },
-  main: {
-   mainSections: [],
-   mainCells: [],
-   layout: "",
-   mainGrid: {
-    key: uuidV4(),
-    rows: [],
-    columns: [],
-    rowString: "",
-    columnString: "",
-    direction: "row",
-    verticalAlignment: "start",
-    horizontalAlignment: "start",
-   },
-   mainStyles: {},
-  },
-  footer: {
-   foooterSections: [],
-   footerCells: [],
-   layout: "",
-   footerGrid: {
-    key: uuidV4(),
-    rows: [],
-    columns: [],
-    rowString: "",
-    columnString: "",
-    direction: "row",
-    verticalAlignment: "start",
-    horizontalAlignment: "start",
-   },
-   footerStyles: {},
   },
   css: {
    width: "0",
@@ -739,6 +1271,8 @@ const SiteState = (props) => {
 
  //EDIT THE CSS AND CELL OBJECT ON THE PAGE LEVEL
 
+ const { page } = state;
+
  const getComponentContent = async (MyComponent, userid) => {
   const config = {
    headers: {
@@ -786,33 +1320,1825 @@ const SiteState = (props) => {
   }
  };
 
- const setLoadedComponents = (components) => {
+ const setLoadedComponents = (pages) => {
   dispatch({
    type: SET_LOADEDCOMPONENTS,
-   payload: components,
+   payload: pages,
   });
  };
 
- const addComponent = (func) => {
+ const addComponent = (func, i) => {
+  let newPages = [...state.markUp.pages];
+
+  newPages[i] = {
+   ...newPages[i],
+   LoadedComponents: [...newPages[i].LoadedComponents, func],
+  };
+
   dispatch({
    type: ADD_COMPONENT,
-   payload: func,
+   payload: newPages,
   });
  };
 
- const addPageCell = () => {};
- const addAreaStyle = () => {};
- const addPageCellStyle = () => {};
- const setAreaLayout = () => {};
- const setPageLayout = () => {};
+ const addPage = () => {
+  if (state.markUp.pages != null) {
+   const newPages = [...state.markUp.pages, newPage];
+   dispatch({
+    type: ADD_PAGE,
+    payload: newPages,
+   });
+  } else {
+   const newPages = [];
+   newPages.push(newPage);
+   dispatch({
+    type: ADD_PAGE,
+    payload: newPages,
+   });
+  }
+ };
 
- //delete components
- //gridstyles
- //cellstyles
- //navlinks
- //combineComponentStates
- //pageMapping
- //siteMapping
+ const setPageId = (id) => {
+  console.log(id, "id");
+  const nextPage = produce(page, (draft) => {
+   draft["key"] = id;
+  });
+
+  dispatch({ type: SET_PAGE, payload: nextPage });
+ };
+
+ const updatePageCss = (e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["transform"].push(value);
+    draft["css"]["transform"] = filterByCount(draft["css"]["transform"], 1);
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["transition"][n1]["cubicNs"][n] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["animation"][n1]["keyframes"][n2][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["animation"][n1]["keyframes"][n2]["properties"][n3][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["animation"][n1]["keyframes"][n2]["properties"][n3][
+     "transValues"
+    ][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["animation"][n1]["keyframes"][n4]["properties"][n5][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["animation"][n1]["keyframes"][n2]["properties"][n3][
+     "shadowValues"
+    ][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["animation"][n1]["keyframes"][n2]["properties"][n3][
+     "transValues"
+    ][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["css"]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const addPageTransition = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["css"]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addPageAnimation = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["css"]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addPageAnimationKeyframe = (index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["css"]["animation"][index]["keyframes"].push({ ...newKeyframe });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addPageAnimationKeyframeProperty = (index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["css"]["animation"][index]["keyframes"][ind]["properties"].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const updateNavCss = (e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["transform"].push(value);
+    draft["nav"]["navCSS"]["transform"] = filterByCount(
+     draft["nav"]["navCSS"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["transition"][n1]["cubicNs"][n] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["animation"][n1]["keyframes"][n2][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["animation"][n1]["keyframes"][n2]["properties"][n3][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["animation"][n1]["keyframes"][n2]["properties"][n3][
+     "transValues"
+    ][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["animation"][n1]["keyframes"][n4]["properties"][n5][
+     name
+    ] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["animation"][n1]["keyframes"][n2]["properties"][n3][
+     "shadowValues"
+    ][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"]["animation"][n1]["keyframes"][n2]["properties"][n3][
+     "transValues"
+    ][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCSS"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["css"]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const addNavTransition = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["nav"]["navCSS"]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addNavAnimation = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["nav"]["navCSS"]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addNavAnimationKeyframe = (index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["nav"]["navCSS"]["animation"][index]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addNavAnimationKeyframeProperty = (index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["nav"]["navCSS"]["animation"][index]["keyframes"][ind][
+    "properties"
+   ].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const updateArticleCss = (e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["transform"].push(value);
+    draft["article"]["articleCSS"]["transform"] = filterByCount(
+     draft["article"]["articleCSS"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["transition"][n1]["cubicNs"][n] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["animation"][n1]["keyframes"][n2][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["animation"][n1]["keyframes"][n4][
+     "properties"
+    ][n5][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCSS"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["css"]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const addHeaderTransition = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["header"]["headerCSS"]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addHeaderAnimation = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["header"]["headerCSS"]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addHeaderAnimationKeyframe = (index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["header"]["headerCSS"]["animation"][index]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addHeaderAnimationKeyframeProperty = (index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["header"]["headerCSS"]["animation"][index]["keyframes"][ind][
+    "properties"
+   ].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const updateMainCss = (e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["transform"].push(value);
+    draft["main"]["mainCSS"]["transform"] = filterByCount(
+     draft["main"]["mainCSS"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["transition"][n1]["cubicNs"][n] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["animation"][n1]["keyframes"][n2][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["animation"][n1]["keyframes"][n2]["properties"][
+     n3
+    ][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["animation"][n1]["keyframes"][n2]["properties"][
+     n3
+    ]["transValues"][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["animation"][n1]["keyframes"][n4]["properties"][
+     n5
+    ][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["animation"][n1]["keyframes"][n2]["properties"][
+     n3
+    ]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"]["animation"][n1]["keyframes"][n2]["properties"][
+     n3
+    ]["transValues"][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCSS"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["css"]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const addMainTransition = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["main"]["mainCSS"]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addMainAnimation = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["main"]["mainCSS"]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addMainAnimationKeyframe = (index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["main"]["mainCSS"]["animation"][index]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addMainAnimationKeyframeProperty = (index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["main"]["mainCSS"]["animation"][index]["keyframes"][ind][
+    "properties"
+   ].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const updateFooterCss = (e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["transform"].push(value);
+    draft["footer"]["footerCSS"]["transform"] = filterByCount(
+     draft["footer"]["footerCSS"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["transition"][n1]["cubicNs"][n] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["animation"][n1]["keyframes"][n2][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["animation"][n1]["keyframes"][n4][
+     "properties"
+    ][n5][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCSS"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["css"]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const addFooterTransition = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["footer"]["footerCSS"]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addFooterAnimation = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["footer"]["footerCSS"]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addFooterAnimationKeyframe = (index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["footer"]["footerCSS"]["animation"][index]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addFooterAnimationKeyframeProperty = (index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["footer"]["footerCSS"]["animation"][index]["keyframes"][ind][
+    "properties"
+   ].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addArticleTransition = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["article"]["articleCSS"]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addArticleAnimation = () => {
+  const pushColumns = produce(page, (draft) => {
+   draft["article"]["articleCSS"]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addArticleAnimationKeyframe = (index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["article"]["articleCSS"]["animation"][index]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addArticleAnimationKeyframeProperty = (index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["article"]["articleCSS"]["animation"][index]["keyframes"][ind][
+    "properties"
+   ].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addArticleCellTransition = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["article"]["articleCells"][i]["css"]["transition"].push({
+    ...newTransition,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addArticleCellAnimation = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["article"]["articleCells"][i]["css"]["animation"].push({
+    ...newAnimation,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addArticleCellAnimationKeyframe = (i, index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["article"]["articleCells"][i]["css"]["animation"][index][
+    "keyframes"
+   ].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addArticleCellAnimationKeyframeProperty = (i, index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["article"]["articleCells"][i]["css"]["animation"][index]["keyframes"][
+    ind
+   ]["properties"].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addMainCellTransition = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["main"]["mainCells"][i]["css"]["transition"].push({
+    ...newTransition,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addMainCellAnimation = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["main"]["mainCells"][i]["css"]["animation"].push({
+    ...newAnimation,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addMainCellAnimationKeyframe = (i, index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["main"]["mainCells"][i]["css"]["animation"][index]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addMainCellAnimationKeyframeProperty = (i, index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["main"]["mainCells"][i]["css"]["animation"][index]["keyframes"][ind][
+    "properties"
+   ].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addHeaderCellTransition = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["header"]["headerCells"][i]["css"]["transition"].push({
+    ...newTransition,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addHeaderCellAnimation = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["header"]["headerCells"][i]["css"]["animation"].push({
+    ...newAnimation,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addHeaderCellAnimationKeyframe = (i, index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["header"]["headerCells"][i]["css"]["animation"][index][
+    "keyframes"
+   ].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addHeaderCellAnimationKeyframeProperty = (i, index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["header"]["headerCells"][i]["css"]["animation"][index]["keyframes"][
+    ind
+   ]["properties"].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addFooterCellTransition = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["footer"]["footerCells"][i]["css"]["transition"].push({
+    ...newTransition,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addFooterCellAnimation = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["footer"]["footerCells"][i]["css"]["animation"].push({
+    ...newAnimation,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addFooterCellAnimationKeyframe = (i, index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["footer"]["footerCells"][i]["css"]["animation"][index][
+    "keyframes"
+   ].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addFooterCellAnimationKeyframeProperty = (i, index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["footer"]["footerCells"][i]["css"]["animation"][index]["keyframes"][
+    ind
+   ]["properties"].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addNavCellTransition = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["nav"]["navCells"][i]["css"]["transition"].push({
+    ...newTransition,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addNavCellAnimation = (i) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["nav"]["navCells"][i]["css"]["animation"].push({
+    ...newAnimation,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addNavCellAnimationKeyframe = (i, index) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["nav"]["navCells"][i]["css"]["animation"][index]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const addNavCellAnimationKeyframeProperty = (i, index, ind) => {
+  const pushColumns = produce(page, (draft) => {
+   draft["nav"]["navCells"][i]["css"]["animation"][index]["keyframes"][ind][
+    "properties"
+   ].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushColumns });
+ };
+
+ const updateHeaderCss = (e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["transform"].push(value);
+    draft["header"]["headerCSS"]["transform"] = filterByCount(
+     draft["header"]["headerCSS"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["transition"][n1]["cubicNs"][n] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["animation"][n1]["keyframes"][n2][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["animation"][n1]["keyframes"][n4][
+     "properties"
+    ][n5][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCSS"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["css"]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const updateHeaderCellCss = (i, e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["transform"].push(value);
+    draft["header"]["headerCells"][i]["css"]["transform"] = filterByCount(
+     draft["header"]["headerCells"][i]["css"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCell"][i]["css"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["transition"][n1]["cubicNs"][
+     n
+    ] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["animation"][n1]["keyframes"][n4][
+     "properties"
+    ][n5][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["css"]["headerCSS"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else {
+   const pushColumns = produce(page, (draft) => {
+    draft["header"]["headerCells"][i][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const updateNavCellCss = (i, e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["transform"].push(value);
+    draft["nav"]["navCells"][i]["css"]["transform"] = filterByCount(
+     draft["nav"]["navCells"][i]["css"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCell"][i]["css"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["transition"][n1]["cubicNs"][n] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["animation"][n1]["keyframes"][n4][
+     "properties"
+    ][n5][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["css"]["navCSS"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else {
+   const pushColumns = produce(page, (draft) => {
+    draft["nav"]["navCells"][i][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const updateFooterCellCss = (i, e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["transform"].push(value);
+    draft["footer"]["footerCells"][i]["css"]["transform"] = filterByCount(
+     draft["footer"]["footerCells"][i]["css"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCell"][i]["css"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["transition"][n1]["cubicNs"][
+     n
+    ] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["animation"][n1]["keyframes"][n4][
+     "properties"
+    ][n5][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["css"]["footerCSS"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else {
+   const pushColumns = produce(page, (draft) => {
+    draft["footer"]["footerCells"][i][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const updateMainCellCss = (i, e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"]["transform"].push(value);
+    draft["main"]["mainCells"][i]["css"]["transform"] = filterByCount(
+     draft["main"]["mainCells"][i]["css"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCell"][i]["css"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"]["transition"][n1]["cubicNs"][n] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"]["animation"][n1]["keyframes"][n4][
+     "properties"
+    ][n5][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"]["animation"][n1]["keyframes"][n2][
+     "properties"
+    ][n3]["transValues"][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["css"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else {
+   const pushColumns = produce(page, (draft) => {
+    draft["main"]["mainCells"][i][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const updateArticleCellCss = (i, e, n, n1, n2, n3, n4, n5, n6, n7) => {
+  let value;
+  let name;
+
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (n === "transform") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["transform"].push(value);
+    draft["article"]["articleCells"][i]["css"]["transform"] = filterByCount(
+     draft["article"]["articleCells"][i]["css"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "transition") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCell"][i]["css"]["transition"][n1][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "cubicNs") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["transition"][n1]["cubicNs"][
+     n
+    ] = e;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "css") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"][name] = value;
+   });
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animation") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["animation"][n1][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkey") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["animation"][n1]["keyframes"][
+     n2
+    ][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && !n4 && !n5) {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["animation"][n1]["keyframes"][
+     n2
+    ]["properties"][n3][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   !n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["animation"][n1]["keyframes"][
+     n2
+    ]["properties"][n3]["transValues"][n4] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n6 && n6 === "font" && n7) {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["animation"][n1]["keyframes"][
+     n4
+    ]["properties"][n5][name] = n7;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n === "animationkeyprop" && n4 && n4 === "boxshadow") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["animation"][n1]["keyframes"][
+     n2
+    ]["properties"][n3]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (
+   n === "animationkeyprop" &&
+   n4 &&
+   n4 != "font" &&
+   n4 != "boxshadow" &&
+   n5
+  ) {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["animation"][n1]["keyframes"][
+     n2
+    ]["properties"][n3]["transValues"][n4] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "slider") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["css"]["articleCSS"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else if (n1 === "transformProp") {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i]["transformProp"][n] = e;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  } else {
+   const pushColumns = produce(page, (draft) => {
+    draft["article"]["articleCells"][i][name] = value;
+   });
+
+   dispatch({ type: SET_PAGE, payload: pushColumns });
+  }
+ };
+
+ const updateLayout = () => {};
+ const updateNavGrid = () => {};
+ const updateHeaderGrid = () => {};
+ const updateMainGrid = () => {};
+ const updateArticleGrid = () => {};
+ const updateFooterGrid = () => {};
+
+ const addArticleCell = () => {
+  const pushCell = produce(page, (draft) => {
+   draft["article"]["articleCells"].push({ ...areaCell });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushCell });
+ };
+ const addMainCell = () => {
+  const pushCell = produce(page, (draft) => {
+   draft["main"]["mainCells"].push({ ...areaCell });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushCell });
+ };
+ const addFooterCell = () => {
+  const pushCell = produce(page, (draft) => {
+   draft["footer"]["footerCells"].push({ ...areaCell });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushCell });
+ };
+ const addNavCell = () => {
+  const pushCell = produce(page, (draft) => {
+   draft["nav"]["navCells"].push({ ...areaCell });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushCell });
+ };
+ const addHeaderCell = () => {
+  const pushCell = produce(page, (draft) => {
+   draft["header"]["headerCells"].push({ ...areaCell });
+  });
+
+  dispatch({ type: SET_PAGE, payload: pushCell });
+ };
 
  //EDIT THE CSS AND CELL OBJECT ON THE COMPONENT LEVEL
 
@@ -1277,8 +3603,146 @@ const SiteState = (props) => {
 
   dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
  };
- const addSubCellTransition = (i) => {};
- const addBodyCellTransition = (i) => {};
+
+ const addSubCellTransition = (i) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+ };
+
+ const addSubCellChildTransition = (i, index) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+ };
+
+ const addSubCellAnimation = (i) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+ };
+
+ const addSubCellChildAnimation = (i, index) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+ };
+
+ const addSubCellAnimationKeyframe = (i, index) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["animation"][index]["keyframes"].push({ ...newKeyframe });
+  });
+
+  dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+ };
+
+ const addSubCellChildAnimationKeyframe = (i, index, ind) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["animation"][ind]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+ };
+
+ const addSubCellAnimationKeyframeProperty = (i, index, ind) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["animation"][index]["keyframes"][ind]["properties"].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+ };
+
+ const addSubCellChildAnimationKeyframeProperty = (i, index, ind, indy) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["animation"][ind]["keyframes"][indy][
+    "properties"
+   ].push({ ...newKeyframeProperty });
+  });
+
+  dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+ };
+
+ const addBodyCellTransition = (i) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+ };
+
+ const addBodyCellChildTransition = (i, index) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["transition"].push({ ...newTransition });
+  });
+
+  dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+ };
+
+ const addBodyCellAnimation = (i) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+ };
+
+ const addBodyCellChildAnimation = (i, index) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["animation"].push({ ...newAnimation });
+  });
+
+  dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+ };
+
+ const addBodyCellAnimationKeyframe = (i, index) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["animation"][index]["keyframes"].push({ ...newKeyframe });
+  });
+
+  dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+ };
+
+ const addBodyCellChildAnimationKeyframe = (i, index, ind) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["animation"][ind]["keyframes"].push({
+    ...newKeyframe,
+   });
+  });
+
+  dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+ };
+
+ const addBodyCellAnimationKeyframeProperty = (i, index, ind) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["css"]["animation"][index]["keyframes"][ind]["properties"].push({
+    ...newKeyframeProperty,
+   });
+  });
+
+  dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+ };
+
+ const addBodyCellChildAnimationKeyframeProperty = (i, index, ind, indy) => {
+  const pushColumns = produce(cells, (draft) => {
+   draft[i]["contentCss"][index]["animation"][ind]["keyframes"][indy][
+    "properties"
+   ].push({ ...newKeyframeProperty });
+  });
+
+  dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+ };
 
  const onChangeCell = (i, e, check, slider, n, n1, n2, n3, n4) => {
   let value;
@@ -1574,10 +4038,244 @@ const SiteState = (props) => {
   setCells();
  };
 
- const onChangeSubCell = (i, e, check, index) => {
-  const { value, name } = e.currentTarget;
+ const onChangeSubCell = (i, e, check, slider, n, n1, n2, n3, n4) => {
+  let value;
+  let name;
 
-  if (value === "close") {
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (check === "transform") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["transform"].push(value);
+    draft[i]["css"]["transform"] = filterByCount(
+     draft[i]["css"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "conttransform") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["transform"].push(value);
+    draft[i]["contentCss"][slider]["transform"] = filterByCount(
+     draft[i]["contentCss"][slider]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "transition") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["transition"][slider] = {
+     ...draft[i]["css"]["transition"][slider],
+     [name]: value,
+    };
+   });
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "cubicNs") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["transition"][slider]["cubicNs"][n] = e;
+   });
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "css") {
+   let newResults = [...subCells];
+
+   newResults[i] = {
+    ...newResults[i],
+    css: { ...newResults[i].css, [name]: value.toString() },
+   };
+
+   const nextState = produce(state, (draft) => {
+    draft.subCells = newResults;
+   });
+
+   dispatch({ type: UPDATE_SUBCELL, payload: nextState });
+  } else if (check === "contcubicNs") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["transition"][n]["cubicNs"][n1] = e;
+   });
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "animation") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["animation"][slider][name] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkey") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n][name] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkeyprop" && !n2 && !n3) {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "animationkeyprop" &&
+   n2 &&
+   n2 != "font" &&
+   n2 != "boxshadow" &&
+   !n3
+  ) {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     "transValues"
+    ][n2] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkeyprop" && n2 && n2 === "font" && n3) {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     name
+    ] = n3;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkeyprop" && n2 && n2 === "boxshadow") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     "shadowValues"
+    ][name] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "animationkeyprop" &&
+   n2 &&
+   n2 != "font" &&
+   n2 != "boxshadow" &&
+   n3
+  ) {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     "transValues"
+    ][n2] = e;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimation") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n][name] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkey") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkeyprop" && !n3 && !n4) {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2][name] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "contanimationkeyprop" &&
+   n3 &&
+   n3 != "font" &&
+   n3 != "boxshadow" &&
+   !n4
+  ) {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2]["transValues"][name] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkeyprop" && n3 && n3 === "font" && n4) {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2][name] = n4;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkeyprop" && n3 && n3 === "boxshadow") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "contanimationkeyprop" &&
+   n3 &&
+   n3 != "font" &&
+   n3 != "boxshadow" &&
+   n4
+  ) {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2]["transValues"][n3] = e;
+   });
+
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "contentCss") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider][name] = value;
+   });
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (slider === "contentslider") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][n][check] = e;
+   });
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (check === "conttransition") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][slider]["transition"][n][name] = value;
+   });
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (slider === "conttransformProp") {
+   const pushColumns = produce(subCells, (draft) => {
+    draft[i]["contentCss"][n]["transformProp"][check] = e;
+   });
+   dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
+  } else if (slider === "slider") {
+   let newResults = [...subCells];
+
+   newResults[i] = {
+    ...newResults[i],
+    css: { ...newResults[i].css, [check]: e },
+   };
+   const nextState = produce(state, (draft) => {
+    draft.subCells = newResults;
+   });
+
+   dispatch({ type: UPDATE_SUBCELL, payload: nextState });
+  } else if (slider === "transformProp") {
+   let newResults = [...subCells];
+
+   newResults[i] = {
+    ...newResults[i],
+    css: {
+     ...newResults[i].css,
+     transformProp: { ...newResults[i].css.transformProp, [check]: e },
+    },
+   };
+   const nextState = produce(state, (draft) => {
+    draft.subCells = newResults;
+   });
+
+   dispatch({ type: UPDATE_SUBCELL, payload: nextState });
+  } else if (value === "close") {
    let newResults = [...subCells];
 
    newResults[i] = {
@@ -1607,6 +4305,7 @@ const SiteState = (props) => {
   } else if (value === "delete") {
    let newResults = [...subCells];
    if (newResults.length === 1) {
+    let newResults = [...subCells];
     newResults.splice(0, 1);
    } else {
     newResults.splice(i, 1);
@@ -1615,7 +4314,6 @@ const SiteState = (props) => {
     draft.subCells = newResults;
    });
    dispatch({ type: UPDATE_SUBCELL, payload: nextState });
-   setCells();
   } else {
    let newResults = [...subCells];
 
@@ -1627,15 +4325,251 @@ const SiteState = (props) => {
    const nextState = produce(state, (draft) => {
     draft.subCells = newResults;
    });
+
    dispatch({ type: UPDATE_SUBCELL, payload: nextState });
-   setCells();
   }
+
+  setCells();
  };
 
- const onChangeBodyCell = (i, e, check, index) => {
-  const { value, name } = e.currentTarget;
+ const onChangeBodyCell = (i, e, check, slider, n, n1, n2, n3, n4) => {
+  let value;
+  let name;
 
-  if (value === "close") {
+  if (e.currentTarget) {
+   value = e.currentTarget.value;
+   name = e.currentTarget.name;
+  }
+
+  if (check === "transform") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["transform"].push(value);
+    draft[i]["css"]["transform"] = filterByCount(
+     draft[i]["css"]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "conttransform") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["transform"].push(value);
+    draft[i]["contentCss"][slider]["transform"] = filterByCount(
+     draft[i]["contentCss"][slider]["transform"],
+     1
+    );
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "transition") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["transition"][slider] = {
+     ...draft[i]["css"]["transition"][slider],
+     [name]: value,
+    };
+   });
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "cubicNs") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["transition"][slider]["cubicNs"][n] = e;
+   });
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "css") {
+   let newResults = [...bodyCells];
+
+   newResults[i] = {
+    ...newResults[i],
+    css: { ...newResults[i].css, [name]: value.toString() },
+   };
+
+   const nextState = produce(state, (draft) => {
+    draft.bodyCells = newResults;
+   });
+
+   dispatch({ type: UPDATE_BODYCELL, payload: nextState });
+  } else if (check === "contcubicNs") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["transition"][n]["cubicNs"][n1] = e;
+   });
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "animation") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["animation"][slider][name] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkey") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n][name] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkeyprop" && !n2 && !n3) {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "animationkeyprop" &&
+   n2 &&
+   n2 != "font" &&
+   n2 != "boxshadow" &&
+   !n3
+  ) {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     "transValues"
+    ][n2] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkeyprop" && n2 && n2 === "font" && n3) {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     name
+    ] = n3;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "animationkeyprop" && n2 && n2 === "boxshadow") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     "shadowValues"
+    ][name] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "animationkeyprop" &&
+   n2 &&
+   n2 != "font" &&
+   n2 != "boxshadow" &&
+   n3
+  ) {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["css"]["animation"][slider]["keyframes"][n]["properties"][n1][
+     "transValues"
+    ][n2] = e;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimation") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n][name] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkey") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     name
+    ] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkeyprop" && !n3 && !n4) {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2][name] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "contanimationkeyprop" &&
+   n3 &&
+   n3 != "font" &&
+   n3 != "boxshadow" &&
+   !n4
+  ) {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2]["transValues"][name] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkeyprop" && n3 && n3 === "font" && n4) {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2][name] = n4;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "contanimationkeyprop" && n3 && n3 === "boxshadow") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2]["shadowValues"][name] = value;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (
+   check === "contanimationkeyprop" &&
+   n3 &&
+   n3 != "font" &&
+   n3 != "boxshadow" &&
+   n4
+  ) {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
+     "properties"
+    ][n2]["transValues"][n3] = e;
+   });
+
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "contentCss") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider][name] = value;
+   });
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (slider === "contentslider") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][n][check] = e;
+   });
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (check === "conttransition") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][slider]["transition"][n][name] = value;
+   });
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (slider === "conttransformProp") {
+   const pushColumns = produce(bodyCells, (draft) => {
+    draft[i]["contentCss"][n]["transformProp"][check] = e;
+   });
+   dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
+  } else if (slider === "slider") {
+   let newResults = [...bodyCells];
+
+   newResults[i] = {
+    ...newResults[i],
+    css: { ...newResults[i].css, [check]: e },
+   };
+   const nextState = produce(state, (draft) => {
+    draft.bodyCells = newResults;
+   });
+
+   dispatch({ type: UPDATE_BODYCELL, payload: nextState });
+  } else if (slider === "transformProp") {
+   let newResults = [...bodyCells];
+
+   newResults[i] = {
+    ...newResults[i],
+    css: {
+     ...newResults[i].css,
+     transformProp: { ...newResults[i].css.transformProp, [check]: e },
+    },
+   };
+   const nextState = produce(state, (draft) => {
+    draft.bodyCells = newResults;
+   });
+
+   dispatch({ type: UPDATE_BODYCELL, payload: nextState });
+  } else if (value === "close") {
    let newResults = [...bodyCells];
 
    newResults[i] = {
@@ -1665,6 +4599,7 @@ const SiteState = (props) => {
   } else if (value === "delete") {
    let newResults = [...bodyCells];
    if (newResults.length === 1) {
+    let newResults = [...bodyCells];
     newResults.splice(0, 1);
    } else {
     newResults.splice(i, 1);
@@ -1673,7 +4608,6 @@ const SiteState = (props) => {
     draft.bodyCells = newResults;
    });
    dispatch({ type: UPDATE_BODYCELL, payload: nextState });
-   setCells();
   } else {
    let newResults = [...bodyCells];
 
@@ -1681,12 +4615,15 @@ const SiteState = (props) => {
     ...newResults[i],
     [name]: value,
    };
+
    const nextState = produce(state, (draft) => {
     draft.bodyCells = newResults;
    });
+
    dispatch({ type: UPDATE_BODYCELL, payload: nextState });
-   setCells();
   }
+
+  setCells();
  };
 
  const addCell = () => {
@@ -2246,19 +5183,16 @@ const SiteState = (props) => {
     content: state.markUp.content,
     myComponents: state.markUp.myComponents,
     sites: state.markUp.sites,
-    pages: state.page.pages,
-    MyComponent: state.page.MyComponent,
-    componentContent: state.page.componentContent,
-    areas: state.page.areas,
-    pages: state.page.pages,
-    pageCells: state.page.pageCells,
-    componentContent: state.page.componentContent,
-    LoadedComponents: state.page.LoadedComponents,
-    areas: state.page.areas,
-    pageGrid: state.pageGrid,
-    areaGrids: state.areaGrids,
-    layouts: state.page.layouts,
+    pages: state.markUp.pages,
+    MyComponent: state.markUp.MyComponent,
+    componentContent: state.markUp.componentContent,
+    pages: state.markUp.pages,
+    page: state.page,
+    layout: state.page.layout,
+    areaGrids: state.page.areaGrids,
+    areaCells: state.page.areaCells,
     setCurrentFont,
+    updatePageCss,
     setCurrentPallet,
     addColumn,
     addRow,
@@ -2317,6 +5251,7 @@ const SiteState = (props) => {
     deleteBodyCell,
     setNewCells,
     setNewSubCells,
+    addPage,
     setNewBodyCells,
     onChangeBodyCell,
     setCells,
@@ -2333,8 +5268,94 @@ const SiteState = (props) => {
     addCellChildAnimationKeyframe,
     addCellAnimationKeyframeProperty,
     addCellChildAnimationKeyframeProperty,
+    addPageAnimation,
+    addPageTransition,
+    addPageAnimationKeyframe,
+    addPageAnimationKeyframeProperty,
+    addHeaderAnimation,
+    addHeaderTransition,
+    addHeaderAnimationKeyframe,
+    addHeaderAnimationKeyframeProperty,
+    addFooterAnimation,
+    addFooterTransition,
+    addFooterAnimationKeyframe,
+    addFooterAnimationKeyframeProperty,
+    updateNavCss,
+    updateMainCss,
+    updateHeaderCss,
+    updateFooterCss,
+    updateArticleCss,
+    addMainAnimation,
+    addMainTransition,
+    addMainAnimationKeyframe,
+    addMainAnimationKeyframeProperty,
+    addNavAnimation,
+    addNavTransition,
+    addNavAnimationKeyframe,
+    addNavAnimationKeyframeProperty,
+    addSubCellAnimation,
+    addSubCellTransition,
+    addSubCellAnimationKeyframe,
+    addSubCellAnimationKeyframeProperty,
+    addBodyCellAnimation,
+    addBodyCellTransition,
+    addBodyCellAnimationKeyframe,
+    addBodyCellAnimationKeyframeProperty,
+    addArticleAnimation,
+    addArticleTransition,
+    addArticleAnimationKeyframe,
+    addArticleAnimationKeyframeProperty,
+    addSubCellChildAnimation,
+    addSubCellChildTransition,
+    addSubCellChildAnimationKeyframe,
+    addSubCellChildAnimationKeyframeProperty,
+    addBodyCellChildAnimation,
+    addBodyCellChildTransition,
+    addBodyCellChildAnimationKeyframe,
+    addBodyCellChildAnimationKeyframeProperty,
+    addArticleAnimation,
+    addArticleTransition,
+    addArticleAnimationKeyframe,
+    addArticleAnimationKeyframeProperty,
+    updateLayout,
+    updateNavGrid,
+    updateHeaderGrid,
+    updateMainGrid,
+    updateFooterGrid,
+    updateArticleGrid,
     getComponentContent,
     clearComponentContent,
+    setPageId,
+    addArticleCell,
+    addNavCell,
+    addMainCell,
+    addFooterCell,
+    addHeaderCell,
+    updateHeaderCellCss,
+    updateFooterCellCss,
+    updateMainCellCss,
+    updateNavCellCss,
+    updateArticleCellCss,
+    addHeaderCellAnimation,
+    addHeaderCellTransition,
+    addHeaderCellAnimationKeyframe,
+    addHeaderCellAnimationKeyframeProperty,
+    addFooterCellAnimation,
+    addFooterCellTransition,
+    addFooterCellAnimationKeyframe,
+    addFooterCellAnimationKeyframeProperty,
+    addMainCellAnimation,
+    addMainCellTransition,
+    addMainCellAnimationKeyframe,
+    addMainCellAnimationKeyframeProperty,
+    addNavCellAnimation,
+    addNavCellTransition,
+    addNavCellAnimationKeyframe,
+    addNavCellAnimationKeyframeProperty,
+    addArticleCellAnimation,
+    addArticleCellTransition,
+    addArticleCellAnimationKeyframe,
+    addArticleCellAnimationKeyframeProperty,
    }}>
    {props.children}
   </SiteContext.Provider>

@@ -1,0 +1,27 @@
+bring the css object down to the subcell and body cell level
+clean up the useeffect in the review form 
+add image gallery notation on Images
+Add incrementer to setCells === make the cell reducers render current 
+fix the login 
+map useState hooks && click context to button
+form builder 
+implement custom state
+readState and writeState
+build macrocomponents (Nav A, Nav B, Nav C, Nav D) your own logo box etc as mapped grid template areas 
+The ability to presave areas for a page like instead of having to select each nav you can just lock in a combo and save it as a area matrix 
+create interactive page model as toplevel design feature basically a form that is the dimensions of a page with a bunch of selects that include every possible thing you can put there through the state iterations,
+every level exposes all like state combinations as mapped alternates 
+storefront builder  === firm.services and shopify and stripe 
+quiz builder
+email design component mapping react html email like css styled grid for sec viewer
+lead database mapped to user and site sent to email campaigns. 
+Voice recording studio // rvm scheduler?
+
+
+
+
+
+
+
+
+

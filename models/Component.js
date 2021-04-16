@@ -112,7 +112,7 @@ const ComponentSchema = mongoose.Schema({
   {
    type: { type: String },
    text: { type: String },
-   action: { type: String },
+   action: [{ type: String }],
    actionComponent1: { type: String },
    actionComponent2: { type: String },
    attachedContent: { type: String },

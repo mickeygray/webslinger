@@ -24,10 +24,50 @@ import {
  GET_COMPONENTS,
  FILTER_CSS,
  CLEAR_FILTER,
+ SET_LOADEDCOMPONENTS,
+ CLEAR_COMPONENTCONTENT,
+ GET_COMPONENT,
+ GET_COMPONENTCONTENT,
+ ADD_COMPONENT,
+ ADD_PAGE,
 } from "../types";
 
 export default (state, action) => {
  switch (action.type) {
+  case GET_COMPONENTCONTENT:
+   return {
+    ...state,
+    componentContent: action.payload,
+   };
+
+  case GET_COMPONENT:
+   return {
+    ...state,
+    MyComponent: action.payload,
+   };
+  case ADD_COMPONENT:
+   return {
+    ...state,
+    pages: action.payload,
+   };
+
+  case ADD_PAGE:
+   return {
+    ...state,
+    pages: action.payload,
+   };
+  case SET_LOADEDCOMPONENTS:
+   return {
+    ...state,
+    pages: action.payload,
+   };
+
+  case CLEAR_COMPONENTCONTENT:
+   return {
+    ...state,
+    componentContent: null,
+    MyComponent: null,
+   };
   case GET_SITES:
    return {
     ...state,
