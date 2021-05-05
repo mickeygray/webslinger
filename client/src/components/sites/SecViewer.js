@@ -38,7 +38,14 @@ const SecViewer = ({
  const authContext = useContext(AuthContext);
  const siteContext = useContext(SiteContext);
  const imageContext = useContext(ImageContext);
- const { setComponentString } = useAppContext();
+ const {
+  setComponentString,
+  lead,
+  userState,
+  writeUserState,
+  readUserState,
+  writeLeadState,
+ } = useAppContext();
  const { user } = authContext;
  const { _id } = user;
  const { getContentImage, clearCurrentImage, contentImage } = imageContext;
@@ -101,6 +108,8 @@ const SecViewer = ({
   addBodyCellAnimationKeyframe,
   addBodyCellAnimationKeyframeProperty,
   filtered,
+  forms,
+  currentForm,
  } = siteContext;
 
  const [elements, setElements] = useState([]);
@@ -113,6 +122,48 @@ const SecViewer = ({
  const [currentPage, setCurrentPage] = useState(1);
  const [postsPerPage, setPostsPerPage] = useState(1);
  const [Component, setComponent] = useState("");
+ const [cellForm, setCellForm] = useState([]);
+ const [subCellForm, setSubCellForm] = useState([]);
+ const [bodyCellForm, setBodyCellForm] = useState([]);
+
+ const formEntry = {
+  ...(currentForm !== null && currentForm),
+  cellId: "",
+ };
+
+ const stringToBoolean = (string) => {
+  console.log(string);
+  switch (string.toLowerCase().trim()) {
+   case "true":
+   case "yes":
+   case "1":
+    return Boolean(string);
+   case "false":
+   case "no":
+   case "0":
+   case null:
+    return Boolean("");
+   default:
+    return Boolean(string);
+  }
+ };
+
+ const addCellForm = (_id) => {
+  let newForm = [...cellForm, { ...formEntry, cellId: _id }];
+
+  setCellForm(newForm);
+ };
+
+ const addSubCellForm = (_id) => {
+  let newForm = [...subCellForm, { ...formEntry, cellId: _id }];
+
+  setSubCellForm(newForm);
+ };
+ const addBodyCellForm = (_id) => {
+  let newForm = [...bodyCellForm, { ...formEntry, cellId: _id }];
+
+  setBodyCellForm(newForm);
+ };
 
  useEffect(() => {
   if (document.getElementById("render").innerHTML) {
@@ -575,10 +626,23 @@ const SecViewer = ({
    ...vid,
   ]);
 
-  setNewCells(cells, elements);
-  setNewBodyCells(subCells, elements);
-  setNewSubCells(bodyCells, elements);
- }, [component, h, li, p, a, icon, button, img, vid]);
+  setNewCells(cells, elements, cellForm);
+  setNewBodyCells(subCells, elements, bodyCellForm);
+  setNewSubCells(bodyCells, elements, subCellForm);
+ }, [
+  component,
+  h,
+  li,
+  p,
+  a,
+  icon,
+  button,
+  img,
+  vid,
+  cellForm,
+  bodyCellForm,
+  subCellForm,
+ ]);
 
  useEffect(() => {
   if (
@@ -702,6 +766,11 @@ const SecViewer = ({
          <div>
           <div className='grid-2'>
            <div className='card' style={{ backgroundColor: "#f4f4f4" }}>
+            <button
+             className='btn btn-block btn-dark'
+             onClick={() => addCellForm(_id)}>
+             Add Current Form To This Cell
+            </button>
             {cellContentToggle === true ? (
              <div style={{ height: "500px", overflowY: "scroll" }}>
               <span className='lead bg-light' style={{ float: "right" }}>
@@ -5014,6 +5083,23 @@ const SecViewer = ({
              .map(
               (
                {
+                formName,
+                keyName,
+                parentObj,
+                parentState,
+                parentKey,
+                checkedValue,
+                isBool,
+                onChange,
+                options,
+                type,
+                label,
+                legend,
+                step,
+                n,
+                rangeMin,
+                rangeMax,
+                displayDate,
                 text,
                 props,
                 font,
@@ -5021,7 +5107,7 @@ const SecViewer = ({
                 buttonStyle,
                 faIcon,
                 faIconPosition,
-                type,
+
                 headingSize,
                 action,
                 background,
@@ -5041,6 +5127,443 @@ const SecViewer = ({
                 const VariableComponent = content[i];
 
                 return VariableComponent;
+               } else if (type === "text") {
+                if (Array.isArray(userState[parentState][parentKey])) {
+                 const arr = userState[parentState][parentKey].map((k, i) => {
+                  return (
+                   <label>
+                    {label}
+                    <input
+                     type='text'
+                     name={keyName}
+                     value={
+                      lead && parentObj === "lead"
+                       ? lead[keyName]
+                       : userState && userState[keyName]
+                     }
+                     onChange={(e) => {
+                      parentObj === "lead"
+                       ? writeLeadState(onChange, e)
+                       : writeUserState(
+                          onChange,
+                          e,
+                          parentObj,
+                          n,
+                          parentState,
+                          parentKey,
+                          i
+                         );
+                     }}
+                    />
+                   </label>
+                  );
+                 });
+                 return arr;
+                } else {
+                 return (
+                  <label>
+                   {label}
+                   <input
+                    type='text'
+                    name={keyName}
+                    value={
+                     lead && parentObj === "lead"
+                      ? lead[keyName]
+                      : userState && userState[keyName]
+                    }
+                    onChange={(e) => {
+                     parentObj === "lead"
+                      ? writeLeadState(onChange, e)
+                      : writeUserState(
+                         onChange,
+                         e,
+                         parentObj,
+                         n,
+                         parentState,
+                         parentKey
+                        );
+                    }}
+                   />
+                  </label>
+                 );
+                }
+               } else if (type === "textarea") {
+                if (Array.isArray(userState[parentState][parentKey])) {
+                 const arr = userState[parentState][parentKey].map((k, i) => {
+                  return (
+                   <label>
+                    {label}
+                    <textarea
+                     type='text'
+                     name={keyName}
+                     value={lead && lead[keyName]}
+                     onChange={(e) =>
+                      writeUserState(
+                       onChange,
+                       e,
+                       parentObj,
+                       n,
+                       parentState,
+                       parentKey,
+                       i
+                      )
+                     }
+                    />
+                   </label>
+                  );
+                 });
+                 return arr;
+                } else {
+                 return (
+                  <label>
+                   {label}
+                   <textarea
+                    type='text'
+                    name={keyName}
+                    value={lead && lead[keyName]}
+                    onChange={(e) =>
+                     writeUserState(
+                      onChange,
+                      e,
+                      parentObj,
+                      n,
+                      parentState,
+                      parentKey,
+                      Array.from(
+                       userState[parentState][parentKey]
+                      ).findIndex((x) =>
+                       Object.values(x).includes(e.target.value)
+                      )
+                     )
+                    }
+                   />
+                  </label>
+                 );
+                }
+               } else if (type === "radio") {
+                if (Array.isArray(userState[parentState][parentKey])) {
+                 const arr = userState[parentState][parentKey].map((k, i) => {
+                  return (
+                   <label>
+                    {label}
+                    <input
+                     type='radio'
+                     name={keyName}
+                     value={
+                      isBool === "true" || isBool === "false"
+                       ? stringToBoolean(isBool)
+                       : checkedValue
+                     }
+                     onClick={(e) =>
+                      writeUserState(
+                       onChange,
+                       e,
+                       parentObj,
+                       n,
+                       parentState,
+                       parentKey,
+                       i
+                      )
+                     }
+                    />
+                   </label>
+                  );
+                 });
+                 return arr;
+                } else {
+                 return (
+                  <label>
+                   {label}
+                   <input
+                    type='radio'
+                    name={keyName}
+                    value={
+                     isBool === "true" || isBool === "false"
+                      ? stringToBoolean(isBool)
+                      : checkedValue
+                    }
+                    onClick={(e) =>
+                     writeUserState(
+                      onChange,
+                      e,
+                      parentObj,
+                      n,
+                      parentState,
+                      parentKey
+                     )
+                    }
+                   />
+                  </label>
+                 );
+                }
+               } else if (type === "checkbox") {
+                if (Array.isArray(userState[parentState][parentKey])) {
+                 const arr = userState[parentState][parentKey].map((k, i) => {
+                  return (
+                   <label>
+                    {label}
+                    <input
+                     type='checkbox'
+                     name={keyName}
+                     checked={
+                      isBool === true || isBool === false
+                       ? keyName === isBool
+                       : checkedValue
+                     }
+                     onChange={(e) =>
+                      writeUserState(
+                       onChange,
+                       e,
+                       parentObj,
+                       n,
+                       parentState,
+                       parentKey,
+                       i
+                      )
+                     }
+                    />
+                   </label>
+                  );
+                 });
+
+                 return arr;
+                } else {
+                 return (
+                  <label>
+                   {label}
+                   <input
+                    type='checkbox'
+                    name={keyName}
+                    checked={
+                     isBool === true || isBool === false
+                      ? keyName === isBool
+                      : checkedValue
+                    }
+                    onChange={(e) =>
+                     writeUserState(
+                      onChange,
+                      e,
+                      parentObj,
+                      n,
+                      parentState,
+                      parentKey
+                     )
+                    }
+                   />
+                  </label>
+                 );
+                }
+               } else if (type === "select") {
+                if (Array.isArray(userState[parentState][parentKey])) {
+                 const arr = userState[parentState][parentKey].map((k, i) => {
+                  return (
+                   <label>
+                    {label}
+                    <select
+                     name={keyName}
+                     onChange={(e) =>
+                      writeUserState(
+                       onChange,
+                       e,
+                       parentObj,
+                       n,
+                       parentState,
+                       parentKey,
+                       i
+                      )
+                     }>
+                     {options.map(({ value, display }) => (
+                      <option value={value}>{display}</option>
+                     ))}
+                    </select>
+                   </label>
+                  );
+                 });
+                 return arr;
+                } else {
+                 return (
+                  <label>
+                   {label}
+                   <select
+                    name={keyName}
+                    onChange={(e) =>
+                     writeUserState(
+                      onChange,
+                      e,
+                      parentObj,
+                      n,
+                      parentState,
+                      parentKey
+                     )
+                    }>
+                    {options.map(({ value, display }) => (
+                     <option value={value}>{display}</option>
+                    ))}
+                   </select>
+                  </label>
+                 );
+                }
+               } else if (type === "number") {
+                if (Array.isArray(userState[parentState][parentKey])) {
+                 const arr = userState[parentState][parentKey].map((k, i) => {
+                  return (
+                   <label>
+                    {label}
+                    <input
+                     type='number'
+                     name={keyName}
+                     checked={keyName === checkedValue}
+                     onChange={(e) =>
+                      writeUserState(
+                       onChange,
+                       e,
+                       parentObj,
+                       n,
+                       parentState,
+                       parentKey,
+                       i
+                      )
+                     }
+                    />
+                   </label>
+                  );
+                 });
+                 return arr;
+                } else {
+                 return (
+                  <label>
+                   {label}
+                   <input
+                    type='number'
+                    name={keyName}
+                    checked={keyName === checkedValue}
+                    onChange={(e) =>
+                     writeUserState(
+                      onChange,
+                      e,
+                      parentObj,
+                      n,
+                      parentState,
+                      parentKey
+                     )
+                    }
+                   />
+                  </label>
+                 );
+                }
+               } else if (type === "date") {
+                if (Array.isArray(userState[parentState][parentKey])) {
+                 const arr = userState[parentState][parentKey].map((k, i) => {
+                  return (
+                   <label>
+                    {label}
+                    <input
+                     type='date'
+                     name={keyName}
+                     value={displayDate && displayDate}
+                     onChange={(e) =>
+                      writeUserState(
+                       onChange,
+                       e,
+                       parentObj,
+                       n,
+                       parentState,
+                       parentKey,
+                       i
+                      )
+                     }
+                    />
+                   </label>
+                  );
+                 });
+                 return arr;
+                } else {
+                 return (
+                  <label>
+                   {label}
+                   <input
+                    type='date'
+                    name={keyName}
+                    value={displayDate && displayDate}
+                    onChange={(e) =>
+                     writeUserState(
+                      onChange,
+                      e,
+                      parentObj,
+                      n,
+                      parentState,
+                      parentKey
+                     )
+                    }
+                   />
+                  </label>
+                 );
+                }
+               } else if (type === "range") {
+                if (Array.isArray(userState[parentState][parentKey])) {
+                 const arr = userState[parentState][parentKey].map((k, i) => {
+                  return (
+                   <label>
+                    {label}
+                    <Slider
+                     axis='x'
+                     x={parseFloat(userState[`${keyName}`])}
+                     value={parseFloat(userState[`${keyName}`])}
+                     onChange={(e) =>
+                      writeUserState(
+                       onChange,
+                       e,
+                       parentObj,
+                       n,
+                       parentState,
+                       parentKey,
+                       i
+                      )
+                     }
+                     orientation='horizontal'
+                     name={keyName}
+                     min={rangeMax}
+                     max={rangeMin}
+                     step={step}
+                    />
+                   </label>
+                  );
+                 });
+                 return arr;
+                } else {
+                 return (
+                  <label>
+                   {label}
+                   <Slider
+                    axis='x'
+                    x={parseFloat(userState[`${keyName}`])}
+                    value={parseFloat(userState[`${keyName}`])}
+                    onChange={(e) =>
+                     writeUserState(
+                      onChange,
+                      e,
+                      parentObj,
+                      n,
+                      parentState,
+                      parentKey
+                     )
+                    }
+                    orientation='horizontal'
+                    name={keyName}
+                    min={rangeMax}
+                    max={rangeMin}
+                    step={step}
+                   />
+                  </label>
+                 );
+                }
+               } else if (type === "submit") {
+                return (
+                 <input
+                  type='submit'
+                  onClick={() => readUserState(userState, lead)}
+                 />
+                );
                } else
                 return (
                  <span>
@@ -5574,6 +6097,11 @@ const SecViewer = ({
                      <div
                       className='card'
                       style={{ backgroundColor: "#f4f4f4" }}>
+                      <button
+                       className='btn btn-block btn-dark'
+                       onClick={() => addSubCellForm(_id)}>
+                       Add Current Form To This Cell
+                      </button>
                       {subContentToggle === true ? (
                        <div style={{ height: "500px", overflowY: "scroll" }}>
                         <span
@@ -10430,7 +10958,23 @@ const SecViewer = ({
                          font,
                          faIcon,
                          faIconPosition,
+                         formName,
+                         keyName,
+                         parentObj,
+                         parentState,
+                         parentKey,
+                         checkedValue,
+                         isBool,
+                         onChange,
+                         options,
                          type,
+                         label,
+                         legend,
+                         step,
+                         n,
+                         rangeMin,
+                         rangeMax,
+                         displayDate,
                          headingSize,
                          action,
                          code,
@@ -10448,6 +10992,459 @@ const SecViewer = ({
                         if (content[i].hasOwnProperty("props")) {
                          const VariableComponent = content;
                          return VariableComponent;
+                        } else if (type === "text") {
+                         if (Array.isArray(userState[parentState][parentKey])) {
+                          const arr = userState[parentState][parentKey].map(
+                           (k, i) => {
+                            return (
+                             <label>
+                              {label}
+                              <input
+                               type='text'
+                               name={keyName}
+                               value={
+                                lead && parentObj === "lead"
+                                 ? lead[keyName]
+                                 : userState && userState[keyName]
+                               }
+                               onChange={(e) => {
+                                parentObj === "lead"
+                                 ? writeLeadState(onChange, e)
+                                 : writeUserState(
+                                    onChange,
+                                    e,
+                                    parentObj,
+                                    n,
+                                    parentState,
+                                    parentKey,
+                                    i
+                                   );
+                               }}
+                              />
+                             </label>
+                            );
+                           }
+                          );
+                          return arr;
+                         } else {
+                          return (
+                           <label>
+                            {label}
+                            <input
+                             type='text'
+                             name={keyName}
+                             value={
+                              lead && parentObj === "lead"
+                               ? lead[keyName]
+                               : userState && userState[keyName]
+                             }
+                             onChange={(e) => {
+                              parentObj === "lead"
+                               ? writeLeadState(onChange, e)
+                               : writeUserState(
+                                  onChange,
+                                  e,
+                                  parentObj,
+                                  n,
+                                  parentState,
+                                  parentKey
+                                 );
+                             }}
+                            />
+                           </label>
+                          );
+                         }
+                        } else if (type === "textarea") {
+                         if (Array.isArray(userState[parentState][parentKey])) {
+                          const arr = userState[parentState][parentKey].map(
+                           (k, i) => {
+                            return (
+                             <label>
+                              {label}
+                              <textarea
+                               type='text'
+                               name={keyName}
+                               value={lead && lead[keyName]}
+                               onChange={(e) =>
+                                writeUserState(
+                                 onChange,
+                                 e,
+                                 parentObj,
+                                 n,
+                                 parentState,
+                                 parentKey,
+                                 i
+                                )
+                               }
+                              />
+                             </label>
+                            );
+                           }
+                          );
+                          return arr;
+                         } else {
+                          return (
+                           <label>
+                            {label}
+                            <textarea
+                             type='text'
+                             name={keyName}
+                             value={lead && lead[keyName]}
+                             onChange={(e) =>
+                              writeUserState(
+                               onChange,
+                               e,
+                               parentObj,
+                               n,
+                               parentState,
+                               parentKey,
+                               Array.from(
+                                userState[parentState][parentKey]
+                               ).findIndex((x) =>
+                                Object.values(x).includes(e.target.value)
+                               )
+                              )
+                             }
+                            />
+                           </label>
+                          );
+                         }
+                        } else if (type === "radio") {
+                         if (Array.isArray(userState[parentState][parentKey])) {
+                          const arr = userState[parentState][parentKey].map(
+                           (k, i) => {
+                            return (
+                             <label>
+                              {label}
+                              <input
+                               type='radio'
+                               name={keyName}
+                               value={
+                                isBool === "true" || isBool === "false"
+                                 ? stringToBoolean(isBool)
+                                 : checkedValue
+                               }
+                               onClick={(e) =>
+                                writeUserState(
+                                 onChange,
+                                 e,
+                                 parentObj,
+                                 n,
+                                 parentState,
+                                 parentKey,
+                                 i
+                                )
+                               }
+                              />
+                             </label>
+                            );
+                           }
+                          );
+                          return arr;
+                         } else {
+                          return (
+                           <label>
+                            {label}
+                            <input
+                             type='radio'
+                             name={keyName}
+                             value={
+                              isBool === "true" || isBool === "false"
+                               ? stringToBoolean(isBool)
+                               : checkedValue
+                             }
+                             onClick={(e) =>
+                              writeUserState(
+                               onChange,
+                               e,
+                               parentObj,
+                               n,
+                               parentState,
+                               parentKey
+                              )
+                             }
+                            />
+                           </label>
+                          );
+                         }
+                        } else if (type === "checkbox") {
+                         if (Array.isArray(userState[parentState][parentKey])) {
+                          const arr = userState[parentState][parentKey].map(
+                           (k, i) => {
+                            return (
+                             <label>
+                              {label}
+                              <input
+                               type='checkbox'
+                               name={keyName}
+                               checked={
+                                isBool === true || isBool === false
+                                 ? keyName === isBool
+                                 : checkedValue
+                               }
+                               onChange={(e) =>
+                                writeUserState(
+                                 onChange,
+                                 e,
+                                 parentObj,
+                                 n,
+                                 parentState,
+                                 parentKey,
+                                 i
+                                )
+                               }
+                              />
+                             </label>
+                            );
+                           }
+                          );
+
+                          return arr;
+                         } else {
+                          return (
+                           <label>
+                            {label}
+                            <input
+                             type='checkbox'
+                             name={keyName}
+                             checked={
+                              isBool === true || isBool === false
+                               ? keyName === isBool
+                               : checkedValue
+                             }
+                             onChange={(e) =>
+                              writeUserState(
+                               onChange,
+                               e,
+                               parentObj,
+                               n,
+                               parentState,
+                               parentKey
+                              )
+                             }
+                            />
+                           </label>
+                          );
+                         }
+                        } else if (type === "select") {
+                         if (Array.isArray(userState[parentState][parentKey])) {
+                          const arr = userState[parentState][parentKey].map(
+                           (k, i) => {
+                            return (
+                             <label>
+                              {label}
+                              <select
+                               name={keyName}
+                               onChange={(e) =>
+                                writeUserState(
+                                 onChange,
+                                 e,
+                                 parentObj,
+                                 n,
+                                 parentState,
+                                 parentKey,
+                                 i
+                                )
+                               }>
+                               {options.map(({ value, display }) => (
+                                <option value={value}>{display}</option>
+                               ))}
+                              </select>
+                             </label>
+                            );
+                           }
+                          );
+                          return arr;
+                         } else {
+                          return (
+                           <label>
+                            {label}
+                            <select
+                             name={keyName}
+                             onChange={(e) =>
+                              writeUserState(
+                               onChange,
+                               e,
+                               parentObj,
+                               n,
+                               parentState,
+                               parentKey
+                              )
+                             }>
+                             {options.map(({ value, display }) => (
+                              <option value={value}>{display}</option>
+                             ))}
+                            </select>
+                           </label>
+                          );
+                         }
+                        } else if (type === "number") {
+                         if (Array.isArray(userState[parentState][parentKey])) {
+                          const arr = userState[parentState][parentKey].map(
+                           (k, i) => {
+                            return (
+                             <label>
+                              {label}
+                              <input
+                               type='number'
+                               name={keyName}
+                               checked={keyName === checkedValue}
+                               onChange={(e) =>
+                                writeUserState(
+                                 onChange,
+                                 e,
+                                 parentObj,
+                                 n,
+                                 parentState,
+                                 parentKey,
+                                 i
+                                )
+                               }
+                              />
+                             </label>
+                            );
+                           }
+                          );
+                          return arr;
+                         } else {
+                          return (
+                           <label>
+                            {label}
+                            <input
+                             type='number'
+                             name={keyName}
+                             checked={keyName === checkedValue}
+                             onChange={(e) =>
+                              writeUserState(
+                               onChange,
+                               e,
+                               parentObj,
+                               n,
+                               parentState,
+                               parentKey
+                              )
+                             }
+                            />
+                           </label>
+                          );
+                         }
+                        } else if (type === "date") {
+                         if (Array.isArray(userState[parentState][parentKey])) {
+                          const arr = userState[parentState][parentKey].map(
+                           (k, i) => {
+                            return (
+                             <label>
+                              {label}
+                              <input
+                               type='date'
+                               name={keyName}
+                               value={displayDate && displayDate}
+                               onChange={(e) =>
+                                writeUserState(
+                                 onChange,
+                                 e,
+                                 parentObj,
+                                 n,
+                                 parentState,
+                                 parentKey,
+                                 i
+                                )
+                               }
+                              />
+                             </label>
+                            );
+                           }
+                          );
+                          return arr;
+                         } else {
+                          return (
+                           <label>
+                            {label}
+                            <input
+                             type='date'
+                             name={keyName}
+                             value={displayDate && displayDate}
+                             onChange={(e) =>
+                              writeUserState(
+                               onChange,
+                               e,
+                               parentObj,
+                               n,
+                               parentState,
+                               parentKey
+                              )
+                             }
+                            />
+                           </label>
+                          );
+                         }
+                        } else if (type === "range") {
+                         if (Array.isArray(userState[parentState][parentKey])) {
+                          const arr = userState[parentState][parentKey].map(
+                           (k, i) => {
+                            return (
+                             <label>
+                              {label}
+                              <Slider
+                               axis='x'
+                               x={parseFloat(userState[`${keyName}`])}
+                               value={parseFloat(userState[`${keyName}`])}
+                               onChange={(e) =>
+                                writeUserState(
+                                 onChange,
+                                 e,
+                                 parentObj,
+                                 n,
+                                 parentState,
+                                 parentKey,
+                                 i
+                                )
+                               }
+                               orientation='horizontal'
+                               name={keyName}
+                               min={rangeMax}
+                               max={rangeMin}
+                               step={step}
+                              />
+                             </label>
+                            );
+                           }
+                          );
+                          return arr;
+                         } else {
+                          return (
+                           <label>
+                            {label}
+                            <Slider
+                             axis='x'
+                             x={parseFloat(userState[`${keyName}`])}
+                             value={parseFloat(userState[`${keyName}`])}
+                             onChange={(e) =>
+                              writeUserState(
+                               onChange,
+                               e,
+                               parentObj,
+                               n,
+                               parentState,
+                               parentKey
+                              )
+                             }
+                             orientation='horizontal'
+                             name={keyName}
+                             min={rangeMax}
+                             max={rangeMin}
+                             step={step}
+                            />
+                           </label>
+                          );
+                         }
+                        } else if (type === "submit") {
+                         return (
+                          <input
+                           type='submit'
+                           onClick={() => readUserState(userState, lead)}
+                          />
+                         );
                         } else
                          return (
                           <Fragment>
@@ -10990,7 +11987,12 @@ const SecViewer = ({
                                <option value='delete'>Delete</option>
                               </select>
                              </a>
-                            </div>{" "}
+                            </div>
+                            <button
+                             className='btn btn-block btn-dark'
+                             onClick={() => addBodyCellForm(_id)}>
+                             Add Current Form To This Cell
+                            </button>
                             <button
                              onClick={() =>
                               setBodyContentToggle((prevState) => !prevState)
@@ -16268,7 +17270,23 @@ const SecViewer = ({
                                 faIcon,
                                 faIconPosition,
                                 name,
+                                formName,
+                                keyName,
+                                parentObj,
+                                parentState,
+                                parentKey,
+                                checkedValue,
+                                isBool,
+                                onChange,
+                                options,
                                 type,
+                                label,
+                                legend,
+                                step,
+                                n,
+                                rangeMin,
+                                rangeMax,
+                                displayDate,
                                 headingSize,
                                 action,
                                 color,
@@ -16286,6 +17304,491 @@ const SecViewer = ({
                                if (content[i].hasOwnProperty("props")) {
                                 const VariableComponent = content;
                                 return VariableComponent;
+                               } else if (type === "text") {
+                                if (
+                                 Array.isArray(
+                                  userState[parentState][parentKey]
+                                 )
+                                ) {
+                                 const arr = userState[parentState][
+                                  parentKey
+                                 ].map((k, i) => {
+                                  return (
+                                   <label>
+                                    {label}
+                                    <input
+                                     type='text'
+                                     name={keyName}
+                                     value={
+                                      lead && parentObj === "lead"
+                                       ? lead[keyName]
+                                       : userState && userState[keyName]
+                                     }
+                                     onChange={(e) => {
+                                      parentObj === "lead"
+                                       ? writeLeadState(onChange, e)
+                                       : writeUserState(
+                                          onChange,
+                                          e,
+                                          parentObj,
+                                          n,
+                                          parentState,
+                                          parentKey,
+                                          i
+                                         );
+                                     }}
+                                    />
+                                   </label>
+                                  );
+                                 });
+                                 return arr;
+                                } else {
+                                 return (
+                                  <label>
+                                   {label}
+                                   <input
+                                    type='text'
+                                    name={keyName}
+                                    value={
+                                     lead && parentObj === "lead"
+                                      ? lead[keyName]
+                                      : userState && userState[keyName]
+                                    }
+                                    onChange={(e) => {
+                                     parentObj === "lead"
+                                      ? writeLeadState(onChange, e)
+                                      : writeUserState(
+                                         onChange,
+                                         e,
+                                         parentObj,
+                                         n,
+                                         parentState,
+                                         parentKey
+                                        );
+                                    }}
+                                   />
+                                  </label>
+                                 );
+                                }
+                               } else if (type === "textarea") {
+                                if (
+                                 Array.isArray(
+                                  userState[parentState][parentKey]
+                                 )
+                                ) {
+                                 const arr = userState[parentState][
+                                  parentKey
+                                 ].map((k, i) => {
+                                  return (
+                                   <label>
+                                    {label}
+                                    <textarea
+                                     type='text'
+                                     name={keyName}
+                                     value={lead && lead[keyName]}
+                                     onChange={(e) =>
+                                      writeUserState(
+                                       onChange,
+                                       e,
+                                       parentObj,
+                                       n,
+                                       parentState,
+                                       parentKey,
+                                       i
+                                      )
+                                     }
+                                    />
+                                   </label>
+                                  );
+                                 });
+                                 return arr;
+                                } else {
+                                 return (
+                                  <label>
+                                   {label}
+                                   <textarea
+                                    type='text'
+                                    name={keyName}
+                                    value={lead && lead[keyName]}
+                                    onChange={(e) =>
+                                     writeUserState(
+                                      onChange,
+                                      e,
+                                      parentObj,
+                                      n,
+                                      parentState,
+                                      parentKey,
+                                      Array.from(
+                                       userState[parentState][parentKey]
+                                      ).findIndex((x) =>
+                                       Object.values(x).includes(e.target.value)
+                                      )
+                                     )
+                                    }
+                                   />
+                                  </label>
+                                 );
+                                }
+                               } else if (type === "radio") {
+                                if (
+                                 Array.isArray(
+                                  userState[parentState][parentKey]
+                                 )
+                                ) {
+                                 const arr = userState[parentState][
+                                  parentKey
+                                 ].map((k, i) => {
+                                  return (
+                                   <label>
+                                    {label}
+                                    <input
+                                     type='radio'
+                                     name={keyName}
+                                     value={
+                                      isBool === "true" || isBool === "false"
+                                       ? stringToBoolean(isBool)
+                                       : checkedValue
+                                     }
+                                     onClick={(e) =>
+                                      writeUserState(
+                                       onChange,
+                                       e,
+                                       parentObj,
+                                       n,
+                                       parentState,
+                                       parentKey,
+                                       i
+                                      )
+                                     }
+                                    />
+                                   </label>
+                                  );
+                                 });
+                                 return arr;
+                                } else {
+                                 return (
+                                  <label>
+                                   {label}
+                                   <input
+                                    type='radio'
+                                    name={keyName}
+                                    value={
+                                     isBool === "true" || isBool === "false"
+                                      ? stringToBoolean(isBool)
+                                      : checkedValue
+                                    }
+                                    onClick={(e) =>
+                                     writeUserState(
+                                      onChange,
+                                      e,
+                                      parentObj,
+                                      n,
+                                      parentState,
+                                      parentKey
+                                     )
+                                    }
+                                   />
+                                  </label>
+                                 );
+                                }
+                               } else if (type === "checkbox") {
+                                if (
+                                 Array.isArray(
+                                  userState[parentState][parentKey]
+                                 )
+                                ) {
+                                 const arr = userState[parentState][
+                                  parentKey
+                                 ].map((k, i) => {
+                                  return (
+                                   <label>
+                                    {label}
+                                    <input
+                                     type='checkbox'
+                                     name={keyName}
+                                     checked={
+                                      isBool === true || isBool === false
+                                       ? keyName === isBool
+                                       : checkedValue
+                                     }
+                                     onChange={(e) =>
+                                      writeUserState(
+                                       onChange,
+                                       e,
+                                       parentObj,
+                                       n,
+                                       parentState,
+                                       parentKey,
+                                       i
+                                      )
+                                     }
+                                    />
+                                   </label>
+                                  );
+                                 });
+
+                                 return arr;
+                                } else {
+                                 return (
+                                  <label>
+                                   {label}
+                                   <input
+                                    type='checkbox'
+                                    name={keyName}
+                                    checked={
+                                     isBool === true || isBool === false
+                                      ? keyName === isBool
+                                      : checkedValue
+                                    }
+                                    onChange={(e) =>
+                                     writeUserState(
+                                      onChange,
+                                      e,
+                                      parentObj,
+                                      n,
+                                      parentState,
+                                      parentKey
+                                     )
+                                    }
+                                   />
+                                  </label>
+                                 );
+                                }
+                               } else if (type === "select") {
+                                if (
+                                 Array.isArray(
+                                  userState[parentState][parentKey]
+                                 )
+                                ) {
+                                 const arr = userState[parentState][
+                                  parentKey
+                                 ].map((k, i) => {
+                                  return (
+                                   <label>
+                                    {label}
+                                    <select
+                                     name={keyName}
+                                     onChange={(e) =>
+                                      writeUserState(
+                                       onChange,
+                                       e,
+                                       parentObj,
+                                       n,
+                                       parentState,
+                                       parentKey,
+                                       i
+                                      )
+                                     }>
+                                     {options.map(({ value, display }) => (
+                                      <option value={value}>{display}</option>
+                                     ))}
+                                    </select>
+                                   </label>
+                                  );
+                                 });
+                                 return arr;
+                                } else {
+                                 return (
+                                  <label>
+                                   {label}
+                                   <select
+                                    name={keyName}
+                                    onChange={(e) =>
+                                     writeUserState(
+                                      onChange,
+                                      e,
+                                      parentObj,
+                                      n,
+                                      parentState,
+                                      parentKey
+                                     )
+                                    }>
+                                    {options.map(({ value, display }) => (
+                                     <option value={value}>{display}</option>
+                                    ))}
+                                   </select>
+                                  </label>
+                                 );
+                                }
+                               } else if (type === "number") {
+                                if (
+                                 Array.isArray(
+                                  userState[parentState][parentKey]
+                                 )
+                                ) {
+                                 const arr = userState[parentState][
+                                  parentKey
+                                 ].map((k, i) => {
+                                  return (
+                                   <label>
+                                    {label}
+                                    <input
+                                     type='number'
+                                     name={keyName}
+                                     checked={keyName === checkedValue}
+                                     onChange={(e) =>
+                                      writeUserState(
+                                       onChange,
+                                       e,
+                                       parentObj,
+                                       n,
+                                       parentState,
+                                       parentKey,
+                                       i
+                                      )
+                                     }
+                                    />
+                                   </label>
+                                  );
+                                 });
+                                 return arr;
+                                } else {
+                                 return (
+                                  <label>
+                                   {label}
+                                   <input
+                                    type='number'
+                                    name={keyName}
+                                    checked={keyName === checkedValue}
+                                    onChange={(e) =>
+                                     writeUserState(
+                                      onChange,
+                                      e,
+                                      parentObj,
+                                      n,
+                                      parentState,
+                                      parentKey
+                                     )
+                                    }
+                                   />
+                                  </label>
+                                 );
+                                }
+                               } else if (type === "date") {
+                                if (
+                                 Array.isArray(
+                                  userState[parentState][parentKey]
+                                 )
+                                ) {
+                                 const arr = userState[parentState][
+                                  parentKey
+                                 ].map((k, i) => {
+                                  return (
+                                   <label>
+                                    {label}
+                                    <input
+                                     type='date'
+                                     name={keyName}
+                                     value={displayDate && displayDate}
+                                     onChange={(e) =>
+                                      writeUserState(
+                                       onChange,
+                                       e,
+                                       parentObj,
+                                       n,
+                                       parentState,
+                                       parentKey,
+                                       i
+                                      )
+                                     }
+                                    />
+                                   </label>
+                                  );
+                                 });
+                                 return arr;
+                                } else {
+                                 return (
+                                  <label>
+                                   {label}
+                                   <input
+                                    type='date'
+                                    name={keyName}
+                                    value={displayDate && displayDate}
+                                    onChange={(e) =>
+                                     writeUserState(
+                                      onChange,
+                                      e,
+                                      parentObj,
+                                      n,
+                                      parentState,
+                                      parentKey
+                                     )
+                                    }
+                                   />
+                                  </label>
+                                 );
+                                }
+                               } else if (type === "range") {
+                                if (
+                                 Array.isArray(
+                                  userState[parentState][parentKey]
+                                 )
+                                ) {
+                                 const arr = userState[parentState][
+                                  parentKey
+                                 ].map((k, i) => {
+                                  return (
+                                   <label>
+                                    {label}
+                                    <Slider
+                                     axis='x'
+                                     x={parseFloat(userState[`${keyName}`])}
+                                     value={parseFloat(userState[`${keyName}`])}
+                                     onChange={(e) =>
+                                      writeUserState(
+                                       onChange,
+                                       e,
+                                       parentObj,
+                                       n,
+                                       parentState,
+                                       parentKey,
+                                       i
+                                      )
+                                     }
+                                     orientation='horizontal'
+                                     name={keyName}
+                                     min={rangeMax}
+                                     max={rangeMin}
+                                     step={step}
+                                    />
+                                   </label>
+                                  );
+                                 });
+                                 return arr;
+                                } else {
+                                 return (
+                                  <label>
+                                   {label}
+                                   <Slider
+                                    axis='x'
+                                    x={parseFloat(userState[`${keyName}`])}
+                                    value={parseFloat(userState[`${keyName}`])}
+                                    onChange={(e) =>
+                                     writeUserState(
+                                      onChange,
+                                      e,
+                                      parentObj,
+                                      n,
+                                      parentState,
+                                      parentKey
+                                     )
+                                    }
+                                    orientation='horizontal'
+                                    name={keyName}
+                                    min={rangeMax}
+                                    max={rangeMin}
+                                    step={step}
+                                   />
+                                  </label>
+                                 );
+                                }
+                               } else if (type === "submit") {
+                                return (
+                                 <input
+                                  type='submit'
+                                  onClick={() => readUserState(userState, lead)}
+                                 />
+                                );
                                } else
                                 return (
                                  <Fragment>

@@ -1,6 +1,11 @@
-import React, { useReducer, useEffect, createContext, useContext } from "react";
+import React, {
+ useReducer,
+ useEffect,
+ useRef,
+ createContext,
+ useContext,
+} from "react";
 import axios from "axios";
-
 import ReactDOMServer from "react-dom/server";
 import SiteContext from "./siteContext";
 import siteReducer from "./siteReducer";
@@ -32,6 +37,11 @@ import {
  PUT_PAGES,
  GET_PAGES,
  GET_PAGE,
+ DELETE_FORM,
+ POST_FORM,
+ PUT_FORM,
+ GET_FORMS,
+ GET_FORM,
  PUT_COMPONENT,
  POST_COMPONENT,
  DELETE_COMPONENT,
@@ -75,6 +85,18 @@ import {
  ADD_COMPONENT,
  ADD_PAGE,
  SET_PAGE,
+ WRITE_USERSTATE,
+ WRITE_LEAD,
+ SET_CURRENTFORM,
+ SAVE_USERSTATE,
+ DELETE_USERSTATE,
+ GET_USERSTATES,
+ SET_CURRENTUSERSTATE,
+ BUILD_QUIZ,
+ TOGGLE_QUIZPAGE,
+ CLEAR_QUIZ,
+ SET_SUBMISSION,
+ READ_USERSTATE,
 } from "../types";
 const AppContext = createContext();
 const SiteState = (props) => {
@@ -87,6 +109,11 @@ const SiteState = (props) => {
    currentSite: null,
    currentComponent: null,
    font: null,
+   forms: [],
+   form: null,
+   currentForm: null,
+   userStates: [],
+   currentUserState: null,
    pallet: null,
    filtered: {},
    content: [],
@@ -3410,8 +3437,18 @@ const SiteState = (props) => {
   setCells();
  };
 
- const setNewCells = async (cells, elements) => {
+ const setNewCells = async (cells, elements, cellForm) => {
   const newCells = cells.map((cell, i) => {
+   if (cellForm) {
+    let contents = cellForm.filter((form) => form.cellId === cell.id);
+
+    let obj = {
+     ...cells[i],
+     content: [...cells[i].content, contents],
+    };
+    return obj;
+   }
+
    if (elements) {
     let contents = elements.filter((piece) =>
      piece.props && piece.source != null
@@ -3446,8 +3483,18 @@ const SiteState = (props) => {
   setCells();
  };
 
- const setNewSubCells = (subCells, elements) => {
+ const setNewSubCells = (subCells, elements, cellForm) => {
   const newSubCells = subCells.map((cell, i) => {
+   if (cellForm) {
+    let contents = cellForm.filter((form) => form.cellId === cell.id);
+
+    let obj = {
+     ...subCells[i],
+     content: [...subCells[i].content, contents],
+    };
+    return obj;
+   }
+
    if (elements) {
     let contents = elements.filter((piece) =>
      piece.props
@@ -3471,8 +3518,17 @@ const SiteState = (props) => {
   dispatch({ type: UPDATE_SUBCELL, payload: nextSubCellState });
   setCells();
  };
- const setNewBodyCells = (bodyCells, elements) => {
+ const setNewBodyCells = (bodyCells, elements, cellForm) => {
   const newBodyCells = bodyCells.map((cell, i) => {
+   if (cellForm) {
+    let contents = cellForm.filter((form) => form.cellId === cell.id);
+
+    let obj = {
+     ...bodyCells[i],
+     content: [...bodyCells[i].content, contents],
+    };
+    return obj;
+   }
    if (elements) {
     let contents = elements.filter((piece) =>
      piece.props
@@ -5042,6 +5098,139 @@ const SiteState = (props) => {
   }
  };
 
+ const getForms = async (userid) => {
+  const config = {
+   headers: {
+    "Content-Type": "application/json",
+   },
+  };
+
+  try {
+   const res = await axios.get(`/api/sites/forms?q=${userid}`, config);
+
+   dispatch({
+    type: GET_FORMS,
+    payload: res.data,
+   });
+  } catch (err) {
+   dispatch({
+    type: SITE_ERROR,
+    payload: err.response.data.msg,
+   });
+  }
+ };
+
+ const getUserStates = async (userid) => {
+  const config = {
+   headers: {
+    "Content-Type": "application/json",
+   },
+  };
+
+  try {
+   const res = await axios.get(`/api/sites/userStates?q=${userid}`, config);
+
+   dispatch({
+    type: GET_USERSTATES,
+    payload: res.data,
+   });
+  } catch (err) {
+   dispatch({
+    type: SITE_ERROR,
+    payload: err.response.data.msg,
+   });
+  }
+ };
+
+ const setCurrentUserState = (userState) => {
+  dispatch({
+   type: SET_CURRENTUSERSTATE,
+   payload: userState,
+  });
+ };
+
+ const getForm = async (_id) => {
+  const config = {
+   headers: {
+    "Content-Type": "application/json",
+   },
+  };
+
+  try {
+   const res = await axios.get(`/api/sites/forms/${_id}`, config);
+
+   dispatch({
+    type: GET_FORM,
+    payload: res.data,
+   });
+  } catch (err) {
+   dispatch({
+    type: SITE_ERROR,
+    payload: err.response.data.msg,
+   });
+  }
+ };
+
+ const postForm = async (form) => {
+  const config = {
+   headers: {
+    "Content-Type": "appplication/json",
+   },
+  };
+  try {
+   const res = await axios.post("/api/sites/forms", form, config);
+   dispatch({
+    type: POST_FORM,
+    payload: res.data,
+   });
+  } catch (err) {
+   dispatch({
+    type: SITE_ERROR,
+    payload: err.response.data.msg,
+   });
+  }
+ };
+
+ const setCurrentForm = (form) => {
+  dispatch({ type: SET_CURRENTFORM, payload: form });
+ };
+
+ const putForm = async (form) => {
+  const config = {
+   headers: {
+    "Content-Type": "application/json",
+   },
+  };
+  try {
+   const res = await axios.put(`/api/sites/forms/${form._id}`, form, config);
+   dispatch({
+    type: PUT_FORM,
+    payload: res.data,
+   });
+  } catch (err) {
+   dispatch({
+    type: SITE_ERROR,
+    payload: err.response.data.msg,
+   });
+  }
+ };
+
+ const deleteForm = async (_id) => {
+  try {
+   await axios.delete(`/api/sites/forms/${_id}`);
+
+   dispatch({
+    type: DELETE_FORM,
+    payload: _id,
+   });
+  } catch (err) {
+   dispatch({
+    type: SITE_ERROR,
+    payload: err.response.data.msg,
+   });
+  }
+ };
+
  const postComponent = async (component) => {
   const config = {
    headers: {
@@ -5208,6 +5397,9 @@ const SiteState = (props) => {
     font: state.markUp.font,
     pallet: state.markUp.pallet,
     content: state.markUp.content,
+    forms: state.markUp.forms,
+    form: state.markUp.form,
+    currentForm: state.markUp.currentForm,
     myComponents: state.markUp.myComponents,
     sites: state.markUp.sites,
     pages: state.markUp.pages,
@@ -5218,7 +5410,12 @@ const SiteState = (props) => {
     layout: state.page.layout,
     areaGrids: state.page.areaGrids,
     areaCells: state.page.areaCells,
+    userStates: state.markUp.userStates,
+    currentUserState: state.markUp.currentUserState,
     setCurrentFont,
+    getUserStates,
+    setCurrentUserState,
+    setCurrentForm,
     updatePageCss,
     setCurrentPallet,
     addColumn,
@@ -5266,6 +5463,11 @@ const SiteState = (props) => {
     getReviews,
     setLoadedComponents,
     clearCurrentContent,
+    postForm,
+    getForm,
+    getForms,
+    putForm,
+    deleteForm,
     addCell,
     addSubCell,
     addBodyCell,
@@ -5394,6 +5596,17 @@ export default SiteState;
 export function AppWrapper({ children }) {
  const initialState = {
   leads: [],
+  lead: {
+   fullName: "",
+   lastName: "",
+   address: "",
+   city: "",
+   state: "",
+   zip: "",
+   phoneNumber: "",
+   emailAddress: "",
+  },
+  builtQuiz: null,
   ip: [],
   clicks: [],
   content: [],
@@ -5401,6 +5614,25 @@ export function AppWrapper({ children }) {
   NewComponent: null,
  };
  const [state, dispatch] = useReducer(appReducer, initialState);
+ const stateRef = useRef(state);
+
+ useEffect(() => {
+  stateRef.current = state;
+ });
+
+ console.log(state);
+ const filterByCount = (array, count) => {
+  return array.filter(function (value) {
+   return (
+    array.filter(function (v) {
+     return v === value;
+    }).length === count
+   );
+  });
+ };
+
+ const { leads, lead, ip, clicks, content, userState, NewComponent } = state;
+ console.log(userState);
  const addClick = (click) => {
   if (sessionStorage.getItem("click") !== null) {
    const existingLead = JSON.parse(sessionStorage.getItem("click"));
@@ -5567,8 +5799,247 @@ export function AppWrapper({ children }) {
   });
  };
 
- const readUserState = () => {};
- const writeUserState = () => {};
+ const readUserState = async (userState, lead) => {
+  const newLeads = [...leads, lead];
+  const newLead = {
+   fullName: "",
+   lastName: "",
+   address: "",
+   city: "",
+   state: "",
+   zip: "",
+   phoneNumber: "",
+   emailAddress: "",
+  };
+  dispatch({ type: ADD_LEAD, payload: newLeads });
+  dispatch({ type: WRITE_LEAD, payload: newLead });
+
+  // dispatch({ type: READ_USERSTATE, payload: res.data });
+ };
+
+ const writeLeadState = (val, e) => {
+  if (val === "updateTextValue") {
+   let newObj = { ...lead };
+
+   newObj = {
+    ...newObj,
+    [e.target.name]: e.target.value,
+   };
+
+   dispatch({ type: WRITE_LEAD, payload: newObj });
+  }
+ };
+
+ const writeUserState = (val, e, parentObj, n, parentState, parentKey, i) => {
+  if (val === "updateTextValue") {
+   if (Array.isArray(userState[parentState][parentKey])) {
+    let newArr = userState[parentState][parentKey];
+
+    newArr[i] = {
+     ...newArr[i],
+     [e.target.name]: e.target.value,
+    };
+
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: newArr,
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   } else {
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: {
+       ...userState[parentState][parentKey],
+       [e.target.name]: e.target.value,
+      },
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   }
+  } else if (val === "toggleBoolean") {
+   if (Array.isArray(userState[parentState][parentKey])) {
+    let newArr = userState[parentState][parentKey];
+
+    newArr[i] = {
+     ...newArr[i],
+     [e.target.name]: e.target.value,
+    };
+
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: newArr,
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   } else {
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: {
+       ...userState[parentState][parentKey],
+       [e.target.name]: e.target.value,
+      },
+     },
+    };
+
+    console.log(newObj);
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   }
+  } else if (val === "setPlusN") {
+   if (Array.isArray(userState[parentState][parentKey])) {
+    let newArr = userState[parentState][parentKey];
+
+    newArr[i] = {
+     ...newArr[i],
+     [e.target.name]: newArr[i][e.target.name] + n,
+    };
+
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: newArr,
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   } else {
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: {
+       ...userState[parentState][parentKey],
+       [e.target.name]: userState[parentState][parentKey][e.target.name] + n,
+      },
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   }
+  } else if (val === "setMinusN") {
+   if (Array.isArray(userState[parentState][parentKey])) {
+    let newArr = userState[parentState][parentKey];
+
+    newArr[i] = {
+     ...newArr[i],
+     [e.target.name]: newArr[i][e.target.name] + n,
+    };
+
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: newArr,
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   } else {
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: {
+       ...userState[parentState][parentKey],
+       [e.target.name]: userState[parentState][parentKey][e.target.name] + n,
+      },
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   }
+  } else if (val === "setDate") {
+   if (Array.isArray(userState[parentState][parentKey])) {
+    let newArr = userState[parentState][parentKey];
+
+    newArr[i] = {
+     ...newArr[i],
+     [e.target.name]: new Date(e.target.value),
+     displayDate: Intl.DateTimeFormat(
+      "fr-CA",
+      { timeZone: "America/Los_Angeles" },
+      {
+       year: "numeric",
+       month: "numeric",
+       day: "numeric",
+      }
+     )
+      .format(new Date(e.target.value))
+      .replace(/-/, "/")
+      .replace(/-/, "/"),
+    };
+
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: newArr,
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   } else {
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: {
+       ...userState[parentState][parentKey],
+       [e.target.name]: new Date(e.target.value),
+       displayDate: Intl.DateTimeFormat(
+        "fr-CA",
+        { timeZone: "America/Los_Angeles" },
+        {
+         year: "numeric",
+         month: "numeric",
+         day: "numeric",
+        }
+       )
+        .format(new Date(e.target.value))
+        .replace(/-/, "/")
+        .replace(/-/, "/"),
+      },
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   }
+  } else if (val === "toggleChecked") {
+   if (Array.isArray(userState[parentState][parentKey])) {
+    let newArr = userState[parentState][parentKey];
+
+    newArr[i] = {
+     ...newArr[i],
+     [e.target.name]: filterByCount([...e.target.name, e.target.checked], 2),
+    };
+
+    const newObj = {
+     ...userState,
+     [parentState]: {
+      ...userState[parentState],
+      [parentKey]: newArr,
+     },
+    };
+
+    dispatch({ type: WRITE_USERSTATE, payload: newObj });
+   }
+  } else {
+   console.log("Parent must be type Arr to apply filter by count");
+  }
+ };
 
  const updateUserState = (state) => {
   dispatch({
@@ -5576,10 +6047,12 @@ export function AppWrapper({ children }) {
    payload: state,
   });
  };
- const deleteUserState = (i) => {
-  const key = Object.keys(state.userState)[i];
-
-  delete state.userState[key];
+ const deleteUserState = (parentKey, k) => {
+  if (parentKey === k) {
+   delete state.userState[parentKey];
+  } else {
+   delete state.userState[parentKey][k];
+  }
 
   dispatch({
    type: DELETE_STATE,
@@ -5587,19 +6060,79 @@ export function AppWrapper({ children }) {
   });
  };
 
+ const saveUserState = async (savedState) => {
+  const config = {
+   headers: {
+    "Content-Type": "appplication/json",
+   },
+  };
+
+  const res = await axios.post(`/api/sites/userState`, savedState, config);
+  dispatch({
+   type: SAVE_USERSTATE,
+   payload: res.data,
+  });
+ };
+
+ const permDeleteUserState = async (_id) => {
+  try {
+   await axios.delete(`/api/sites/userState/${_id}`);
+
+   dispatch({
+    type: DELETE_USERSTATE,
+    payload: _id,
+   });
+  } catch (err) {
+   dispatch({
+    type: SITE_ERROR,
+    payload: err.response.data.msg,
+   });
+  }
+ };
+
+ const toggleQuizForward = (score) => {
+  let newQuiz = { ...state.quiz };
+  dispatch({ type: TOGGLE_QUIZPAGE, payload: newQuiz });
+ };
+ const toggleQuizBackward = (prevScore) => {
+  let newQuiz = { ...state.quiz };
+  dispatch({ type: TOGGLE_QUIZPAGE, payload: newQuiz });
+ };
+ const toggleQuizModal = (quiz) => {
+  dispatch({ type: BUILD_QUIZ, payload: quiz });
+ };
+ const setSubmissions = (i, e) => {
+  let newQuiz = { ...state.quiz };
+  dispatch({ type: SET_SUBMISSION, payload: newQuiz });
+ };
+
+ const clearQuiz = () => {
+  dispatch({ type: CLEAR_QUIZ });
+ };
+
  const contextProps = {
+  toggleQuizBackward,
+  toggleQuizForward,
+  toggleQuizModal,
+  clearQuiz,
+  setSubmissions,
   createUserState,
+  saveUserState,
+  permDeleteUserState,
   readUserState,
   writeUserState,
   updateUserState,
   deleteUserState,
   getStateContent,
   setComponentString,
+  writeLeadState,
   addIp,
   addLead,
   addClick,
   clicks: state.clicks,
+  builtQuiz: state.quiz,
   leads: state.leads,
+  lead: state.lead,
   NewComponent: state.NewComponent,
   ip: state.ip,
   userState: state.userState,

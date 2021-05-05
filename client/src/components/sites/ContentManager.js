@@ -1,20 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import ContentItem from "./ContentItem";
 import SiteContext from "../../context/site/siteContext";
+import AuthContext from "../../context/auth/authContext";
+import FormItem from "./FormItem";
+import UserStateItem from "./UserStateItem";
+
 const ContentManager = () => {
  const siteContext = useContext(SiteContext);
- const { currentSection, content } = siteContext;
-
- /*
-      .filter(
-       ((s) => (o) =>
-        ((k) => !s.has(k) && s.add(k))(
-         Object.keys(content)
-          .map((k) => o[k])
-          .join("|")
-        ))(new Set())
-      )
- */
+ const { currentSection, content, forms, getForms, userStates } = siteContext;
+ const authContext = useContext(AuthContext);
+ const { user } = authContext;
+ const { _id } = user;
 
  const uniqueContent = Object.values(
   content.reduce((unique, o) => {
@@ -23,6 +19,11 @@ const ContentManager = () => {
    return unique;
   }, {})
  );
+
+ useEffect(() => {
+  getForms(_id);
+ }, []);
+
  return (
   <div
    style={{
@@ -110,6 +111,19 @@ const ContentManager = () => {
       />
      ))}
    </div>
+   <h5>Forms</h5>
+   <div>
+    {forms.length > 0
+     ? [...new Set(forms.map((form) => form.formName))].map((formName, i) => (
+        <FormItem formName={formName} key={i} />
+       ))
+     : ""}
+   </div>
+   <h5>User States</h5>
+
+   {userStates.map((userState) => (
+    <UserStateItem key={userState._id} userState={userState} />
+   ))}
   </div>
  );
 };

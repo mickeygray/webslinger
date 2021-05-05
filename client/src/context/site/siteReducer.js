@@ -30,6 +30,14 @@ import {
  GET_COMPONENTCONTENT,
  ADD_COMPONENT,
  ADD_PAGE,
+ GET_FORM,
+ GET_FORMS,
+ PUT_FORM,
+ POST_FORM,
+ DELETE_FORM,
+ SET_CURRENTFORM,
+ SET_CURRENTUSERSTATE,
+ GET_USERSTATES,
 } from "../types";
 
 export default (state, action) => {
@@ -115,6 +123,18 @@ export default (state, action) => {
    return {
     ...state,
     current: action.payload,
+   };
+
+  case SET_CURRENTUSERSTATE:
+   return {
+    ...state,
+    currentUserState: action.payload,
+   };
+
+  case GET_USERSTATES:
+   return {
+    ...state,
+    userStates: action.payload,
    };
   case SET_CELLSTRUCTURE:
    return {
@@ -216,6 +236,37 @@ export default (state, action) => {
    return {
     ...state,
     error: action.payload,
+   };
+  case GET_FORM:
+   return {
+    ...state,
+    form: action.payload,
+   };
+  case SET_CURRENTFORM:
+   return {
+    ...state,
+    currentForm: action.payload,
+   };
+  case GET_FORMS:
+   return {
+    ...state,
+    form: action.payload,
+   };
+  case PUT_FORM:
+   return {
+    ...state,
+    form: action.payload,
+   };
+  case POST_FORM:
+   return {
+    ...state,
+    form: action.payload,
+   };
+  case DELETE_FORM:
+   return {
+    ...state,
+    form: state.form.filter((form) => form._id !== action.payload),
+    loading: false,
    };
   default:
    return state;

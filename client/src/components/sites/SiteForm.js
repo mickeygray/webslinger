@@ -6,12 +6,9 @@ import React, {
  useRef,
  Fragment,
 } from "react";
-import ReactDOM from "react-dom";
 import SiteContext from "../../context/site/siteContext";
 import { useAppContext } from "../../context/site/SiteState";
 import ImageContext from "../../context/image/imageContext";
-import SiteManager from "./SiteManager";
-import PageManager from "./PageManager";
 import ComponentList from "./ComponentList";
 import ComponentViewer from "./ComponentViewer";
 import AuthContext from "../../context/auth/authContext";
@@ -19,7 +16,7 @@ import ColorPalletPicker from "./ColorPalletPicker";
 import FontStylePicker from "./FontStylePicker";
 import { useTheme } from "../../context/site/hooks/useTheme";
 import SectionManager from "./SectionManager";
-import StateManager from "./StateManager";
+import StateMgr from "./StateMgr";
 import ContentManager from "./ContentManager";
 import WebFont from "webfontloader";
 import CSSBar from "./CSSBar";
@@ -31,6 +28,7 @@ import { v4 as uuidV4 } from "uuid";
 import SecViewer from "./SecViewer";
 import _ from "lodash";
 import Pagination from "../layout/Pagination";
+import FormBuilder from "./FormBuilder";
 const SiteForm = () => {
  const { themeChange, setThemeChange, getFonts } = useTheme();
  const { user } = useContext(AuthContext);
@@ -74,6 +72,7 @@ const SiteForm = () => {
   getArticles,
   getQuizs,
   getReviews,
+  getUserStates,
   content,
   font,
   pallet,
@@ -107,6 +106,7 @@ const SiteForm = () => {
    getQuizs(userid);
    getReviews(userid);
    getFirms(userid);
+   getUserStates(userid);
   }
  }, []);
 
@@ -234,6 +234,7 @@ const SiteForm = () => {
  const [saveState, setSaveModalState] = useState(false);
  const [LoadedComponents, setLoadedComponents] = useState([]);
  const [styleTags, setStyleTags] = useState([]);
+ const [formView, setFormView] = useState(false);
 
  const [site, setSite] = useState({
   name: "",
@@ -1249,6 +1250,13 @@ const SiteForm = () => {
         </select>
        </li>
       </ul>
+      <div>
+       <button
+        className='btn btn-block btn-primary'
+        onClick={() => setFormView((prevState) => !prevState)}>
+        {formView === true ? "View Content Creator" : "View Form Creator"}
+       </button>
+      </div>
      </div>
     </div>
    </div>
@@ -1436,7 +1444,7 @@ const SiteForm = () => {
       </button>
      </div>
      <div>
-      <StateManager />
+      <StateMgr />
      </div>
     </div>
 
@@ -1483,21 +1491,27 @@ const SiteForm = () => {
            }
        }>
        {displayState === "component" ? (
-        <SecViewer
-         setStyleTags={setStyleTags}
-         a={a}
-         icon={icon}
-         li={li}
-         p={p}
-         h={h}
-         nodeView={nodeView}
-         vid={vid}
-         img={img}
-         button={button}
-         font={font}
-         pallet={pallet}
-         component={component}
-        />
+        <div>
+         {formView === true ? (
+          <FormBuilder />
+         ) : (
+          <SecViewer
+           setStyleTags={setStyleTags}
+           a={a}
+           icon={icon}
+           li={li}
+           p={p}
+           h={h}
+           nodeView={nodeView}
+           vid={vid}
+           img={img}
+           button={button}
+           font={font}
+           pallet={pallet}
+           component={component}
+          />
+         )}
+        </div>
        ) : (
         <div>
          <Pagination

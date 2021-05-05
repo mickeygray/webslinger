@@ -8,6 +8,8 @@ const Article = require("../models/Article");
 const Blog = require("../models/Blog");
 const Review = require("../models/Review");
 const Firm = require("../models/Firm");
+const Form = require("../models/Form");
+const UserState = require("../models/UserState");
 const Vertical = require("../models/Vertical");
 const Component = require("../models/Component");
 const { check, validationResult } = require("express-validator");
@@ -232,7 +234,7 @@ router.get("/content", auth, async (req, res) => {
 
   const everyOtherArticle = articles.map(({ _doc }) => {
    const keys = Object.keys(_doc).filter((k) =>
-    Object.keys(reviewObj).includes(k)
+    Object.keys(articleObj).includes(k)
    );
 
    const entryObj = Object.fromEntries(keys.map((k) => [k, _doc[k]]));
@@ -262,7 +264,7 @@ router.get("/content", auth, async (req, res) => {
 
   const everyOtherQuiz = quizs.map(({ _doc }) => {
    const keys = Object.keys(_doc).filter((k) =>
-    Object.keys(reviewObj).includes(k)
+    Object.keys(quizObj).includes(k)
    );
 
    const entryObj = Object.fromEntries(keys.map((k) => [k, _doc[k]]));
@@ -367,6 +369,238 @@ router.post("/sites", auth, upload.any(), async (req, res) => {
   res.status(500).send("Server Error");
  }
 });
+
+router.post("/userState", auth, upload.any(), async (req, res) => {
+ const errors = validationResult(req);
+ if (!errors.isEmpty()) {
+  return res.status(400).json({ errors: errors.array() });
+ }
+
+ const { userState, userId, vals } = req.body;
+
+ const mappedVals = vals.map(({ key, valLenth, n }, i) => {
+  const oneChar = "A";
+  const shortWord = "Lorem";
+  const regWord = "Ullamco";
+  const longWord = "Voluptatem";
+  const nNumber = n === 1 ? 1 : 10 ** n - 1;
+  const nWords = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+   .split(" ")
+   .slice(0, n)
+   .toString();
+  const oneSentence =
+   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+  const oneParagraph =
+   "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? \r\n";
+  const nParagraphs = [];
+
+  for (var i = 0; i < n; i++) {
+   nParagraphs.push(oneParagraph);
+  }
+
+  let obj = {};
+
+  if (valLength === "oneChar") {
+   obj = {
+    key,
+    value: oneChar,
+   };
+  } else if (valLength === "shortWord") {
+   obj = {
+    key,
+    value: shortWord,
+   };
+  } else if (valLength === "regWord") {
+   obj = {
+    key,
+    value: regWord,
+   };
+  } else if (valLength === "longWord") {
+   obj = {
+    key,
+    value: longWord,
+   };
+  } else if (valLength === "nNumber") {
+   obj = {
+    key,
+    value: nNumber,
+   };
+  } else if (valLength === "nWords") {
+   obj = {
+    key,
+    value: nWords,
+   };
+  } else if (valLength === "sentence") {
+   obj = {
+    key,
+    value: sentence,
+   };
+  } else if (valLength === "paragraph") {
+   obj = {
+    key,
+    value: paragraph,
+   };
+  } else if (valLength === "nParagraphs") {
+   obj = {
+    key,
+    value: nParagraphs,
+   };
+  }
+  return obj;
+ });
+
+ try {
+  const newState = new UserState({
+   userState,
+   userId,
+   mappedVals,
+  });
+
+  const state = await newState.save();
+
+  console.log(state);
+  res.json(state);
+ } catch (err) {
+  console.error(err.message);
+  res.status(500).send("Server Error");
+ }
+});
+
+router.get("/forms", auth, async (req, res) => {
+ try {
+  const forms = await Form.find({ "user": req.query.q });
+  res.json(forms);
+ } catch (err) {
+  console.error(err.message);
+  res.status(500).send("Server Error");
+ }
+});
+
+router.post("/forms", auth, upload.any(), async (req, res) => {
+ const errors = validationResult(req);
+ if (!errors.isEmpty()) {
+  return res.status(400).json({ errors: errors.array() });
+ }
+
+ const {
+  formName,
+  name,
+  parentObj,
+  checkedValue,
+  isBool,
+  onChange,
+  options,
+  type,
+  label,
+  legend,
+  n,
+  rangeMin,
+  rangeMax,
+  step,
+ } = req.body;
+
+ try {
+  const newForm = new Form({
+   formName,
+   name,
+   parentObj,
+   checkedValue,
+   isBool,
+   onChange,
+   options,
+   type,
+   label,
+   legend,
+   n,
+   rangeMin,
+   rangeMax,
+   step,
+  });
+
+  const form = await newForm.save();
+
+  res.json(form);
+ } catch (err) {
+  console.error(err.message);
+  res.status(500).send("Server Error");
+ }
+});
+
+router.get("/forms/:id", auth, async (req, res) => {
+ try {
+  const forms = await Form.find({ "user": req.query.q });
+  res.json(forms);
+ } catch (err) {
+  console.error(err.message);
+  res.status(500).send("Server Error");
+ }
+});
+
+router.put("/forms/:id", upload.any(), auth, async (req, res) => {
+ const {
+  formName,
+  name,
+  parentObj,
+  checkedValue,
+  isBool,
+  onChange,
+  options,
+  type,
+  label,
+  legend,
+  n,
+  rangeMin,
+  rangeMax,
+  step,
+ } = req.body;
+
+ // Build site object
+ const siteFields = {};
+ if (formName) siteFields.name = formName;
+ if (name) siteFields.name = name;
+ if (parentObj) siteFields.parentObj = parentObj;
+ if (type) siteFields.type = type;
+ if (checkedValue) siteFields.checkedValue = checkedValue;
+ if (isBool) siteFields.isBool = isBool;
+ if (onChange) siteFields.onChange = onChange;
+ if (options) siteFields.optionss = options;
+ if (label) siteFields.label = label;
+ if (legend) siteFields.legend = legend;
+ if (n) siteFields.n = n;
+ if (rangeMin) siteFields.rangeMin = rangeMin;
+ if (rangeMax) siteFields.rangeMax = rangeMax;
+ if (step) siteFields.step = step;
+
+ try {
+  let site = await Form.findByIdAndUpdate(
+   req.params.id,
+   { $set: siteFields },
+   { new: true }
+  );
+
+  res.json(site);
+ } catch (err) {
+  console.error(er.message);
+  res.status(500).send("Server Error");
+ }
+});
+
+router.delete("/forms/:id", auth, async (req, res) => {
+ try {
+  let site = await Form.findById(req.params.id);
+
+  if (!site) return res.status(404).json({ msg: "site not found" });
+
+  await Form.findByIdAndRemove(req.params.id);
+
+  res.json({ msg: "site removed" });
+ } catch (err) {
+  console.error(err.message);
+  res.status(500).send("Server Error");
+ }
+});
+
+module.exports = router;
 
 router.post("/components", auth, async (req, res) => {
  const {

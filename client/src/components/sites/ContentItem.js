@@ -140,7 +140,6 @@ const ContentItem = ({ content }) => {
            contentId: _id,
            type: contentType + "s",
            key: "date",
-
            content: date,
           });
          }}>
