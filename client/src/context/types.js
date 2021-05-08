@@ -180,3 +180,4 @@ export const BUILD_QUIZ = "BUILD_QUIZ";
 export const SET_SUBMISSION = "SET_SUBMISSION";
 export const TOGGLE_QUIZPAGE = "TOGGLE_QUIZPAGE";
 export const CLEAR_QUIZ = "CLEAR_QUIZ";
+export const SET_SCORE = "SET_SCORE";

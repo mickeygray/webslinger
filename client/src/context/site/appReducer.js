@@ -13,6 +13,7 @@ import {
  SET_SUBMISSION,
  BUILD_QUIZ,
  CLEAR_QUIZ,
+ SET_SCORE,
 } from "../types";
 
 export default (state, action) => {
@@ -20,8 +21,14 @@ export default (state, action) => {
   case TOGGLE_QUIZPAGE:
    return {
     ...state,
+    currentPage: action.payload,
+   };
+  case SET_SCORE:
+   return {
+    ...state,
     builtQuiz: action.payload,
    };
+
   case SET_SUBMISSION:
    return {
     ...state,

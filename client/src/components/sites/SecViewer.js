@@ -18,6 +18,7 @@ import "react-rangeslider/lib/index.css";
 import str from "string-template-format-tostring";
 import ReactDOMServer from "react-dom/server";
 import Pagination from "../layout/Pagination";
+import BuiltQuiz from "../quizs/BuiltQuiz";
 import CssFilter from "./CssFilter";
 import { useAppContext } from "../../context/site/SiteState";
 const SecViewer = ({

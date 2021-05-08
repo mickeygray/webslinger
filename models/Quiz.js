@@ -51,6 +51,9 @@ const QuizSchema = mongoose.Schema({
    copy: {
     type: String,
    },
+   page: {
+    type: Number,
+   },
    img: {
     type: String,
    },
@@ -107,6 +110,9 @@ const QuizSchema = mongoose.Schema({
    },
    answer: {
     type: String,
+   },
+   score: {
+    type: Number,
    },
    ipAddress: {
     type: String,

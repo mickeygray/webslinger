@@ -1,7 +1,5 @@
-import React, { useReducer } from "react";
+import React, { useEffect } from "react";
 import { useAppContext } from "../../context/site/SiteState";
-import styled from "styled-components";
-import { sign } from "crypto";
 
 const BuiltQuiz = (quiz) => {
  const ModalContainer = styled.div`
@@ -29,9 +27,11 @@ const BuiltQuiz = (quiz) => {
   writeLeadState,
   lead,
   toggleQuizModal,
+  setCurrentScore,
   toggleQuizForward,
   toggleQuizBackward,
   setSubmissions,
+  currentPage,
   clearQuiz,
   builtQuiz,
  } = useAppContext();
@@ -53,7 +53,10 @@ const BuiltQuiz = (quiz) => {
   css,
  } = quiz;
 
- const bodyMap = body.map(
+ useEffect(() => {
+  setCurrentScore(submissions, body, type);
+ }, [submissions, body]);
+ const bodyMap = [body[currentPage]].map(
   (
    {
     question,
@@ -63,7 +66,7 @@ const BuiltQuiz = (quiz) => {
     copy,
     img,
     video,
-    score,
+    page,
     answers,
     currentScore,
     prevScore,
@@ -83,16 +86,34 @@ const BuiltQuiz = (quiz) => {
    const answerMap = answers.map(({ answer, score }) => {
     if (questionType === "shortForm") {
      return (
-      <input type='text' name='answer' onChange={(e) => setSubmissions(i, e)} />
+      <input
+       type='text'
+       name='answer'
+       onChange={(e) => {
+        setSubmissions(i, e, score);
+        captureLead(leadCaptureField, isLeadCapture);
+       }}
+      />
      );
     } else if (questionType === "longForm") {
-     return <textarea name='answer' onChange={(e) => setSubmissions(i, e)} />;
+     return (
+      <textarea
+       name='answer'
+       onChange={(e) => {
+        setSubmissions(i, e, score);
+        captureLead(leadCaptureField, isLeadCapture);
+       }}
+      />
+     );
     } else if (questionType === "mulitpleChoice") {
      return (
       <input
        type='radio'
        name='answer'
-       onChange={(e) => setSubmissions(i, e)}
+       onChange={(e) => {
+        setSubmissions(i, e, score);
+        captureLead(leadCaptureField, isLeadCapture);
+       }}
       />
      );
     } else if (questionType === "comboValue") {
@@ -100,7 +121,10 @@ const BuiltQuiz = (quiz) => {
       <input
        type='checkbox'
        name='answer'
-       onChange={(e) => setSubmissions(i, e)}
+       onChange={(e) => {
+        setSubmissions(i, e, score);
+        captureLead(leadCaptureField, isLeadCapture);
+       }}
       />
      );
     } else if (questionType === "video") {
@@ -108,11 +132,46 @@ const BuiltQuiz = (quiz) => {
       <input
        type='radio'
        name='answer'
-       onChange={(e) => setSubmissions(i, e)}
+       onChange={(e) => {
+        setSubmissions(i, e, score);
+        captureLead(leadCaptureField, isLeadCapture);
+       }}
       />
      );
     }
    });
+
+   return (
+    <div>
+     <span style={{ float: "left" }}>
+      {" "}
+      <button
+       className='btn btn-sm btn-light'
+       onClick={() => toggleQuizBackward(prevScore)}>
+       {" "}
+       &#8592;{" "}
+      </button>
+     </span>
+     <div className='grid-2'>
+      <div>
+       <div className='grid-2'>
+        <h5>{question}</h5>
+        <p>{copy}</p>
+        <div>
+         <img src={img} alt={img} />
+        </div>
+       </div>
+       {questionType === "video" && <Youtube videoId={video} />}
+      </div>
+      <div>{answerMap}</div>
+     </div>
+     <button
+      className='btn btn-dark btn-block'
+      onClick={() => toggleQuizForward(currentScore)}>
+      Submit Answer
+     </button>
+    </div>
+   );
   }
  );
 

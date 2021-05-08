@@ -96,6 +96,7 @@ import {
  TOGGLE_QUIZPAGE,
  CLEAR_QUIZ,
  SET_SUBMISSION,
+ SET_SCORE,
  READ_USERSTATE,
 } from "../types";
 const AppContext = createContext();
@@ -6090,12 +6091,12 @@ export function AppWrapper({ children }) {
   }
  };
 
- const toggleQuizForward = (score) => {
-  let newQuiz = { ...state.quiz };
-  dispatch({ type: TOGGLE_QUIZPAGE, payload: newQuiz });
+ const toggleQuizForward = (currentScore) => {
+  const idx = state.quiz.body.findIndex((x) => x.page === currentScore);
+  dispatch({ type: TOGGLE_QUIZPAGE, payload: idx });
  };
  const toggleQuizBackward = (prevScore) => {
-  let newQuiz = { ...state.quiz };
+  const idx = state.quiz.body.findIndex((x) => x.page === prevScore);
   dispatch({ type: TOGGLE_QUIZPAGE, payload: newQuiz });
  };
  const toggleQuizModal = (quiz) => {
@@ -6110,10 +6111,64 @@ export function AppWrapper({ children }) {
   dispatch({ type: CLEAR_QUIZ });
  };
 
+ const setCurrentScore = (body, submissions, type) => {
+  if (type === "joint") {
+   let newQuiz = {
+    ...state.quiz,
+    body: [
+     ...body,
+     {
+      ...state.quiz.body[submissions.length - 1],
+      currentScore:
+       parseFloat(submissions[submissions.length - 1].score) +
+       parseFloat(body[submissions.length - 1].prevScore),
+      prevScore:
+       submissions.lenth - 1 === 0
+        ? 0
+        : parseFloat(body[submissions.length - 1].currentScore) -
+          parseFloat(submissions[submissions.length - 1].score),
+     },
+    ],
+   };
+   dispatch({ type: SET_SCORE, payload: newQuiz });
+  } else if (type === "additive") {
+   let newQuiz = {
+    ...state.quiz,
+    body: [
+     ...body,
+     {
+      ...state.quiz.body[submissions.length - 1],
+      currentScore: parseFloat(body[submissions.length - 1].prevScore) + 1,
+      prevScore:
+       submissions.lenth - 1 === 0
+        ? 0
+        : parseFloat(body[submissions.length - 1].currentScore) - 1,
+     },
+    ],
+   };
+   dispatch({ type: SET_SCORE, payload: newQuiz });
+  } else if (type === "relative") {
+   let newQuiz = {
+    ...state.quiz,
+    body: [
+     ...body,
+     {
+      ...body[submissions.length - 1],
+      currentScore:
+       parseFloat(submissions[submissions.length - 1].score) +
+       parseFloat(body[submissions.length - 1].prevScore),
+     },
+    ],
+   };
+   dispatch({ type: SET_SCORE, payload: newQuiz });
+  }
+ };
+
  const contextProps = {
   toggleQuizBackward,
   toggleQuizForward,
   toggleQuizModal,
+  setCurrentScore,
   clearQuiz,
   setSubmissions,
   createUserState,
@@ -6130,7 +6185,8 @@ export function AppWrapper({ children }) {
   addLead,
   addClick,
   clicks: state.clicks,
-  builtQuiz: state.quiz,
+  builtQuiz: state.builtQuiz,
+  currentPage:state.currentPage,
   leads: state.leads,
   lead: state.lead,
   NewComponent: state.NewComponent,
