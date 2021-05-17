@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppContext } from "../../context/site/SiteState";
+import styled from "styled-components";
+import YouTube from "react-youtube";
 
 const BuiltQuiz = (quiz) => {
  const ModalContainer = styled.div`
@@ -161,24 +163,61 @@ const BuiltQuiz = (quiz) => {
          <img src={img} alt={img} />
         </div>
        </div>
-       {questionType === "video" && <Youtube videoId={video} />}
+       {questionType === "video" && <YouTube videoId={video} />}
       </div>
       <div>{answerMap}</div>
      </div>
-     <button
-      className='btn btn-dark btn-block'
-      onClick={() => toggleQuizForward(currentScore)}>
-      Submit Answer
-     </button>
+
+     {i === body.length - 1 ? (
+      <button
+       className='btn btn-dark btn-block'
+       onClick={() => tabulateResult(currentScore)}>
+       Tabulate Result
+      </button>
+     ) : (
+      <button
+       className='btn btn-dark btn-block'
+       onClick={() => toggleQuizForward(currentScore)}>
+       Submit Answer
+      </button>
+     )}
     </div>
    );
   }
  );
 
- const resultsMap = results.map(
-  ({ copy, headline, img, video, score, link, linkText }) => {}
- );
+ const tabulateResult = (currentScore) => {
+  const res = results
+   .filter((s) => s.score === currentScore)
+   .map(({ copy, headline, img, video, score, maxScore, link, linkText }) => {
+    return (
+     <div>
+      <span style={{ float: "right" }} className='background-light lead'>
+       <a onClick={() => clearQuiz()}>X</a>
+      </span>
+      <h3>{headline}</h3>
+      {img && <img src={img} />}
+      {video && <YouTube videoId={video} />}
+      {copy}
+      {maxScore && (
+       <div>
+        You scored {score} / {maxScore}{" "}
+       </div>
+      )}
+      {link && (
+       <p>
+        For More Visit
+        <a href={link} target='_blank'>
+         {linkText}
+        </a>
+       </p>
+      )}
+     </div>
+    );
+   });
 
+  return res;
+ };
  return (
   <div>
    <h3>{title}</h3>
@@ -193,7 +232,7 @@ const BuiltQuiz = (quiz) => {
     <button onClick={() => toggleQuizModal(quiz)}>{launchCopy}</button>
    ) : (
     <ModalContainer>
-     <Modal>{quiz}</Modal>
+     <Modal>{bodyMap}</Modal>
     </ModalContainer>
    )}
    <div className='grid-2'>

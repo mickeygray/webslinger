@@ -11,6 +11,8 @@ import {
  SET_CURRENTIMAGE,
  CLEAR_CURRENTIMAGE,
  GET_CONTENTIMAGE,
+ CLEAR_COLLECTIONIMAGE,
+ GET_COLLECTIONIMAGE,
  GET_COMPONENTIMAGE,
  PUT_IMAGE,
  CLEAR_COMPONENTIMAGES,
@@ -57,6 +59,35 @@ const ImageState = (props) => {
   dispatch({
    type: GET_IMAGE,
    payload: res.data,
+  });
+ };
+
+ const getCollectionPreview = async (name) => {
+  const config = {
+   headers: {
+    "Content-Type": `image/png`,
+   },
+   responseType: "arraybuffer",
+  };
+
+  const res = await axios.get(`/api/images/collection?q=${name}`, config);
+
+  let image = {
+   img: res.data,
+   name: name,
+   type: res.headers["content-type"],
+  };
+
+  console.log(image);
+  dispatch({
+   type: GET_COLLECTIONIMAGE,
+   payload: image,
+  });
+ };
+
+ const clearCollectionImage = () => {
+  dispatch({
+   type: CLEAR_COLLECTIONIMAGE,
   });
  };
 
@@ -169,8 +200,12 @@ const ImageState = (props) => {
     error: state.error,
     contentImage: state.contentImage,
     componentImages: state.componentImages,
+    collectionPreview: state.collectionPreview,
     clearComponentImages,
     getComponentImage,
+    getCollectionPreview,
+    clearCollectionImage,
+
     deleteImage,
     putImage,
     getImages,

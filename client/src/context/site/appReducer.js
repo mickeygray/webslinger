@@ -15,7 +15,7 @@ import {
  CLEAR_QUIZ,
  SET_SCORE,
 } from "../types";
-
+import BuiltQuiz from "../../components/quizs/BuiltQuiz";
 export default (state, action) => {
  switch (action.type) {
   case TOGGLE_QUIZPAGE:
@@ -37,7 +37,7 @@ export default (state, action) => {
   case BUILD_QUIZ:
    return {
     ...state,
-    builtQuiz: action.payload,
+    builtQuiz: <BuiltQuiz quiz={action.payload} key={action.payload._id} />,
    };
   case CLEAR_QUIZ:
    return {

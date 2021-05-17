@@ -98,6 +98,20 @@ import {
  SET_SUBMISSION,
  SET_SCORE,
  READ_USERSTATE,
+ TOGGLE_ONE,
+ TOGGLE_TWO,
+ PRODUCE_STATE,
+ FILTER_STATE,
+ DELETE_ONE,
+ REDUCE_NUMBERS,
+ REDUCE_COMBINE,
+ ITERATE_ARRAY,
+ GET_MYDOWNLOADABLES,
+ DOWNLOAD_CONTENT,
+ PUT_STATE,
+ ADD_COLLECTION,
+ SET_ACTIVECOLLECTION,
+ ADD_ONE,
 } from "../types";
 const AppContext = createContext();
 const SiteState = (props) => {
@@ -109,6 +123,7 @@ const SiteState = (props) => {
    currentPage: null,
    currentSite: null,
    currentComponent: null,
+   collections: [],
    font: null,
    forms: [],
    form: null,
@@ -120,6 +135,7 @@ const SiteState = (props) => {
    content: [],
    cellStructure: null,
    myComponents: null,
+   myDownloadables: null,
    pages: null,
    sites: null,
    MyComponent: null,
@@ -1458,9 +1474,8 @@ const SiteState = (props) => {
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "animationkeyprop" && !n4 && !n5) {
    const pushColumns = produce(page, (draft) => {
-    draft["css"]["animation"][n1]["keyframes"][n2]["properties"][n3][
-     name
-    ] = value;
+    draft["css"]["animation"][n1]["keyframes"][n2]["properties"][n3][name] =
+     value;
    });
 
    dispatch({ type: SET_PAGE, payload: pushColumns });
@@ -1748,9 +1763,8 @@ const SiteState = (props) => {
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "animationkey") {
    const pushColumns = produce(page, (draft) => {
-    draft["article"]["articleCSS"]["animation"][n1]["keyframes"][n2][
-     name
-    ] = value;
+    draft["article"]["articleCSS"]["animation"][n1]["keyframes"][n2][name] =
+     value;
    });
 
    dispatch({ type: SET_PAGE, payload: pushColumns });
@@ -2052,9 +2066,8 @@ const SiteState = (props) => {
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "animationkey") {
    const pushColumns = produce(page, (draft) => {
-    draft["footer"]["footerCSS"]["animation"][n1]["keyframes"][n2][
-     name
-    ] = value;
+    draft["footer"]["footerCSS"]["animation"][n1]["keyframes"][n2][name] =
+     value;
    });
 
    dispatch({ type: SET_PAGE, payload: pushColumns });
@@ -2459,9 +2472,8 @@ const SiteState = (props) => {
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "animationkey") {
    const pushColumns = produce(page, (draft) => {
-    draft["header"]["headerCSS"]["animation"][n1]["keyframes"][n2][
-     name
-    ] = value;
+    draft["header"]["headerCSS"]["animation"][n1]["keyframes"][n2][name] =
+     value;
    });
 
    dispatch({ type: SET_PAGE, payload: pushColumns });
@@ -2558,9 +2570,8 @@ const SiteState = (props) => {
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "cubicNs") {
    const pushColumns = produce(page, (draft) => {
-    draft["header"]["headerCells"][i]["css"]["transition"][n1]["cubicNs"][
-     n
-    ] = e;
+    draft["header"]["headerCells"][i]["css"]["transition"][n1]["cubicNs"][n] =
+     e;
    });
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "css") {
@@ -2697,9 +2708,8 @@ const SiteState = (props) => {
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "animationkey") {
    const pushColumns = produce(page, (draft) => {
-    draft["nav"]["navCells"][i]["css"]["animation"][n1]["keyframes"][n2][
-     name
-    ] = value;
+    draft["nav"]["navCells"][i]["css"]["animation"][n1]["keyframes"][n2][name] =
+     value;
    });
 
    dispatch({ type: SET_PAGE, payload: pushColumns });
@@ -2802,9 +2812,8 @@ const SiteState = (props) => {
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "cubicNs") {
    const pushColumns = produce(page, (draft) => {
-    draft["footer"]["footerCells"][i]["css"]["transition"][n1]["cubicNs"][
-     n
-    ] = e;
+    draft["footer"]["footerCells"][i]["css"]["transition"][n1]["cubicNs"][n] =
+     e;
    });
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "css") {
@@ -3046,9 +3055,8 @@ const SiteState = (props) => {
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "cubicNs") {
    const pushColumns = produce(page, (draft) => {
-    draft["article"]["articleCells"][i]["css"]["transition"][n1]["cubicNs"][
-     n
-    ] = e;
+    draft["article"]["articleCells"][i]["css"]["transition"][n1]["cubicNs"][n] =
+     e;
    });
    dispatch({ type: SET_PAGE, payload: pushColumns });
   } else if (n === "css") {
@@ -3960,9 +3968,8 @@ const SiteState = (props) => {
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
   } else if (check === "contanimationkey") {
    const pushColumns = produce(cells, (draft) => {
-    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
-     name
-    ] = value;
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][name] =
+     value;
    });
 
    dispatch({ type: UPDATE_CELLSTRUCTURE, payload: pushColumns });
@@ -4254,9 +4261,8 @@ const SiteState = (props) => {
    dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
   } else if (check === "contanimationkey") {
    const pushColumns = produce(subCells, (draft) => {
-    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
-     name
-    ] = value;
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][name] =
+     value;
    });
 
    dispatch({ type: UPDATE_SUBSTRUCTURE, payload: pushColumns });
@@ -4548,9 +4554,8 @@ const SiteState = (props) => {
    dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
   } else if (check === "contanimationkey") {
    const pushColumns = produce(bodyCells, (draft) => {
-    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][
-     name
-    ] = value;
+    draft[i]["contentCss"][slider]["animation"][n]["keyframes"][n1][name] =
+     value;
    });
 
    dispatch({ type: UPDATE_BODYSTRUCTURE, payload: pushColumns });
@@ -5378,9 +5383,21 @@ const SiteState = (props) => {
   dispatch({ type: GET_VERTICALSSEARCHED, payload: res.data });
  };
 
+ const getMyDownloadables = async (_id) => {
+  const res = await axios.get(`/api/images/downloadables?q=${_id}`);
+
+  console.log(res.data);
+  dispatch({ type: GET_MYDOWNLOADABLES, payload: res.data });
+ };
+
+ const addCollection = (collection) => {
+  dispatch({ type: ADD_COLLECTION, payload: collection });
+ };
+
  return (
   <SiteContext.Provider
    value={{
+    collections: state.markUp.collections,
     filtered: state.markUp.filtered,
     cells: state.body.cells,
     bodyCells: state.body.bodyCells,
@@ -5413,6 +5430,8 @@ const SiteState = (props) => {
     areaCells: state.page.areaCells,
     userStates: state.markUp.userStates,
     currentUserState: state.markUp.currentUserState,
+    myDownloadables: state.markUp.myDownloadables,
+    getMyDownloadables,
     setCurrentFont,
     getUserStates,
     setCurrentUserState,
@@ -5421,6 +5440,7 @@ const SiteState = (props) => {
     setCurrentPallet,
     addColumn,
     addRow,
+    addCollection,
     addSubRow,
     addSubColumn,
     addBodyRow,
@@ -6064,7 +6084,7 @@ export function AppWrapper({ children }) {
  const saveUserState = async (savedState) => {
   const config = {
    headers: {
-    "Content-Type": "appplication/json",
+    "Content-Type": "application/json",
    },
   };
 
@@ -6097,13 +6117,21 @@ export function AppWrapper({ children }) {
  };
  const toggleQuizBackward = (prevScore) => {
   const idx = state.quiz.body.findIndex((x) => x.page === prevScore);
-  dispatch({ type: TOGGLE_QUIZPAGE, payload: newQuiz });
+  dispatch({ type: TOGGLE_QUIZPAGE, payload: idx });
  };
  const toggleQuizModal = (quiz) => {
   dispatch({ type: BUILD_QUIZ, payload: quiz });
  };
- const setSubmissions = (i, e) => {
-  let newQuiz = { ...state.quiz };
+ const setSubmissions = (i, e, score) => {
+  let newSubmissions = [...state.quiz.submissions];
+
+  newSubmissions[i] = {
+   ...newSubmissions[i],
+   [e.target.name]: e.target.value,
+   score: score,
+  };
+
+  let newQuiz = { ...state.quiz, submissions: newSubmissions };
   dispatch({ type: SET_SUBMISSION, payload: newQuiz });
  };
 
@@ -6123,7 +6151,7 @@ export function AppWrapper({ children }) {
        parseFloat(submissions[submissions.length - 1].score) +
        parseFloat(body[submissions.length - 1].prevScore),
       prevScore:
-       submissions.lenth - 1 === 0
+       submissions.length === 0
         ? 0
         : parseFloat(body[submissions.length - 1].currentScore) -
           parseFloat(submissions[submissions.length - 1].score),
@@ -6164,7 +6192,59 @@ export function AppWrapper({ children }) {
   }
  };
 
+ const buildQuiz = (quiz) => {
+  dispatch({ type: BUILD_QUIZ });
+ };
+
+ const toggleOneComponent = () => {
+  dispatch({ type: TOGGLE_ONE });
+ };
+ const toggleTwoComponents = () => {
+  dispatch({ type: TOGGLE_TWO });
+ };
+ const produceState = () => {
+  dispatch({ type: PRODUCE_STATE });
+ };
+ const filterState = () => {
+  dispatch({ type: FILTER_STATE });
+ };
+ const deleteOneState = () => {
+  dispatch({ type: DELETE_ONE });
+ };
+ const addOneState = () => {
+  dispatch({ type: ADD_ONE });
+ };
+
+ const putState = () => {
+  dispatch({ type: PUT_STATE });
+ };
+ const reduceNumerics = () => {
+  dispatch({ type: REDUCE_NUMBERS });
+ };
+ const iterateArray = () => {
+  dispatch({ type: ITERATE_ARRAY });
+ };
+
+ const reduceCombine = () => {
+  dispatch({ type: REDUCE_COMBINE });
+ };
+
+ const setActiveCollection = (collection) => {
+  dispatch({ type: SET_ACTIVECOLLECTION, payload: collection });
+ };
+
  const contextProps = {
+  toggleOneComponent,
+  toggleTwoComponents,
+  produceState,
+  filterState,
+  deleteOneState,
+  addOneState,
+  putState,
+  reduceNumerics,
+  iterateArray,
+  reduceCombine,
+  setActiveCollection,
   toggleQuizBackward,
   toggleQuizForward,
   toggleQuizModal,
@@ -6184,9 +6264,11 @@ export function AppWrapper({ children }) {
   addIp,
   addLead,
   addClick,
+  buildQuiz,
+  activeCollection: state.activeCollection,
   clicks: state.clicks,
   builtQuiz: state.builtQuiz,
-  currentPage:state.currentPage,
+  currentPage: state.currentPage,
   leads: state.leads,
   lead: state.lead,
   NewComponent: state.NewComponent,

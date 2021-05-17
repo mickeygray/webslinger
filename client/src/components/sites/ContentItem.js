@@ -1,11 +1,12 @@
 import React, { Fragment, useState, useContext } from "react";
 import SiteContext from "../../context/site/siteContext";
-import styled from "styled-components";
+import { useAppContext } from "../../context/site/SiteState";
 const ContentItem = ({ content }) => {
  const [viewState, setViewState] = useState(false);
 
  const siteContext = useContext(SiteContext);
- const { buildQuiz, embedQuiz, setCurrentContent } = siteContext;
+ const { setCurrentContent } = siteContext;
+ const { buildQuiz } = useAppContext();
 
  const {
   _id,
@@ -46,7 +47,6 @@ const ContentItem = ({ content }) => {
   img2,
   img3,
   title,
-
   p1,
   p2,
   p3,
@@ -65,6 +65,9 @@ const ContentItem = ({ content }) => {
   summary,
   categories,
   firms,
+  adPreference,
+  submissions,
+  launchCopy,
  } = content;
 
  return (
@@ -181,7 +184,6 @@ const ContentItem = ({ content }) => {
            contentId: _id,
            type: contentType + "s",
            key: "img2",
-
            content: img2,
           });
          }}>
@@ -724,25 +726,30 @@ const ContentItem = ({ content }) => {
          Primary Quiz Image
         </button>
 
-        {builtQuiz ? (
-         <button
-          className='btn btn-dark p-1 btn-sm'
-          onClick={() => {
-           setViewState((prevState) => !prevState);
-           embedQuiz(img2);
-          }}>
-          Embed Quiz
-         </button>
-        ) : (
-         <button
-          className='btn btn-dark p-1 btn-sm'
-          onClick={() => {
-           setViewState((prevState) => !prevState);
-           buildQuiz(body, results, type);
-          }}>
-          Build Quiz
-         </button>
-        )}
+        <button
+         className='btn btn-dark p-1 btn-sm'
+         onClick={() => {
+          const quiz = {
+           title,
+           date,
+           author,
+           type,
+           headingCopy,
+           adPreference,
+           footerCopy,
+           img1,
+           img2,
+           body,
+           results,
+           submissions,
+           launchCopy,
+           _id,
+          };
+          setViewState((prevState) => !prevState);
+          buildQuiz(quiz);
+         }}>
+         Build Quiz
+        </button>
        </div>
       </Fragment>
      )}

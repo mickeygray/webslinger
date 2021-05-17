@@ -21,6 +21,7 @@ const storage = new GridFsStorage({
     const filename = req.files[req.files.length - 1].fieldname;
     const fileInfo = {
      filename: filename,
+     metadata: { accountId: req.body.user },
      bucketName: "fs", //collection name
     };
 
@@ -101,7 +102,50 @@ router.get("/", auth, async (req, res) => {
  });
 });
 
+router.get("/downloadables", auth, async (req, res) => {
+ const conn = mongoose.connection;
+
+ const gfs = Grid(conn.db, mongoose.mongo);
+
+ gfs.files
+  .find({ "metadata.accountId": req.query.q })
+  .toArray(function (err, files) {
+   if (err) {
+    res.json(err);
+   }
+   const data = files.map((f) => {
+    let obj = { name: f.filename, id: f._id };
+    return obj;
+   });
+
+   console.log(data);
+   res.json(data);
+  });
+});
+
 router.get("/content", auth, async (req, res) => {
+ const conn = mongoose.connection;
+ const gfs = Grid(conn.db, mongoose.mongo);
+
+ gfs.files.find({ filename: req.query.q }).toArray(function (err, files) {
+  if (err) {
+   res.json(err);
+  }
+
+  if (files.length > 0) {
+   var mime = files[0].contentType;
+   var filename = files[0].filename;
+   res.set("Content-Type", mime);
+   res.set("Content-Disposition", "inline; filename=" + filename);
+   var read_stream = gfs.createReadStream({ filename: filename });
+   read_stream.pipe(res);
+  } else {
+   res.json("File Not Found");
+  }
+ });
+});
+
+router.get("/collection", auth, async (req, res) => {
  const conn = mongoose.connection;
  const gfs = Grid(conn.db, mongoose.mongo);
 

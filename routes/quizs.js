@@ -23,6 +23,7 @@ const storage = new GridFsStorage({
     const filename = req.files[req.files.length - 1].fieldname;
     const fileInfo = {
      filename: filename,
+     metadata: { accountId: req.body.user },
      bucketName: "fs", //collection name
     };
 

@@ -38,6 +38,7 @@ import {
  SET_CURRENTFORM,
  SET_CURRENTUSERSTATE,
  GET_USERSTATES,
+ GET_MYDOWNLOADABLES,
 } from "../types";
 
 export default (state, action) => {
@@ -80,6 +81,12 @@ export default (state, action) => {
    return {
     ...state,
     sites: action.payload,
+    loading: false,
+   };
+  case GET_MYDOWNLOADABLES:
+   return {
+    ...state,
+    myDownloadables: action.payload,
     loading: false,
    };
   case GET_SITE:

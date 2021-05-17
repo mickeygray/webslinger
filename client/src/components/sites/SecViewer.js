@@ -18,7 +18,6 @@ import "react-rangeslider/lib/index.css";
 import str from "string-template-format-tostring";
 import ReactDOMServer from "react-dom/server";
 import Pagination from "../layout/Pagination";
-import BuiltQuiz from "../quizs/BuiltQuiz";
 import CssFilter from "./CssFilter";
 import { useAppContext } from "../../context/site/SiteState";
 const SecViewer = ({
@@ -43,6 +42,7 @@ const SecViewer = ({
   setComponentString,
   lead,
   userState,
+  builtQuiz,
   writeUserState,
   readUserState,
   writeLeadState,
@@ -60,7 +60,6 @@ const SecViewer = ({
   setNewCells,
   setNewSubCells,
   setNewBodyCells,
-
   grid,
   cells,
   subCells,
@@ -126,6 +125,9 @@ const SecViewer = ({
  const [cellForm, setCellForm] = useState([]);
  const [subCellForm, setSubCellForm] = useState([]);
  const [bodyCellForm, setBodyCellForm] = useState([]);
+ const [cellQuiz, setCellQuiz] = useState([]);
+ const [subCellQuiz, setSubCellQuiz] = useState([]);
+ const [bodyCellQuiz, setBodyCellQuiz] = useState([]);
 
  const formEntry = {
   ...(currentForm !== null && currentForm),
@@ -771,6 +773,13 @@ const SecViewer = ({
              className='btn btn-block btn-dark'
              onClick={() => addCellForm(_id)}>
              Add Current Form To This Cell
+            </button>
+            <button
+             className='btn btn-block btn-dark'
+             onClick={() =>
+              setCellQuiz([...cellQuiz, { quiz: builtQuiz, cell: _id }])
+             }>
+             Add Built Quiz To This Cell
             </button>
             {cellContentToggle === true ? (
              <div style={{ height: "500px", overflowY: "scroll" }}>
@@ -5108,7 +5117,6 @@ const SecViewer = ({
                 buttonStyle,
                 faIcon,
                 faIconPosition,
-
                 headingSize,
                 action,
                 background,
@@ -5128,6 +5136,14 @@ const SecViewer = ({
                 const VariableComponent = content[i];
 
                 return VariableComponent;
+               } else if (cellQuiz[0]) {
+                const Quiz = cellQuiz
+                 .filter((q) => q.id === cells[i].id)
+                 .map(({ quiz }) => {
+                  return quiz;
+                 });
+
+                return Quiz;
                } else if (type === "text") {
                 if (Array.isArray(userState[parentState][parentKey])) {
                  const arr = userState[parentState][parentKey].map((k, i) => {
@@ -5230,10 +5246,8 @@ const SecViewer = ({
                       n,
                       parentState,
                       parentKey,
-                      Array.from(
-                       userState[parentState][parentKey]
-                      ).findIndex((x) =>
-                       Object.values(x).includes(e.target.value)
+                      Array.from(userState[parentState][parentKey]).findIndex(
+                       (x) => Object.values(x).includes(e.target.value)
                       )
                      )
                     }
@@ -6102,6 +6116,16 @@ const SecViewer = ({
                        className='btn btn-block btn-dark'
                        onClick={() => addSubCellForm(_id)}>
                        Add Current Form To This Cell
+                      </button>
+                      <button
+                       className='btn btn-block btn-dark'
+                       onClick={() =>
+                        setSubCellQuiz([
+                         ...subCellQuiz,
+                         { quiz: builtQuiz, cell: _id },
+                        ])
+                       }>
+                       Add Built Quiz To This Cell
                       </button>
                       {subContentToggle === true ? (
                        <div style={{ height: "500px", overflowY: "scroll" }}>
@@ -10993,6 +11017,14 @@ const SecViewer = ({
                         if (content[i].hasOwnProperty("props")) {
                          const VariableComponent = content;
                          return VariableComponent;
+                        } else if (subCellQuiz[0]) {
+                         const Quiz = subCellQuiz
+                          .filter((q) => q.id === subCells[i].id)
+                          .map(({ quiz }) => {
+                           return quiz;
+                          });
+
+                         return Quiz;
                         } else if (type === "text") {
                          if (Array.isArray(userState[parentState][parentKey])) {
                           const arr = userState[parentState][parentKey].map(
@@ -11993,6 +12025,17 @@ const SecViewer = ({
                              className='btn btn-block btn-dark'
                              onClick={() => addBodyCellForm(_id)}>
                              Add Current Form To This Cell
+                            </button>
+
+                            <button
+                             className='btn btn-block btn-dark'
+                             onClick={() =>
+                              setBodyCellQuiz([
+                               ...bodyCellQuiz,
+                               { quiz: builtQuiz, cell: _id },
+                              ])
+                             }>
+                             Add Built Quiz To This Cell
                             </button>
                             <button
                              onClick={() =>
@@ -17305,6 +17348,14 @@ const SecViewer = ({
                                if (content[i].hasOwnProperty("props")) {
                                 const VariableComponent = content;
                                 return VariableComponent;
+                               } else if (bodyCellQuiz[0]) {
+                                const Quiz = bodyCellQuiz
+                                 .filter((q) => q.id === bodyCells[i].id)
+                                 .map(({ quiz }) => {
+                                  return quiz;
+                                 });
+
+                                return Quiz;
                                } else if (type === "text") {
                                 if (
                                  Array.isArray(

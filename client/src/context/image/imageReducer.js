@@ -8,6 +8,8 @@ import {
  GET_COMPONENTIMAGE,
  SET_CURRENTIMAGE,
  CLEAR_CURRENTIMAGE,
+ GET_COLLECTIONIMAGE,
+ CLEAR_COLLECTIONIMAGE,
 } from "../types";
 
 export default (state, action) => {
@@ -29,12 +31,32 @@ export default (state, action) => {
     current: null,
     contentImage: null,
    };
+
+  case CLEAR_COLLECTIONIMAGE:
+   return {
+    ...state,
+    collectionPreview: null,
+   };
   case GET_IMAGE:
    return {
     ...state,
     image: action.payload,
     loading: false,
    };
+
+  case GET_COLLECTIONIMAGE:
+   return {
+    ...state,
+    collectionPreview: {
+     code: URL.createObjectURL(
+      new Blob([action.payload.img]),
+      `${action.payload.type}`
+     ),
+     name: action.payload.name,
+    },
+    loading: false,
+   };
+
   case GET_CONTENTIMAGE:
    return {
     ...state,

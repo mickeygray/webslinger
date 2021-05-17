@@ -89,7 +89,7 @@ const SiteForm = () => {
   deleteRow,
   cellStructure,
   setPageId,
-
+  getMyDownloadables,
   pages,
  } = siteContext;
 
@@ -107,6 +107,7 @@ const SiteForm = () => {
    getReviews(userid);
    getFirms(userid);
    getUserStates(userid);
+   getMyDownloadables(userid);
   }
  }, []);
 
@@ -192,12 +193,15 @@ const SiteForm = () => {
  const sectionButton = {
   type: "button",
   text: "",
-  action: [],
   actionComponent1: "",
   actionComponent2: "",
   attachedContent: "",
-  simulatedState: "",
-  code: {},
+  code: "",
+  defaultState: "",
+  direction: "",
+  filterParams: [],
+  increment: "",
+  reductionType: "",
   sectionArea: "",
   font: "",
   color: "",
@@ -483,120 +487,103 @@ const SiteForm = () => {
    };
   }
 
-  if (value === "toggleModal" && delCheck.actionComponent1) {
+  if (value === "toggleOne" && delCheck.actionComponent1) {
    newResults[i] = {
     ...newResults[i],
-    code: {
-     importStatements: ['import {useState} from "react"'],
-     funcCode: [
-      `const [${delCheck.actionComponent1}Modal, toggle${delCheck.actionComponent1}Modal] = useState(false)`,
-     ],
-     actionComponent1: `(e)=>toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)`,
-     actionComponent2Load: `{${delCheck.actionComponet1}Modal === "true" && MyComponent }`,
-     actionComponent2Revert: `(e)=>toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)`,
-    },
+    code: "toggleOne",
     actionComponent1: delCheck.actionComponent1,
-    actionComponent2: delCheck.actionComponent2,
-    simulateState: simulateModal,
-    simulateFunc: setSimulateModal((prevState) => !prevState),
+    defaultState: true,
    };
-  } else if (value === "postForm" && delCheck.actionComponent1) {
+  } else if (value === "toggleTwo" && delCheck.actionComponent1) {
    newResults[i] = {
     ...newResults[i],
-    code: {
-     importStatements: [
-      'import { useAppContext } from "../contexts/state.js";',
-      'import { useRouter } from "next/router";',
-     ],
-     funcCode: [
-      `const {addLead}= useAppContext()`,
-      "const router = useRouter();",
-     ],
-     actionComponent1:
-      delCheck.actionComponent2 === delCheck.actionComponent1
-       ? `(e)=>{ addLead(lead); toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)};`
-       : `(e)=>{ addLead(lead); router.push({
-                pathname: /${delCheck.actionComponent2.name}/${delCheck.actionComponent2.id},
-                query: { data: ${delCheck.actionComponent2.id} },
-              });}`,
-    },
+    code: "toggleTwo",
     actionComponent1: delCheck.actionComponent1,
     actionComponent2: delCheck.actionComponent2,
+    defaultState: delCheck.actionComponent1,
    };
-  } else if (value === "getContent" && delCheck.actionComponent1) {
+  } else if (value === "produceState" && delCheck.actionComponent1) {
    newResults[i] = {
     ...newResults[i],
-    code: {
-     importStatements: [
-      'import { useAppContext } from "../contexts/state.js";',
-      'import { useRouter } from "next/router";',
-     ],
-     funcCode: [
-      `const {getContent}= useAppContext()`,
-      "const router = useRouter();",
-     ],
-     actionComponent1:
-      delCheck.actionComponent2 === delCheck.actionComponent1
-       ? `(e)=>{ getContent(_id); toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)};`
-       : `(e)=>{ addLead(lead); router.push({
-                pathname: /${delCheck.actionComponent2.name}/${delCheck.actionComponent2.id},
-                query: { data: ${delCheck.actionComponent2.id} },
-              });}`,
-    },
+    code: "produceState",
     actionComponent1: delCheck.actionComponent1,
-    actionComponent2: delCheck.actionComponent2,
-    attachedContent: "",
+    defaultState: userState,
    };
-  } else if (value === "internalSiteLink" && delCheck.actionComponent1) {
+  } else if (value === "filterState" && delCheck.actionComponent1) {
    newResults[i] = {
     ...newResults[i],
-    code: {
-     importStatements: ['import { useRouter } from "next/router";'],
-     funcCode: ["const router = useRouter();"],
-     actionComponent1: `(e)=>{ router.push({
-                pathname: /${delCheck.actionComponent2.name}/${delCheck.actionComponent2.id},
-                query: { data: ${delCheck.ctionComponent2.id} },
-              });}`,
-    },
+    code: "filterState",
     actionComponent1: delCheck.actionComponent1,
-    actionComponent2: delCheck.actionComponent2,
+    defaultState: userState,
+    filterParams: [],
    };
   } else if (value === "prevElement" && delCheck.actionComponent1) {
    newResults[i] = {
     ...newResults[i],
-    code: {
-     importStatements: ['import {useState} from "react"'],
-     funcCode: [
-      `const [${delCheck.actionComponent1}Incrementer, toggle${delCheck.actionComponent1}Incrementer] = useState(0)`,
-     ],
-     actionComponent1: `toggle${delCheck.actionComponent1}Incrementer(${delCheck.actionComponent1}Incrementer-1)`,
-     actionComponent2Load: `{${delCheck.actionComponet1}Modal === "true" && MyComponent }`,
-     actionComponent2Revert: `(e)=>toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)`,
-    },
+    code: "iterateArray",
     actionComponent1: delCheck.actionComponent1,
-    actionComponent2: delCheck.actionComponent2,
-    simulateState: simulateElArr,
-    simulateFunc: setSimulateElArr(simulateElArr - 1),
+    collection: current,
+    direction: "back",
+    increment: -1,
    };
   } else if (value === "nextElement" && delCheck.actionComponent1) {
    newResults[i] = {
     ...newResults[i],
-    code: {
-     importStatements: ['import {useState} from "react"'],
-     funcCode: [
-      `const [${delCheck.actionComponent1}Incrementer, toggle${delCheck.actionComponent1}Incrementer] = useState(0)`,
-     ],
-     actionComponent1: `toggle${delCheck.actionComponent1}Incrementer(${delCheck.actionComponent1}Incrementer+1)`,
-     actionComponent2Load: `{${delCheck.actionComponet1}Modal === "true" && MyComponent }`,
-     actionComponent2Revert: `(e)=>toggle${delCheck.actionComponent1}Modal(prevState=>!prevState)`,
-    },
+    code: "iterateArray",
     actionComponent1: delCheck.actionComponent1,
-    actionComponent2: delCheck.actionComponent2,
-    simulateState: simulateElArr,
-    simulateFunc: setSimulateElArr(simulateElArr + 1),
+    direction: "forward",
+    collection: current,
+    increment: 1,
+   };
+  } else if (value === "autoIterate" && delCheck.actionComponent1) {
+   newResults[i] = {
+    ...newResults[i],
+    code: "iterateArray",
+    actionComponent1: delCheck.actionComponent1,
+    direction: "forward",
+    collection: current,
+    increment: 0,
+   };
+  } else if (value === "reduceAddition" && delCheck.actionComponent1) {
+   newResults[i] = {
+    ...newResults[i],
+    code: "reduceNumerics",
+    actionComponent1: delCheck.actionComponent1,
+    reductionType: "addition",
+   };
+  } else if (value === "reduceAverage" && delCheck.actionComponent1) {
+   newResults[i] = {
+    ...newResults[i],
+    code: "reduceNumerics",
+    actionComponent1: delCheck.actionComponent1,
+    reductionType: "average",
+   };
+  } else if (value === "reduceCombine" && delCheck.actionComponent1) {
+   newResults[i] = {
+    ...newResults[i],
+    code: "reduceNumerics",
+    actionComponent1: delCheck.actionComponent1,
+    reductionType: "combine",
+    defaultState: userState,
+    matchKey: "",
+    combinedKey: "",
+    increment: 0,
+   };
+  } else if (value === "deleteOne" && delCheck.actionComponent1) {
+   newResults[i] = {
+    ...newResults[i],
+    code: "deleteOne",
+    actionComponent1: delCheck.actionComponent1,
+    defaultState: userState,
+   };
+  } else if (value === "addOne" && delCheck.actionComponent1) {
+   newResults[i] = {
+    ...newResults[i],
+    code: "addOne",
+    actionComponent1: delCheck.actionComponent1,
+    defaultState: userState,
    };
   }
-  console.log(img);
   if (components.map((comp) => comp.name).includes(delCheck)) {
    const comp = component.filter((c) => c.type.name != delCheck);
 

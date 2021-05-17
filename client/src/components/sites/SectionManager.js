@@ -8,6 +8,7 @@ import React, {
 import { findIndex, camelCase } from "lodash";
 import SiteContext from "../../context/site/siteContext";
 import ImageContext from "../../context/image/imageContext";
+import DownloadableManager from "./DownloadableManager";
 import { useAppContext } from "../../context/site/SiteState";
 import { v4 as uuidV4 } from "uuid";
 const SectionManager = ({
@@ -30,7 +31,7 @@ const SectionManager = ({
  contentList,
  setContentList,
 }) => {
- const { getStateContent } = useAppContext();
+ const { getStateContent, activeCollection } = useAppContext();
  const siteContext = useContext(SiteContext);
  const {
   font,
@@ -39,6 +40,9 @@ const SectionManager = ({
   clearCurrentContent,
   myComponents,
   cellStructure,
+  collections,
+  userStates,
+  myDownloadables,
  } = siteContext;
  const imageContext = useContext(ImageContext);
  const { contentImage } = imageContext;
@@ -46,6 +50,7 @@ const SectionManager = ({
   actionComponent1: "",
   actionComponent2: "",
  });
+ const [collectionState, setCollectionState] = useState(false);
 
  useEffect(() => {
   if (currentContent != null) {
@@ -55,6 +60,16 @@ const SectionManager = ({
 
  return (
   <Fragment>
+   {collectionState ? <DownloadableManager /> : ""}
+   <div>
+    <button
+     className='btn btn-sm btn-dark'
+     onClick={() => setCollectionState((prevState) => !prevState)}>
+     {collectionState === false
+      ? "Create Collection"
+      : "Hide Collection Editor"}
+    </button>
+   </div>
    <div className='bg-light grid-4'>
     {h.map((row, i) => {
      const { compStyle, componentName } = row;
@@ -649,6 +664,45 @@ const SectionManager = ({
           ""
          )}
 
+         {key === "defaultState" ? (
+          <select
+           name='defaultState'
+           onChange={(e) => onChangeButton(i, e, componentName, compStyle)}>
+           {row["code"] === "toggleOne" && (
+            <option value='visible'>Visible</option>
+           )}
+           {row["code"] === "toggleOne" && (
+            <option value='invisible'>Invisible</option>
+           )}
+           {row["code"] === "toggleTwo" && (
+            <option value='componentOne'>Component One Visible</option>
+           )}
+           {row["code"] === "toggleTwo" && (
+            <option value='componentTwo'>Component Two Visisble</option>
+           )}
+           {row["code"] === "produceState" ||
+            "filterState" ||
+            "deleteOne" ||
+            "addOne" ||
+            "reduceAddition" ||
+            "reduceAverage" ||
+            ("reduceCombine" &&
+             userStates.map((state) => <option value={state}>{state}</option>))}
+           {row["code"] === "prevElement" ||
+            "nextElement" ||
+            ("autoIterate" && (
+             <optgroup>
+              <option value='activeCollection'>Use Active Collection</option>
+              {userStates.map((state) => (
+               <option value={state}>{state}</option>
+              ))}
+             </optgroup>
+            ))}
+          </select>
+         ) : (
+          ""
+         )}
+
          {key === "faIconPosition" ? (
           <select
            value={row[key]}
@@ -746,37 +800,54 @@ const SectionManager = ({
          ) : (
           ""
          )}
-         {key === "action" ? (
+         {key === "code" ? (
           <select
-           name='action'
+           name='code'
            onChange={(e) => onChangeButton(i, e, componentName, compStyle)}
            value={row[key]}
            multiple>
            <option>Button Action...</option>
-           <option value='toggleModal'>Toggle Modal</option>
-           <option value='postForm'>Post Form</option>
-           <option value='getContent'>Get Content</option>
-           <option value='internalSiteLink'>Link Site Pages</option>
-           <option value='nextElement'>Next Element</option>
+           <option value='toggleOne'>Toggle One Component</option>
+           <option value='toggleTwo'>Toggle Two Components</option>
+           <option value='produceState'>Produce State</option>
+           <option value='filterState'>Filter State</option>
+           <option value='deleteOne'>Delete One</option>
+           <option value='addOne'>Add One</option>
            <option value='prevElement'>Previous Element</option>
+           <option value='nextElement'>Next Element</option>
+           <option value='autoIterate'>Auto Iterate</option>
+           <option value='reduceAddition'>Sum Array</option>
+           <option value='reduceAverage'>Average Array</option>
+           <option value='reduceCombine'>Combine Like Elements</option>
           </select>
          ) : (
           ""
          )}
 
-         {row["action"].length > 0 ? (
+         {row["code"].length > 0 ? (
           <div>
-           <h5>Please Select The Component The Button Action Will Fire From</h5>
+           <h5>
+            {row["code"] === "toggleOne"
+             ? "Please Select The Toggled Component"
+             : ""}{" "}
+            {row["code"] === "toggleTwo"
+             ? "Please Select The Visible Component"
+             : ""}
+            {row["code"] === "produceState" || "filterState"
+             ? "Please Select The Mapped Component"
+             : ""}
+           </h5>
            <select
             name='actionComponent1'
-            onChange={(e) =>
+            onChange={(e) => {
              setActionComponents({
               ...actionComponents,
               [e.target.name]: e.target.value,
-             })
-            }
+             });
+             onChangeButton(i, e, actionComponents);
+            }}
             value={row[key]}>
-            <option>My Saved Components...</option>
+            <option value='current'>This Component</option>
             {myComponents.map((comp) => (
              <option value={comp.name} name='actionComponent1'>
               {comp.name}
@@ -784,7 +855,9 @@ const SectionManager = ({
             ))}{" "}
            </select>
            <br />
-           <h5>Please Select The Component The Button Action Will Load</h5>
+           {row["code"] === "toggleTwo"
+            ? "Please Select The Component Toggled To"
+            : ""}
            <p style={{ textSize: "8px" }}>
             <i>
              Please Select Site Link and Action to force Redirect On Submission
@@ -792,28 +865,45 @@ const SectionManager = ({
            </p>
            <select
             name='actionComponent2'
-            onChange={(e) =>
+            onChange={(e) => {
              setActionComponents({
               ...actionComponents,
               [e.target.name]: e.target.value,
-             })
-            }
+             });
+             onChangeButton(i, e, actionComponents);
+            }}
             value={row[key]}>
-            <option>My Saved Components...</option>
+            <option value='current'>This Component</option>
             {myComponents.map((comp) => (
              <option value={comp.name} name='actionComponent1'>
               {comp.name}
              </option>
             ))}{" "}
            </select>
+          </div>
+         ) : (
+          ""
+         )}
 
-           <button
-            className='btn btn-sm'
-            onClick={(e) => {
-             onChangeButton(i, e, actionComponents);
-            }}>
-            Add Button Actions
-           </button>
+         {row["code"] === "autoIterate" ||
+          "prevElement" ||
+          ("nextElement" && (
+           <input
+            type='text'
+            name='interval'
+            placeholder='Set An Iteration Value (default 1)'
+            onChange={(e) => onChangeButton(i, e)}
+           />
+          ))}
+
+         {key === "attachedContent" ? (
+          <div>
+           <select>
+            <option>Select A Downloadable...</option>
+            {myDownloadables.map(({ filename }) => (
+             <option value={filename}>{filename}</option>
+            ))}
+           </select>
           </div>
          ) : (
           ""
